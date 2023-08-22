@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.kaajjo.libresudoku"
+    namespace = "com.batodev.sudoku"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.kaajjo.libresudoku"
+        applicationId = "com.batodev.sudoku"
         minSdk = 26
         targetSdk = 34
         versionCode = 7

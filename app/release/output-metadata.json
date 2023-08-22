@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.kaajjo.libresudoku",
+  "applicationId": "com.batodev.sudoku",
   "variantName": "release",
   "elements": [
     {
