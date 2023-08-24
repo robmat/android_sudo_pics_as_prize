@@ -429,7 +429,8 @@ fun NavigationBar(
         painterResource(R.drawable.ic_round_more_horiz_24)
     )
     AnimatedContent(
-        targetState = bottomBarState, label = "some_label_dunno_whats_that"
+        targetState = bottomBarState,
+        label = "this _label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning"
     ) { visible ->
         if (visible) {
             val navBackStackEntry by navController.currentBackStackEntryAsState()

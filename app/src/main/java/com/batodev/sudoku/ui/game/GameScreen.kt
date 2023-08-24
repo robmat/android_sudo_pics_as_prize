@@ -5,14 +5,12 @@ import android.view.HapticFeedbackConstants
 import android.view.View
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -68,15 +66,12 @@ import com.batodev.sudoku.ui.game.components.ToolbarItem
 import com.batodev.sudoku.ui.onboarding.FirstGameDialog
 import com.batodev.sudoku.ui.util.ReverseArrangement
 
-@OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class,
-    ExperimentalLayoutApi::class
-)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameScreen(
     navigateBack: () -> Unit,
     navigateSettings: () -> Unit,
-    viewModel: GameViewModel
+    viewModel: GameViewModel,
 ) {
     val localView = LocalView.current // vibration
 
@@ -94,7 +89,8 @@ fun GameScreen(
     var restartButtonAngleState by remember { mutableFloatStateOf(0f) }
     val restartButtonAnimation: Float by animateFloatAsState(
         targetValue = restartButtonAngleState,
-        animationSpec = tween(durationMillis = 250)
+        animationSpec = tween(durationMillis = 250),
+        label = "this _label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning"
     )
 
     LaunchedEffect(Unit) {
@@ -139,7 +135,8 @@ fun GameScreen(
                             ) {
                                 AnimatedContent(
                                     if (viewModel.showSolution) stringResource(R.string.action_show_mine_sudoku)
-                                    else stringResource(R.string.action_show_solution)
+                                    else stringResource(R.string.action_show_solution),
+                                    label = "this _label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning"
                                 ) {
                                     Text(it)
                                 }
@@ -149,7 +146,8 @@ fun GameScreen(
 
                     AnimatedVisibility(visible = !viewModel.endGame) {
                         val rotationAngle by animateFloatAsState(
-                            targetValue = if (viewModel.gamePlaying) 0f else 360f
+                            targetValue = if (viewModel.gamePlaying) 0f else 360f,
+                            label = "this _label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning"
                         )
                         IconButton(onClick = {
                             if (!viewModel.gamePlaying) viewModel.startTimer() else viewModel.pauseTimer()
@@ -618,7 +616,7 @@ fun GameMenu(
 @Composable
 fun TopBoardSection(
     text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,

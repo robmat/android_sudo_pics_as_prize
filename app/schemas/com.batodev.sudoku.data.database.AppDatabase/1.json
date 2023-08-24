@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "51ab67c93ed9cb247ab45f24664e3d38",
+    "identityHash": "6c42f365a26b63b358a26a7c9a7ad9cf",
     "entities": [
       {
         "tableName": "record",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`board_uid` INTEGER NOT NULL, `type` INTEGER NOT NULL, `difficulty` INTEGER NOT NULL, `date` INTEGER NOT NULL, `time` INTEGER NOT NULL, PRIMARY KEY(`board_uid`), FOREIGN KEY(`board_uid`) REFERENCES `board`(`uid`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`board_uid` INTEGER NOT NULL, `type` INTEGER NOT NULL, `difficulty` INTEGER NOT NULL, `date` INTEGER NOT NULL, `time` INTEGER NOT NULL, PRIMARY KEY(`board_uid`), FOREIGN KEY(`board_uid`) REFERENCES `board`(`uid`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "board_uid",
@@ -40,16 +40,16 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "board_uid"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": [
           {
             "table": "board",
-            "onDelete": "NO ACTION",
+            "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
               "board_uid"
@@ -62,7 +62,7 @@
       },
       {
         "tableName": "board",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `initial_board` TEXT NOT NULL, `solved_board` TEXT NOT NULL, `difficulty` INTEGER NOT NULL, `type` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `initial_board` TEXT NOT NULL, `solved_board` TEXT NOT NULL, `prize_image_name` TEXT DEFAULT null, `difficulty` INTEGER NOT NULL, `type` INTEGER NOT NULL, `folder_id` INTEGER DEFAULT null, FOREIGN KEY(`folder_id`) REFERENCES `Folder`(`uid`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "uid",
@@ -83,6 +83,13 @@
             "notNull": true
           },
           {
+            "fieldPath": "prizeImageName",
+            "columnName": "prize_image_name",
+            "affinity": "TEXT",
+            "notNull": false,
+            "defaultValue": "null"
+          },
+          {
             "fieldPath": "difficulty",
             "columnName": "difficulty",
             "affinity": "INTEGER",
@@ -93,20 +100,39 @@
             "columnName": "type",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "folderId",
+            "columnName": "folder_id",
+            "affinity": "INTEGER",
+            "notNull": false,
+            "defaultValue": "null"
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [],
-        "foreignKeys": []
+        "foreignKeys": [
+          {
+            "table": "Folder",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "folder_id"
+            ],
+            "referencedColumns": [
+              "uid"
+            ]
+          }
+        ]
       },
       {
         "tableName": "saved_game",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`board_uid` INTEGER NOT NULL, `current_board` TEXT NOT NULL, `notes` TEXT NOT NULL, `timer` INTEGER NOT NULL, `completed` INTEGER NOT NULL DEFAULT false, `give_up` INTEGER NOT NULL DEFAULT false, `mistakes` INTEGER NOT NULL DEFAULT 0, `can_continue` INTEGER NOT NULL, PRIMARY KEY(`board_uid`), FOREIGN KEY(`board_uid`) REFERENCES `board`(`uid`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`board_uid` INTEGER NOT NULL, `current_board` TEXT NOT NULL, `notes` TEXT NOT NULL, `timer` INTEGER NOT NULL, `completed` INTEGER NOT NULL DEFAULT false, `give_up` INTEGER NOT NULL DEFAULT false, `mistakes` INTEGER NOT NULL DEFAULT 0, `can_continue` INTEGER NOT NULL, `last_played` INTEGER, `started_at` INTEGER, `finished_at` INTEGER, PRIMARY KEY(`board_uid`), FOREIGN KEY(`board_uid`) REFERENCES `board`(`uid`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "uid",
@@ -158,19 +184,37 @@
             "columnName": "can_continue",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "lastPlayed",
+            "columnName": "last_played",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "startedAt",
+            "columnName": "started_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "finishedAt",
+            "columnName": "finished_at",
+            "affinity": "INTEGER",
+            "notNull": false
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "board_uid"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": [
           {
             "table": "board",
-            "onDelete": "NO ACTION",
+            "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
               "board_uid"
@@ -180,12 +224,44 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "Folder",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `date_created` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "date_created",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "uid"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '51ab67c93ed9cb247ab45f24664e3d38')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6c42f365a26b63b358a26a7c9a7ad9cf')"
     ]
   }
 }

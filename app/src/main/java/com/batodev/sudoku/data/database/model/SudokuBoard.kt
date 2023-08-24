@@ -22,6 +22,7 @@ data class SudokuBoard(
     @PrimaryKey(autoGenerate = true) val uid: Long,
     @ColumnInfo(name = "initial_board") val initialBoard: String,
     @ColumnInfo(name = "solved_board") val solvedBoard: String,
+    @ColumnInfo(name = "prize_image_name", defaultValue = "null") val prizeImageName: String? = null,
     @ColumnInfo(name = "difficulty") val difficulty: GameDifficulty,
     @ColumnInfo(name = "type") val type: GameType,
     @ColumnInfo(name = "folder_id", defaultValue = "null") val folderId: Long? = null
