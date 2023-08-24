@@ -6,11 +6,9 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -33,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -52,6 +51,7 @@ import com.batodev.sudoku.ui.components.animatedComposable
 import com.batodev.sudoku.ui.create_edit_sudoku.CreateSudokuScreen
 import com.batodev.sudoku.ui.explore_folder.ExploreFolderScreen
 import com.batodev.sudoku.ui.folders.FoldersScreen
+import com.batodev.sudoku.ui.gallery.GalleryActivity
 import com.batodev.sudoku.ui.game.GameScreen
 import com.batodev.sudoku.ui.gameshistory.GamesHistoryScreen
 import com.batodev.sudoku.ui.gameshistory.savedgame.SavedGameScreen
@@ -82,7 +82,6 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var settings: AppSettingsManager
 
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -421,17 +420,15 @@ fun NavigationBar(
 ) {
     var selectedScreen by remember { mutableStateOf(Route.HOME) }
     val navBarScreens = listOf(
-        Pair(Route.GALLERY, R.string.nav_bar_gallery),
         Pair(Route.HOME, R.string.nav_bar_home),
         Pair(Route.MORE, R.string.nav_bar_more),
     )
     val navBarIcons = listOf(
-        painterResource(R.drawable.ic_round_gallery_24),
         painterResource(R.drawable.ic_round_home_24),
         painterResource(R.drawable.ic_round_more_horiz_24)
     )
     AnimatedContent(
-        targetState = bottomBarState
+        targetState = bottomBarState, label = "some_label_dunno_whats_that"
     ) { visible ->
         if (visible) {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -442,7 +439,26 @@ fun NavigationBar(
                 }
             }
 
+            val context = LocalContext.current
             NavigationBar {
+                NavigationBarItem(
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_round_gallery_24),
+                            contentDescription = null
+                        )
+                    },
+                    selected = selectedScreen == Route.GALLERY,
+                    label = {
+                        Text(
+                            text = stringResource(  R.string.nav_bar_gallery),
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    onClick = {
+                        ContextCompat.startActivity(context, Intent(context, GalleryActivity::class.java), null)
+                    }
+                )
                 navBarScreens.forEachIndexed { index, item ->
                     NavigationBarItem(
                         icon = {

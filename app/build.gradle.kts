@@ -47,7 +47,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -93,4 +93,9 @@ dependencies {
     implementation(libs.acra.mail)
 
     implementation(libs.aboutLibraries)
+
+    implementation ("org.simpleframework:simple-xml:2.7.1")
+    implementation ("com.github.bumptech.glide:compose:1.0.0-alpha.1")
+    implementation ("com.google.android.gms:play-services-ads:22.2.0")
+    implementation ("com.github.mennovogel:zoom-compose:1.1")
 }

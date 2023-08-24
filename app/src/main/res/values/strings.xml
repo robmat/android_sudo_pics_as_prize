@@ -283,4 +283,5 @@
     <string name="pref_date_format_custom_label">Custom</string>
     <string name="theme_blue">Blue</string>
     <string name="redo">Redo</string>
+    <string name="uncovered_images">Uncovered pictures</string>
 </resources>
