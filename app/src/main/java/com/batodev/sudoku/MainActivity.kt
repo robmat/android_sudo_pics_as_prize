@@ -47,6 +47,7 @@ import androidx.navigation.navOptions
 import com.batodev.sudoku.core.PreferencesConstants
 import com.batodev.sudoku.data.datastore.AppSettingsManager
 import com.batodev.sudoku.data.datastore.ThemeSettingsManager
+import com.batodev.sudoku.data.settings.SettingsHelper
 import com.batodev.sudoku.ui.components.animatedComposable
 import com.batodev.sudoku.ui.create_edit_sudoku.CreateSudokuScreen
 import com.batodev.sudoku.ui.explore_folder.ExploreFolderScreen
@@ -456,6 +457,9 @@ fun NavigationBar(
                         )
                     },
                     onClick = {
+                        SettingsHelper.settings.uncoveredPics.add("00000-112081677.jpg")
+                        SettingsHelper.settings.uncoveredPics.add("00000-184329161.jpg")
+                        SettingsHelper.settings.uncoveredPics.add("00000-3868103105.jpg")
                         ContextCompat.startActivity(context, Intent(context, GalleryActivity::class.java), null)
                     }
                 )

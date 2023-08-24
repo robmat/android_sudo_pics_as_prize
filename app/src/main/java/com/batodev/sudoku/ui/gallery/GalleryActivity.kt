@@ -54,7 +54,7 @@ import java.io.OutputStream
 import javax.inject.Inject
 
 const val tmpShared = "tmp_shared"
-const val tmpImgPath = "$tmpShared/tmp.png"
+const val tmpImgPath = "$tmpShared/tmp.jpg"
 const val GIRL_IMAGES = "girl-images"
 
 @AndroidEntryPoint
@@ -257,7 +257,7 @@ fun ImageDetailScreen(resId: String, navController: NavController) {
                 outputStream.close()
                 val shareIntent = Intent(Intent.ACTION_SEND)
                 val uri =
-                    Uri.parse("content://com.batodev.snake.data.model.ImagesProvider/$tmpImgPath")
+                    Uri.parse("content://com.batodev.sudoku.data.provider.ImagesProvider/$tmpImgPath")
                 shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
                 shareIntent.type = "image/*"
                 ContextCompat.startActivity(context, shareIntent, null)

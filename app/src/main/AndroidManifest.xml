@@ -58,6 +58,11 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-9667420067790140~1736278253" />
+        <provider
+            android:name=".data.provider.ImagesProvider"
+            android:authorities="com.batodev.sudoku.data.provider.ImagesProvider"
+            android:exported="false"
+            android:grantUriPermissions="true" />
     </application>
 
 </manifest>
