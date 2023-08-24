@@ -55,7 +55,7 @@ import javax.inject.Inject
 
 const val tmpShared = "tmp_shared"
 const val tmpImgPath = "$tmpShared/tmp.jpg"
-const val GIRL_IMAGES = "girl-images"
+const val GIRL_IMAGES = "prize-images"
 
 @AndroidEntryPoint
 class GalleryActivity : AppCompatActivity() {
