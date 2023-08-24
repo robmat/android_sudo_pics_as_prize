@@ -420,12 +420,12 @@ fun NavigationBar(
 ) {
     var selectedScreen by remember { mutableStateOf(Route.HOME) }
     val navBarScreens = listOf(
-        Pair(Route.STATISTICS, R.string.nav_bar_statistics),
+        Pair(Route.STATISTICS, R.string.nav_bar_gallery),
         Pair(Route.HOME, R.string.nav_bar_home),
         Pair(Route.MORE, R.string.nav_bar_more),
     )
     val navBarIcons = listOf(
-        painterResource(R.drawable.ic_round_info_24),
+        painterResource(R.drawable.ic_round_gallery_24),
         painterResource(R.drawable.ic_round_home_24),
         painterResource(R.drawable.ic_round_more_horiz_24)
     )

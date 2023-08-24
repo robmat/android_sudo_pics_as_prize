@@ -7,6 +7,7 @@ class Route {
         const val ABOUT = "about"
         const val WELCOME_SCREEN = "welcome_screen"
         const val STATISTICS = "statistics"
+        const val GALLERY = "gallery"
         const val HISTORY = "history"
         const val LEARN = "learn"
         const val OPEN_SOURCE_LICENSES = "open_source_licenses"
