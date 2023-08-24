@@ -194,7 +194,8 @@ class MainActivity : AppCompatActivity() {
                                     navigateSettings = { navController.navigate("settings/?fromGame=false") },
                                     navigateLearn = { navController.navigate(Route.LEARN) },
                                     navigateAbout = { navController.navigate(Route.ABOUT) },
-                                    navigateImport = { navController.navigate(Route.FOLDERS) }
+                                    navigateImport = { navController.navigate(Route.FOLDERS) },
+                                    navigateStatistics = { navController.navigate(Route.STATISTICS) }
                                 )
                             }
 
@@ -420,7 +421,7 @@ fun NavigationBar(
 ) {
     var selectedScreen by remember { mutableStateOf(Route.HOME) }
     val navBarScreens = listOf(
-        Pair(Route.STATISTICS, R.string.nav_bar_gallery),
+        Pair(Route.GALLERY, R.string.nav_bar_gallery),
         Pair(Route.HOME, R.string.nav_bar_home),
         Pair(Route.MORE, R.string.nav_bar_more),
     )

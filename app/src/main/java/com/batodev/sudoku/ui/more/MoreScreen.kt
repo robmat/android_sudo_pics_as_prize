@@ -8,7 +8,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Folder
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +27,7 @@ fun MoreScreen(
     navigateLearn: () -> Unit,
     navigateAbout: () -> Unit,
     navigateImport: () -> Unit,
+    navigateStatistics: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -45,12 +46,17 @@ fun MoreScreen(
             )
         }
 
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 12.dp)
         )
 
+        PreferenceRow(
+            title = stringResource(R.string.statistics),
+            painter = painterResource(R.drawable.ic_round_info_24),
+            onClick = navigateStatistics
+        )
         PreferenceRow(
             title = stringResource(R.string.settings_title),
             painter = painterResource(R.drawable.ic_settings_24),
