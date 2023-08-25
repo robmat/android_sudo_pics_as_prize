@@ -55,7 +55,7 @@ import javax.inject.Inject
 
 const val tmpShared = "tmp_shared"
 const val tmpImgPath = "$tmpShared/tmp.jpg"
-const val GIRL_IMAGES = "prize-images"
+const val PRIZE_IMAGES = "prize-images"
 
 @AndroidEntryPoint
 class GalleryActivity : AppCompatActivity() {
@@ -169,7 +169,7 @@ fun ImageListItem(imageResId: String, navController: NavController) {
         .padding(16.dp)
         .clickable { navController.navigate("imageDetail/$imageResId") }) {
         GlideImage(
-            model = "file:///android_asset/$GIRL_IMAGES/$imageResId",
+            model = "file:///android_asset/$PRIZE_IMAGES/$imageResId",
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
@@ -185,7 +185,7 @@ fun ImageListItem(imageResId: String, navController: NavController) {
 fun ImageDetailScreen(resId: String, navController: NavController) {
     val context = LocalContext.current
     val currentPicture = remember {
-        mutableStateOf("file:///android_asset/$GIRL_IMAGES/$resId")
+        mutableStateOf("file:///android_asset/$PRIZE_IMAGES/$resId")
     }
     Column(
         modifier = Modifier
@@ -220,7 +220,7 @@ fun ImageDetailScreen(resId: String, navController: NavController) {
                 currentPicture.value.substring(currentPicture.value.lastIndexOf("/") + 1)
             IconButton(onClick = {
                 val index = SettingsHelper.settings.uncoveredPics.indexOf(currentPictureFileName)
-                currentPicture.value = "file:///android_asset/$GIRL_IMAGES/${
+                currentPicture.value = "file:///android_asset/$PRIZE_IMAGES/${
                     SettingsHelper.settings.uncoveredPics[Math.max(
                         0, index - 1
                     )]
@@ -231,7 +231,7 @@ fun ImageDetailScreen(resId: String, navController: NavController) {
             Spacer(modifier = Modifier.width(16.dp))
             IconButton(onClick = {
                 val index = SettingsHelper.settings.uncoveredPics.indexOf(currentPictureFileName)
-                currentPicture.value = "file:///android_asset/$GIRL_IMAGES/${
+                currentPicture.value = "file:///android_asset/$PRIZE_IMAGES/${
                     SettingsHelper.settings.uncoveredPics[Math.min(
                         SettingsHelper.settings.uncoveredPics.size - 1, index + 1
                     )]
@@ -242,7 +242,7 @@ fun ImageDetailScreen(resId: String, navController: NavController) {
             Spacer(modifier = Modifier.width(16.dp))
             IconButton(onClick = {
                 val inputStream: InputStream =
-                    context.assets.open("$GIRL_IMAGES/${Uri.parse(currentPicture.value).lastPathSegment}")
+                    context.assets.open("$PRIZE_IMAGES/${Uri.parse(currentPicture.value).lastPathSegment}")
 
                 val file = File(context.filesDir, tmpImgPath)
                 File(context.filesDir, tmpShared).mkdirs()

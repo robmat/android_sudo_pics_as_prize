@@ -85,6 +85,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        SettingsHelper.createIfNotExists(this)
+        SettingsHelper.load(this)
+
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
@@ -430,7 +433,7 @@ fun NavigationBar(
     )
     AnimatedContent(
         targetState = bottomBarState,
-        label = "this _label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning"
+        label = "this_label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning"
     ) { visible ->
         if (visible) {
             val navBackStackEntry by navController.currentBackStackEntryAsState()

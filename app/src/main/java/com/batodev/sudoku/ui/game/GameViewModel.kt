@@ -374,7 +374,7 @@ class GameViewModel @Inject constructor(
     }
 
 
-    fun processNumberInput(number: Int) {
+    private fun processNumberInput(number: Int) {
         if (currCell.row >= 0 && currCell.col >= 0 && gamePlaying && !currCell.locked) {
             if (!notesToggled) {
                 // Clear all note to set a number
@@ -763,5 +763,9 @@ class GameViewModel @Inject constructor(
             }
         }
         gameBoard = new
+    }
+
+    fun prizeImageName(): String {
+        return boardEntity.prizeImageName.orEmpty()
     }
 }

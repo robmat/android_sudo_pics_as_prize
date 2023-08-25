@@ -212,7 +212,8 @@ fun HorizontalPicker(
         }
         AnimatedContent(
             targetState = text,
-            transitionSpec = { fadeIn() togetherWith fadeOut() }
+            transitionSpec = { fadeIn() togetherWith fadeOut() },
+            label = "this_label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning"
         ) { text ->
             Text(text)
         }

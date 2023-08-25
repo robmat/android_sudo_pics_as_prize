@@ -1,5 +1,6 @@
 package com.batodev.sudoku.ui.home
 
+import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -13,8 +14,10 @@ import com.batodev.sudoku.core.qqwing.QQWingController
 import com.batodev.sudoku.core.utils.SudokuParser
 import com.batodev.sudoku.data.database.model.SudokuBoard
 import com.batodev.sudoku.data.datastore.AppSettingsManager
+import com.batodev.sudoku.data.settings.SettingsHelper
 import com.batodev.sudoku.domain.repository.BoardRepository
 import com.batodev.sudoku.domain.repository.SavedGameRepository
+import com.batodev.sudoku.ui.gallery.PRIZE_IMAGES
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,7 +31,8 @@ class HomeViewModel
 @Inject constructor(
     private val appSettingsManager: AppSettingsManager,
     private val boardRepository: BoardRepository,
-    private val savedGameRepository: SavedGameRepository
+    private val savedGameRepository: SavedGameRepository,
+    private val context: Application,
 ) : ViewModel() {
 
     val lastSavedGame = savedGameRepository.getLast()
@@ -69,6 +73,7 @@ class HomeViewModel
     var isGenerating by mutableStateOf(false)
     var isSolving by mutableStateOf(false)
     var readyToPlay by mutableStateOf(false)
+    var prizeImageName by mutableStateOf("")
 
     private var puzzle =
         List(selectedType.size) { row -> List(selectedType.size) { col -> Cell(row, col, 0) } }
@@ -86,6 +91,11 @@ class HomeViewModel
 
         puzzle = List(size) { row -> List(size) { col -> Cell(row, col, 0) } }
         solvedPuzzle = List(size) { row -> List(size) { col -> Cell(row, col, 0) } }
+
+        val allImages = context.assets.list(PRIZE_IMAGES)!!.toMutableList()
+        allImages.removeAll(SettingsHelper.settings.uncoveredPics)
+        prizeImageName =
+            if (allImages.isEmpty()) SettingsHelper.settings.uncoveredPics.random() else allImages.random()
 
         viewModelScope.launch(Dispatchers.Default) {
             if (saveSelectedGameDifficultyType.value) {
@@ -122,7 +132,8 @@ class HomeViewModel
                             initialBoard = sudokuParser.boardToString(puzzle),
                             solvedBoard = sudokuParser.boardToString(solvedPuzzle),
                             difficulty = selectedDifficulty,
-                            type = selectedType
+                            type = selectedType,
+                            prizeImageName = prizeImageName
                         )
                     )
                 }
