@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name" translatable="false">LibreSudoku</string>
     <string name="nav_bar_statistics">Statistics</string>
-    <string name="nav_bar_gallery">Gallery</string>
+    <string name="nav_bar_gallery">Pictures gallery</string>
     <string name="nav_bar_home">Home</string>
     <string name="nav_bar_more">More</string>
     <string name="new_game">New game</string>
@@ -103,7 +103,7 @@
     <string name="mistakes_number_out_of">Mistakes %1$d/%2$d</string>
     <string name="reset_game_text">Want to reset the current puzzle?</string>
     <string name="give_up_text">Do you want to give up? If you give up, you will be able to see the final solution</string>
-    <string name="game_completed">Game completed</string>
+    <string name="game_completed">Game completed, new image added to the gallery</string>
     <string name="game_completed_text">You have completed the game. You can stay or return to the main menu</string>
     <string name="game_over">Game over</string>
     <string name="game_over_mistakes">You have made 3 mistakes</string>

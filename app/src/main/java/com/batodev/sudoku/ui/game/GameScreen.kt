@@ -213,18 +213,24 @@ fun GameScreen(
         }
     ) { scaffoldPaddings ->
         Box {
-            Image(
-                bitmap = BitmapFactory.decodeStream(context.assets.open("$PRIZE_IMAGES/${viewModel.prizeImageName()}"))!!
-                    .asImageBitmap(),
-                contentScale = ContentScale.FillWidth,
-                contentDescription = stringResource(id = R.string.app_name),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp, 105.dp, 8.dp, 8.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .border(1.dp, LocalBoardColors.current.thickLineColor, RoundedCornerShape(8.dp))
-                    .alpha(0.2f)
-            )
+            if (!viewModel.endGame) {
+                Image(
+                    bitmap = BitmapFactory.decodeStream(context.assets.open("$PRIZE_IMAGES/${viewModel.prizeImageName()}"))!!
+                        .asImageBitmap(),
+                    contentScale = ContentScale.FillWidth,
+                    contentDescription = stringResource(id = R.string.app_name),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp, 105.dp, 8.dp, 8.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .border(
+                            1.dp,
+                            LocalBoardColors.current.thickLineColor,
+                            RoundedCornerShape(8.dp)
+                        )
+                        .alpha(0.2f)
+                )
+            }
             Column(
                 modifier = Modifier
                     .padding(scaffoldPaddings)
