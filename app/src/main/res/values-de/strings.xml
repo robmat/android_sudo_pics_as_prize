@@ -200,7 +200,6 @@
     <string name="action_show_mine_sudoku">Zeige meine Zahlen</string>
     <string name="first_game_dialog_title">Schnell-Tour</string>
     <string name="action_stay">Bleiben</string>
-    <string name="game_completed">Spiel abgeschlossen</string>
     <string name="games">Spiele</string>
     <string name="mistakes_number_out_of">Fehler %1$d/%2$d</string>
     <string name="reset_game_text">Willst du das aktuelle Puzzle zurücksetzen\?</string>
@@ -277,4 +276,5 @@
     <string name="no_value_default">--</string>
     <string name="redo">Wiederholen</string>
     <string name="uncovered_images">Aufgedeckte Bilder</string>
+    <string name="game_completed">Spiel abgeschlossen, neues Bild zur Galerie hinzugefügt</string>
 </resources>

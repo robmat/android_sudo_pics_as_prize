@@ -103,7 +103,6 @@
     <string name="mistakes_number_out_of">اشتباهات %1$d/%2$d</string>
     <string name="reset_game_text">آیا می خواهید پازل فعلی را بازنشانی کنید؟</string>
     <string name="give_up_text">آیا می خواهید تسلیم شوید؟ اگر تسلیم شوید، می توانید راه حل نهایی را ببینید</string>
-    <string name="game_completed">بازی تکمیل شد، تصویر جدید به گالری اضافه شد</string>
     <string name="game_completed_text">شما بازی را کامل کرده اید. می توانید بمانید یا به منوی اصلی بازگردید</string>
     <string name="game_over">بازی تمام شد</string>
     <string name="game_over_mistakes">شما 3 اشتباه کرده اید</string>
@@ -261,4 +260,5 @@
     <string name="theme_blue">آبی</string>
     <string name="redo">دوباره انجام دهید</string>
     <string name="uncovered_images">تصاویر بدون پوشش</string>
+    <string name="game_completed">بازی تکمیل شد، تصویر جدید به گالری اضافه شد</string>
 </resources>

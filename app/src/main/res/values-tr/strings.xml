@@ -121,7 +121,6 @@
     <string name="action_stay">Kal</string>
     <string name="action_exit">Çık</string>
     <string name="mistakes_number_out_of">Hatalar %1$d/%2$d</string>
-    <string name="game_completed">Oyun tamamlandı</string>
     <string name="game_over">Oyun bitti</string>
     <string name="game_over_mistakes">3 hata yaptınız</string>
     <string name="dialog_solving">Çözülüyor…</string>
@@ -270,4 +269,5 @@
     <string name="theme_blue">Mavi</string>
     <string name="redo">Yinele</string>
     <string name="uncovered_images">Ortaya çıkan resimler</string>
+    <string name="game_completed">Oyun tamamlandı, galeriye yeni resim eklendi</string>
 </resources>

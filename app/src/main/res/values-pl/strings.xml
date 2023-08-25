@@ -65,7 +65,6 @@
     <string name="mistakes_number_out_of">Pomyłki %1$d/%2$d</string>
     <string name="reset_game_text">Czy chcesz zresetować zagadkę\?</string>
     <string name="give_up_text">Chcesz się poddać\? Jeśli to zrobisz, zobaczysz rozwiązanie zagadki</string>
-    <string name="game_completed">Gra ukończona</string>
     <string name="game_over_mistakes">Popełniłeś 3 błędy</string>
     <string name="dialog_generating">Generowanie…</string>
     <string name="dialog_solving">Rozwiązywanie…</string>
@@ -283,4 +282,5 @@
     <string name="theme_blue">Niebieski</string>
     <string name="redo">Przerobić</string>
     <string name="uncovered_images">Odkryte zdjęcia</string>
+    <string name="game_completed">Gra zakończona, nowy obraz dodany do galerii</string>
 </resources>

@@ -102,7 +102,6 @@
     <string name="mistakes_number_out_of">Erros %1$d/%2$d</string>
     <string name="reset_game_text">Deseja redefinir o jogo atual?</string>
     <string name="give_up_text">Você quer desistir? Depois de desistir, você pode ver a solução, mas o jogo terminará</string>
-    <string name="game_completed">Jogo finalizado</string>
     <string name="game_completed_text">Você completou o jogo. Você pode ficar ou sair para a tela principal para iniciar um novo jogo</string>
     <string name="game_over">Fim de jogo</string>
     <string name="game_over_mistakes">Você perdeu, errou três vezes &#128557;</string>
@@ -279,4 +278,5 @@
     <string name="theme_blue">Azul</string>
     <string name="redo">Refazer</string>
     <string name="uncovered_images">Fotos descobertas</string>
+    <string name="game_completed">Jogo concluído, nova imagem adicionada à galeria</string>
 </resources>

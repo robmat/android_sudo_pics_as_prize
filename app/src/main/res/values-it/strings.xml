@@ -144,7 +144,6 @@
     <string name="action_compute_notes">Calcola le note</string>
     <string name="intro_what_is_sudoku">Un sudoku classico assomiglia così</string>
     <string name="action_stay">Rimani</string>
-    <string name="game_completed">Partita completata</string>
     <string name="saved_game_give_up">Ti sei arreso</string>
     <string name="toolbar_hint_description">Inserisce il valore corretto nella cella selezionata. Può essere disabilitato nelle impostazioni</string>
     <string name="give_up_text">Vuoi arrenderti\? Se ti arrendi, potrai vedere la soluzione</string>
@@ -275,4 +274,5 @@
     <string name="pref_date_format_custom">Formato data personalizzato</string>
     <string name="pref_date_format_custom_summ">Immettere il modello di data in base a Java DateTimeFormatter</string>
     <string name="uncovered_images">Immagini scoperte</string>
+    <string name="game_completed">Gioco completato, nuova immagine aggiunta alla galleria</string>
 </resources>

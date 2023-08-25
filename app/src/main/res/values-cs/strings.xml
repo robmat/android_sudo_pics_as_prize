@@ -95,7 +95,6 @@
     <string name="pref_input">Metoda zadávání</string>
     <string name="pref_input_cell_first">Nejdříve buňka</string>
     <string name="pref_input_digit_first">Hodnota jako první</string>
-    <string name="game_completed">Hra dokončena</string>
     <string name="win_streak">Vítězná série</string>
     <string name="current_streak">Aktuální série</string>
     <string name="best_streak">Nejlepší série</string>
@@ -280,4 +279,5 @@
     <string name="theme_blue">Modrý</string>
     <string name="redo">Předělat</string>
     <string name="uncovered_images">Odkryté obrázky</string>
+    <string name="game_completed">Hra dokončena, do galerie přidán nový obrázek</string>
 </resources>

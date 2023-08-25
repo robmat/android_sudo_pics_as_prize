@@ -92,7 +92,6 @@
     <string name="mistakes_number_out_of">الأخطاء %1$d/%2$d</string>
     <string name="reset_game_text">هل تريد إعادة تعيين اللغز الحالي؟</string>
     <string name="game_over">انتهت اللعبة</string>
-    <string name="game_completed">اكتملت اللعبة</string>
     <string name="game_over_mistakes">لقد ارتكبت 3 أخطاء</string>
     <string name="dialog_generating">جارِ الإنشاء…</string>
     <string name="dialog_solving">جارِ الحل…</string>
@@ -289,4 +288,5 @@
     <string name="no_value_default">--</string>
     <string name="redo">إعادة</string>
     <string name="uncovered_images">صور مكشوفة</string>
+    <string name="game_completed">اكتملت اللعبة، تمت إضافة صورة جديدة إلى المعرض</string>
 </resources>

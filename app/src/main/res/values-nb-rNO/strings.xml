@@ -45,7 +45,6 @@
     <string name="intro_what_is_sudoku">En klassisk soduku ser slik ut</string>
     <string name="action_start">Start</string>
     <string name="action_stay">Bli igjen</string>
-    <string name="game_completed">Spill fullført</string>
     <string name="dialog_solving">Løser …</string>
     <string name="statistics">Statistikk</string>
     <string name="games_completed">Spill fullført</string>
@@ -277,4 +276,5 @@
     <string name="no_value_default">--</string>
     <string name="redo">Gjøre om</string>
     <string name="uncovered_images">Udekkede bilder</string>
+    <string name="game_completed">Spillet er fullført, nytt bilde lagt til i galleriet</string>
 </resources>

@@ -96,7 +96,6 @@
     <string name="mistakes_number_out_of">Ошибок %1$d/%2$d</string>
     <string name="reset_game_text">Начать текущую судоку заново\?</string>
     <string name="give_up_text">Хотите сдаться\? После того как вы сдадитесь, вы сможете посмотреть решение</string>
-    <string name="game_completed">Игра завершена</string>
     <string name="game_completed_text">Вы завершили эту судоку. Вы можете остаться или выйти на главный экран, чтобы начать новую игру</string>
     <string name="game_over">Конец игры</string>
     <string name="game_over_mistakes">Вы совершили 3 ошибки</string>
@@ -283,4 +282,5 @@
     <string name="nav_bar_gallery">Галерея фотографий</string>
     <string name="no_value_default">--</string>
     <string name="uncovered_images">Непокрытые фотографии</string>
+    <string name="game_completed">Игра завершена, в галерею добавлено новое изображение.</string>
 </resources>

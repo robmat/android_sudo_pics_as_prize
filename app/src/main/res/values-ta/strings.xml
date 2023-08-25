@@ -103,7 +103,6 @@
     <string name="mistakes_number_out_of">தவறுகள் %1$d/%2$d</string>
     <string name="reset_game_text">தற்போதைய புதிரை மீட்டமைக்க வேண்டுமா?</string>
     <string name="give_up_text">விட்டுக்கொடுக்க வேண்டுமா? விட்டுக் கொடுத்தால் இறுதித் தீர்வைக் காண முடியும்</string>
-    <string name="game_completed">கேம் முடிந்தது, கேலரியில் புதிய படம் சேர்க்கப்பட்டது</string>
     <string name="game_completed_text">நீங்கள் விளையாட்டை முடித்துவிட்டீர்கள். நீங்கள் முதன்மை மெனுவில் தங்கலாம் அல்லது திரும்பலாம்</string>
     <string name="game_over">ஆட்டம் முடிந்தது</string>
     <string name="game_over_mistakes">நீங்கள் 3 தவறுகளை செய்துள்ளீர்கள்</string>
@@ -261,4 +260,5 @@
     <string name="theme_blue">நீலம்</string>
     <string name="redo">மீண்டும் செய்</string>
     <string name="uncovered_images">வெளிவராத படங்கள்</string>
+    <string name="game_completed">கேம் முடிந்தது, கேலரியில் புதிய படம் சேர்க்கப்பட்டது</string>
 </resources>

@@ -102,7 +102,6 @@
     <string name="mistakes_number_out_of">Erreurs %1$d/%2$d</string>
     <string name="reset_game_text">Voulez-vous réinitialiser le puzzle actuel \?</string>
     <string name="give_up_text">Voulez-vous abandonner \? Si vous abandonnez, vous pourrez voir la solution complète.</string>
-    <string name="game_completed">Jeu terminé</string>
     <string name="game_completed_text">Vous avez terminé le jeu. Vous pouvez rester ou le quitter vers l\'écran principal pour commencer une nouvelle partie</string>
     <string name="game_over">Fin de la partie</string>
     <string name="game_over_mistakes">Vous avez fait 3 erreurs</string>
@@ -279,4 +278,5 @@
     <string name="pref_fun_keyboard_over_num_subtitle">Placez le panneau de fonctions au-dessus du clavier de valeurs</string>
     <string name="pref_date_format_custom_summ">Entrez le modèle de date selon Java DateTimeFormatter</string>
     <string name="uncovered_images">Images découvertes</string>
+    <string name="game_completed">Jeu terminé, nouvelle image ajoutée à la galerie</string>
 </resources>

@@ -125,7 +125,6 @@
     <string name="intro_rules">Målet med spillet er at fylde alle cellerne med tal fra 1 til 9, så værdierne ikke gentages i nogen kolonne, række eller mindre boks (3x3)</string>
     <string name="toolbar_hint_description">Indsætter den korrekte værdi i den valgte celle. Kan deaktiveres i indstillinger</string>
     <string name="reset_game_text">Vil du nulstille det nuværende spil\?</string>
-    <string name="game_completed">Spillet gennemført</string>
     <string name="game_completed_text">Du har fuldført spillet. Du kan blive eller gå tilbage til hovedmenuen</string>
     <string name="game_over_mistakes">Du har lavet 3 fejl</string>
     <string name="pref_mistakes_limit_summ">3 fejl og du er færdig</string>
@@ -277,4 +276,5 @@
     <string name="theme_blue">Blå</string>
     <string name="redo">Gentag</string>
     <string name="uncovered_images">Udækkede billeder</string>
+    <string name="game_completed">Spil afsluttet, nyt billede tilføjet til galleriet</string>
 </resources>

@@ -73,7 +73,6 @@
     <string name="action_stay">留下</string>
     <string name="mistakes_number_out_of">错误 %1$d/%2$d</string>
     <string name="reset_game_text">想重置当前的谜题吗？</string>
-    <string name="game_completed">游戏完成</string>
     <string name="game_completed_text">你已经完成了游戏。你可以留下或返回主菜单</string>
     <string name="game_over">游戏结束</string>
     <string name="dialog_generating">生成中…</string>
@@ -274,4 +273,5 @@
     <string name="nav_bar_gallery">图片库</string>
     <string name="no_value_default">--</string>
     <string name="uncovered_images">被发现的图片</string>
+    <string name="game_completed">游戏已完成，新图像已添加到图库中</string>
 </resources>

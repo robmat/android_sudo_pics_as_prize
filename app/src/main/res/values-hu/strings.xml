@@ -80,7 +80,6 @@
     <string name="first_game_dialog_title">Gyors útmutató</string>
     <string name="first_game_dialog_got_it">Értem</string>
     <string name="toolbar_erase_description">Töröl egy számot vagy az összes jegyzetet a cellában</string>
-    <string name="game_completed">Játék befejezve</string>
     <string name="mistakes_number_out_of">Hibák %1$d/%2$d</string>
     <string name="reset_game_text">Szeretnéd ezt a feladványt visszaállítani\?</string>
     <string name="give_up_text">Fel szeretnéd adni\? Ha feladod, akkor láthadod a megoldást</string>
@@ -261,4 +260,5 @@
     <string name="theme_blue">Kék</string>
     <string name="redo">Újra</string>
     <string name="uncovered_images">Fedetlen képek</string>
+    <string name="game_completed">A játék befejeződött, új kép került a galériába</string>
 </resources>

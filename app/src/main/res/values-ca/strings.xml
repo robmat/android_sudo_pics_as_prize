@@ -62,7 +62,6 @@
     <string name="pref_date_format_custom_textfield_label">Patró</string>
     <string name="pref_date_format_custom_label">Personalitzat</string>
     <string name="pref_reset_tipcards">Reinicia totes les cartes de consells</string>
-    <string name="game_completed">Joc complet</string>
     <string name="game_completed_text">Heu completat el joc. Podeu quedar-vos o tornar al menú principal</string>
     <string name="games_completed">Jocs complets</string>
     <string name="statistics_difficulty_filter_all">Tot</string>
@@ -173,7 +172,6 @@
     <string name="delete_question">Suprimir?</string>
     <string name="average_time">Temps mitjà</string>
     <string name="best_time">Millor temps</string>
-    <string name="tip_card_win_streak_summ">Es restablirà una ratxa de victòries si perds (arribes al límit d\'errors), et rendeixes o inicies una nova partida sense acabar l'anterior, així que vés amb compte.</string>
     <string name="tip_card_records_list_summ">Aquesta llista conté fins a 5 dels teus millors discos. Podeu suprimir un registre que no us agradi amb una pressió llarga sobre l\'entrada</string>
     <string name="statistics_no_records">Encara no tens cap registre</string>
     <string name="saved_game_current">Actual</string>
@@ -244,11 +242,9 @@
     <string name="board_theme_title">Tema del tauler</string>
     <string name="action_move_selected">Mou el seleccionat</string>
     <string name="move_games_to_folder_subtitle">Seleccioneu la carpeta a la qual voleu moure els jocs seleccionats</string>
-    <string name="pref_cross_highlight_subtitle">Ressalteu algunes caselles a la pissarra</string>
     <string name="pref_cross_highlight">Ressaltat creuat</string>
     <string name="dialog_crash_report_text">Vaja, el LibreSudoku s\'ha bloquejat. Voleu enviar un informe d\'error als desenvolupadors?</string>
     <string name="pref_crash_reporting">Informe d\'accidents</string>
-    <string name="pref_crash_reporting_subtitle">Ajuda\'ns a corregir errors. L\'aplicació no envia registres per si sola, se us demanarà que envieu un informe d'error per correu electrònic</string>
     <string name="pref_fun_keyboard_over_num">Panell de funcions sobre els valors</string>
     <string name="pref_fun_keyboard_over_num_subtitle">Col·loqueu el tauler de funcions a sobre del teclat de valors</string>
     <string name="pref_save_last_diff_and_type">Recordeu el tipus i la dificultat</string>
@@ -262,4 +258,6 @@
     <string name="theme_blue">Blau</string>
     <string name="redo">Refer</string>
     <string name="uncovered_images">Imatges descobertes</string>
+    <string name="game_completed">Joc completat, nova imatge afegida a la galeria</string>
+    <string name="tip_card_win_streak_summ">Es restablirà una ratxa de victòries si perds (arribes al límit d\'errors), et rendeixes o inicies una nova partida sense acabar l\'anterior, així que vés amb compte.</string>
 </resources>

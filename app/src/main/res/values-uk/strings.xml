@@ -71,7 +71,6 @@
     <string name="action_exit">Вийти</string>
     <string name="action_stay">Залишитися</string>
     <string name="reset_game_text">Хочете обнулити поточну головоломку\?</string>
-    <string name="game_completed">Гру завершено</string>
     <string name="game_over">Гра закінчена</string>
     <string name="game_over_mistakes">Ви зробили 3 помилки</string>
     <string name="dialog_generating">Створення…</string>
@@ -283,4 +282,5 @@
     <string name="no_value_default">--</string>
     <string name="redo">Повторити</string>
     <string name="uncovered_images">Розкриті картинки</string>
+    <string name="game_completed">Гра завершена, нове зображення додано в галерею</string>
 </resources>
