@@ -1,5 +1,7 @@
 package com.batodev.sudoku.ui.game
 
+import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -24,6 +26,7 @@ import com.batodev.sudoku.data.database.model.SavedGame
 import com.batodev.sudoku.data.database.model.SudokuBoard
 import com.batodev.sudoku.data.datastore.AppSettingsManager
 import com.batodev.sudoku.data.datastore.ThemeSettingsManager
+import com.batodev.sudoku.data.settings.SettingsHelper
 import com.batodev.sudoku.domain.repository.RecordRepository
 import com.batodev.sudoku.domain.repository.SavedGameRepository
 import com.batodev.sudoku.domain.usecase.board.GetBoardUseCase
@@ -55,7 +58,8 @@ class GameViewModel @Inject constructor(
     private val getBoardUseCase: GetBoardUseCase,
     themeSettingsManager: ThemeSettingsManager,
     private val savedStateHandle: SavedStateHandle,
-    private val getAllRecordsUseCase: GetAllRecordsUseCase
+    private val getAllRecordsUseCase: GetAllRecordsUseCase,
+    private val application: Application,
 ) : ViewModel() {
     init {
         val sudokuParser = SudokuParser()
@@ -294,6 +298,13 @@ class GameViewModel @Inject constructor(
         }
 
         gameCompleted = isCompleted(new)
+        Log.d("GameViewModel", "gameCompleted: $gameCompleted")
+        if (gameCompleted) {
+            if (!SettingsHelper.settings.uncoveredPics.contains(boardEntity.prizeImageName)) {
+                SettingsHelper.settings.uncoveredPics.add(boardEntity.prizeImageName)
+                SettingsHelper.save(application)
+            }
+        }
 
         if (autoEraseNotes.value) {
             notes = autoEraseNotes(new, currCell)

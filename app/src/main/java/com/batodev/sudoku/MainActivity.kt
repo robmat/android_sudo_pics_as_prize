@@ -461,9 +461,6 @@ fun NavigationBar(
                         )
                     },
                     onClick = {
-                        SettingsHelper.settings.uncoveredPics.add("00000-112081677.jpg")
-                        SettingsHelper.settings.uncoveredPics.add("00000-184329161.jpg")
-                        SettingsHelper.settings.uncoveredPics.add("00000-3868103105.jpg")
                         ContextCompat.startActivity(context, Intent(context, GalleryActivity::class.java), null)
                     }
                 )

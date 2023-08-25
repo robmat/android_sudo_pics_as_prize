@@ -1,6 +1,6 @@
 package com.batodev.sudoku.data.settings
 
-import android.app.Activity
+import android.content.Context
 import android.util.Log
 import org.simpleframework.xml.core.Persister
 import java.io.File
@@ -10,17 +10,17 @@ const val SETTINGS_FILE_NAME: String = "settings.xml"
 object SettingsHelper {
     var settings: Settings = Settings()
 
-    fun createIfNotExists(activity: Activity) {
+    fun createIfNotExists(activity: Context) {
         val savePath = savePath(activity)
         if (!File(savePath).exists()) save(activity)
     }
 
-    fun save(activity: Activity) {
+    fun save(activity: Context) {
         val savePath = savePath(activity)
         Persister().write(settings, File(savePath))
     }
 
-    fun load(activity: Activity) {
+    fun load(activity: Context) {
         val savePath = savePath(activity)
         if (File(savePath).exists()) {
             this.settings = Persister().read(Settings(), File(savePath))
@@ -28,6 +28,6 @@ object SettingsHelper {
         }
     }
 
-    private fun savePath(activity: Activity) =
+    private fun savePath(activity: Context) =
         activity.filesDir.absolutePath + File.separator + SETTINGS_FILE_NAME
 }
