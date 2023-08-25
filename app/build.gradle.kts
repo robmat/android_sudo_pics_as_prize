@@ -1,3 +1,6 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
@@ -6,6 +9,9 @@ plugins {
     alias(libs.plugins.kapt)
     alias(libs.plugins.hilt)
 }
+
+var localProperties = Properties()
+localProperties.load(FileInputStream(rootProject.file("local.properties")))
 
 android {
     namespace = "com.batodev.sudoku"
@@ -25,6 +31,13 @@ android {
         ksp {
             arg("room.schemaLocation", "${projectDir}/schemas")
         }
+        buildConfigField(
+            "String",
+            "AD_HELPER_AD_ID",
+            "\"" + localProperties.getProperty("adhelper.ad.id") + "\""
+        )
+
+        manifestPlaceholders.put("MANIFEST_AD_ID", localProperties.getProperty("manifest.ad.id"))
     }
 
     buildTypes {

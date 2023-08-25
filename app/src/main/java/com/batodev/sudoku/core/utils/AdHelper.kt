@@ -2,6 +2,7 @@ package com.batodev.sudoku.core.utils
 
 import android.app.Activity
 import android.util.Log
+import com.batodev.sudoku.BuildConfig
 import com.batodev.sudoku.data.settings.SettingsHelper
 
 import com.google.android.gms.ads.AdError
@@ -10,8 +11,6 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-
-const val AD_ID = "ca-app-pub-9667420067790140/9722062569"
 
 object AdHelper {
     fun showAdIfNeeded(activity: Activity) {
@@ -26,7 +25,7 @@ object AdHelper {
         val adRequest: AdRequest = AdRequest.Builder().build()
 
         InterstitialAd.load(
-            activity, AD_ID, adRequest,
+            activity, BuildConfig.AD_HELPER_AD_ID, adRequest,
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
                     // The mInterstitialAd reference will be null until

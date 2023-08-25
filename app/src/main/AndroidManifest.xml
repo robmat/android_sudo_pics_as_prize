@@ -57,7 +57,7 @@
         </service>
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-9667420067790140~1736278253" />
+            android:value="${MANIFEST_AD_ID}" />
         <provider
             android:name=".data.provider.ImagesProvider"
             android:authorities="com.batodev.sudoku.data.provider.ImagesProvider"
