@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="nav_bar_statistics">Statistik</string>
     <string name="nav_bar_home">Hjem</string>
@@ -258,4 +258,23 @@
     </plurals>
     <string name="create_set_from_string">Indstil fra en streng</string>
     <string name="pref_cross_highlight">Korsfremhævning</string>
+    <string name="app_name">Sudoku og stramme kjoler</string>
+    <string name="nav_bar_gallery">Billedgalleri</string>
+    <string name="no_value_default">--</string>
+    <string name="pref_date_format">Datoformat</string>
+    <string name="pref_save_last_diff_and_type">Husk type og sværhedsgrad</string>
+    <string name="pref_save_last_diff_and_type_subtitle">Husk det sidste spils type og sværhedsgrad</string>
+    <string name="hints_used">Tip: %1$d</string>
+    <string name="mistakes_made">Fejl: %1$d</string>
+    <string name="notes_taken">Bemærkninger: %1$d</string>
+    <string name="stat_time_current">Aktuel: %1$s</string>
+    <string name="stat_time_average">Dec.: %1$s</string>
+    <string name="stat_time_best">Bedste: %1$s</string>
+    <string name="pref_date_format_custom">Brugerdefineret datoformat</string>
+    <string name="pref_date_format_custom_summ">Indtast datomønster i henhold til Java DateTimeFormatter</string>
+    <string name="pref_date_format_custom_textfield_label">Mønster</string>
+    <string name="pref_date_format_custom_label">Brugerdefinerede</string>
+    <string name="theme_blue">Blå</string>
+    <string name="redo">Gentag</string>
+    <string name="uncovered_images">Udækkede billeder</string>
 </resources>

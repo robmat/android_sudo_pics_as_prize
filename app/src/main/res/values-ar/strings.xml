@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="dialog_new_game_text">يوجد لديك لعبة غير مكتملة، هل أنت متأكد من رغبتك ببدء لعبة جديدة؟</string>
     <string name="type_default_12x12">12x12</string>
@@ -284,4 +284,9 @@
     <string name="dialog_crash_report_text">عفوًا ، تعطل LibreSudoku للتو. هل تريد إرسال تقرير تعطل للمطورين؟</string>
     <string name="pref_save_last_diff_and_type_subtitle">تذكر نوع اللعبة الأخيرة وصعوبتها</string>
     <string name="pref_fun_keyboard_over_num_subtitle">ضع لوحة الوظائف فوق لوحة مفاتيح القيم</string>
+    <string name="app_name">سودوكو والفساتين الضيقة</string>
+    <string name="nav_bar_gallery">معرض الصور</string>
+    <string name="no_value_default">--</string>
+    <string name="redo">إعادة</string>
+    <string name="uncovered_images">صور مكشوفة</string>
 </resources>

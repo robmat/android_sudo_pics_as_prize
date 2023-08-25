@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="nav_bar_statistics">Статистика</string>
     <string name="nav_bar_home">Главная</string>
@@ -279,4 +279,8 @@
     <string name="pref_date_format_custom_label">Пользовательский</string>
     <string name="theme_blue">Синяя</string>
     <string name="redo">Вернуть</string>
+    <string name="app_name">Судоку и узкие платья</string>
+    <string name="nav_bar_gallery">Галерея фотографий</string>
+    <string name="no_value_default">--</string>
+    <string name="uncovered_images">Непокрытые фотографии</string>
 </resources>

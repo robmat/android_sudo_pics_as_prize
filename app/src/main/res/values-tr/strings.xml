@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="dialog_new_game_text">Bitmemiş bir oyununuz var, yeni bir başlangıç yapmak istiyor musunuz\?</string>
     <string name="nav_bar_more">Daha fazla</string>
@@ -218,4 +218,56 @@
         <item quantity="one">%1$d bulmaca</item>
         <item quantity="other">%1$d bulmaca</item>
     </plurals>
+    <string name="app_name">Sudoku ve dar elbiseler</string>
+    <string name="nav_bar_gallery">Resim galerisi</string>
+    <string name="no_value_default">--</string>
+    <string name="export">İhracat</string>
+    <string name="create_folder_name">Klasör adı</string>
+    <string name="folder_import">İçe aktarmak</string>
+    <string name="dialog_delete_folder_text">%1$s adlı klasör silinecek</string>
+    <string name="help">Yardım</string>
+    <string name="folders_help">Burada klasörünüzü yönetebilir ve bir dosyadan sudoku\'yu içe aktarabilirsiniz.</string>
+    <string name="folder_import_supported_types">Aşağıdaki dosya türleri desteklenir:\n.sdm (veya aynı yapıya sahip .txt)\n.opensudoku\n.1gsudoku</string>
+    <string name="import_from_file_fail">İçe aktarma başarısız oldu</string>
+    <string name="import_from_file_title">Bir dosyadan</string>
+    <string name="import_saving">Kaydediliyor</string>
+    <string name="action_edit">Düzenlemek</string>
+    <string name="folder_empty_label">Bu klasör boş</string>
+    <string name="dialog_delete_selected">Silme seçildi</string>
+    <string name="explore_folder_add_sudoku">Sudoku ekle</string>
+    <string name="edit_sudoku">Sudoku\'yu düzenle</string>
+    <string name="game_id">Oyun #%1$d</string>
+    <string name="add_to_folder">Klasöre ekle</string>
+    <string name="add_to_folder_create_new">Yeni oluşturmak</string>
+    <string name="add_to_folder_from_file">Bir dosyadan içe aktar</string>
+    <string name="pref_boardtheme_accent">Vurgulu renkleri uygulama</string>
+    <string name="pref_boardtheme_accent_subtitle">Sudoku tahtanızı daha renkli hale getirin</string>
+    <string name="pref_board_theme_title">Sudoku tahtası teması</string>
+    <string name="pref_board_theme_subtitle">Sudoku tahtasının görünümünü özelleştirin</string>
+    <string name="board_theme_title">Pano teması</string>
+    <string name="action_move_selected">Seçileni taşı</string>
+    <string name="move_games_to_folder_subtitle">Seçilen oyunları taşımak istediğiniz klasörü seçin</string>
+    <string name="pref_cross_highlight_subtitle">Tahtadaki bazı kutuları vurgulayın</string>
+    <string name="pref_cross_highlight">Çapraz vurgu</string>
+    <string name="dialog_crash_report_text">Hata! LibreSudoku az önce çöktü. Geliştiricilere bir kilitlenme raporu göndermek ister misiniz?</string>
+    <string name="pref_crash_reporting">Kilitlenme raporlaması</string>
+    <string name="pref_crash_reporting_subtitle">Hataları düzeltmemize yardımcı olun. Uygulama günlükleri kendi başına göndermiyor; e-postayla bir kilitlenme raporu göndermeniz istenecek</string>
+    <string name="pref_fun_keyboard_over_num">Değerlerin üzerindeki fonksiyon paneli</string>
+    <string name="pref_fun_keyboard_over_num_subtitle">İşlev panelini değerler klavyesinin üzerine yerleştirin</string>
+    <string name="pref_date_format">Tarih formatı</string>
+    <string name="pref_save_last_diff_and_type">Türü ve zorluğu hatırla</string>
+    <string name="pref_save_last_diff_and_type_subtitle">Son oyunun türünü ve zorluğunu hatırla</string>
+    <string name="hints_used">İpuçları: %1$d</string>
+    <string name="mistakes_made">Hatalar: %1$d</string>
+    <string name="notes_taken">Notlar: %1$d</string>
+    <string name="stat_time_current">Güncel: %1$s</string>
+    <string name="stat_time_average">Aralık: %1$s</string>
+    <string name="stat_time_best">En iyi: %1$s</string>
+    <string name="pref_date_format_custom">Özel tarih formatı</string>
+    <string name="pref_date_format_custom_summ">Java DateTimeFormatter\'a göre tarih modelini girin</string>
+    <string name="pref_date_format_custom_textfield_label">Model</string>
+    <string name="pref_date_format_custom_label">Gelenek</string>
+    <string name="theme_blue">Mavi</string>
+    <string name="redo">Yinele</string>
+    <string name="uncovered_images">Ortaya çıkan resimler</string>
 </resources>

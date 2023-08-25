@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="nav_bar_statistics">Estatísticas</string>
     <string name="time">Tempo</string>
@@ -108,7 +108,7 @@
     <string name="game_completed">Jogo finalizado</string>
     <string name="game_completed_text">Completou o jogo. Pode ficar ou sair para o ecrã principal para iniciar outro jogo</string>
     <string name="game_over">Fim do jogo</string>
-    <string name="game_over_mistakes">Perdeu, errou três vezes 😭</string>
+    <string name="game_over_mistakes">Perdeu, errou três vezes &#128557;</string>
     <string name="dialog_generating">Gerando…</string>
     <string name="dialog_solving">Resolvendo…</string>
     <string name="statistics">Estatísticas</string>
@@ -129,7 +129,7 @@
     <string name="tip_card_win_streak_summ">Uma sequência de vitórias é zerada quando perde (limite de erros), desiste ou começar um novo jogo sem completar o anterior, então tome cuidado</string>
     <string name="tip_card_records_list_title">Lista de recordes</string>
     <string name="tip_card_records_list_summ">Esta lista contém 5 dos seus melhores recordes, ou menos. Pode apagar um registo que não gosta a segurar</string>
-    <string name="statistics_no_records">Nenhum registo encontrado 😭</string>
+    <string name="statistics_no_records">Nenhum registo encontrado &#128557;</string>
     <string name="history_title">Histórico</string>
     <string name="history_no_games">Ainda não jogou</string>
     <string name="history_item_time">Tempo: %1$s</string>
@@ -204,7 +204,7 @@
     <string name="sort_by_game_id">ID</string>
     <string name="sort_label">Ordenar</string>
     <string name="filter_label">Filtrar</string>
-    <string name="help_translate">Ajude na tradução 🤩</string>
+    <string name="help_translate">Ajude na tradução &#129321;</string>
     <string name="title_folders">Pasta</string>
     <string name="create_folder">Criar pasta</string>
     <string name="delete_folder">Apagar pasta</string>
@@ -261,4 +261,23 @@
     <string name="pref_crash_reporting_subtitle">Ajude-nos a corrigir erros. A app não envia nenhum log por si só, será solicitado a enviar um relatório de falha por e-mail</string>
     <string name="pref_fun_keyboard_over_num">Teclado de função sobre os números</string>
     <string name="pref_fun_keyboard_over_num_subtitle">Ponha o teclado de função acima dos números</string>
+    <string name="app_name">Sudoku e vestidos justos</string>
+    <string name="nav_bar_gallery">Galeria de fotos</string>
+    <string name="no_value_default">--</string>
+    <string name="pref_date_format">Formato de data</string>
+    <string name="pref_save_last_diff_and_type">Lembre-se do tipo e da dificuldade</string>
+    <string name="pref_save_last_diff_and_type_subtitle">Lembre-se do tipo e dificuldade do último jogo</string>
+    <string name="hints_used">Dicas: %1$d</string>
+    <string name="mistakes_made">Erros: %1$d</string>
+    <string name="notes_taken">Notas: %1$d</string>
+    <string name="stat_time_current">Atual: %1$s</string>
+    <string name="stat_time_average">Dezembro: %1$s</string>
+    <string name="stat_time_best">Melhor: %1$s</string>
+    <string name="pref_date_format_custom">Formato de data personalizado</string>
+    <string name="pref_date_format_custom_summ">Insira o padrão de data de acordo com Java DateTimeFormatter</string>
+    <string name="pref_date_format_custom_textfield_label">Padrão</string>
+    <string name="pref_date_format_custom_label">Personalizado</string>
+    <string name="theme_blue">Azul</string>
+    <string name="redo">Refazer</string>
+    <string name="uncovered_images">Fotos descobertas</string>
 </resources>

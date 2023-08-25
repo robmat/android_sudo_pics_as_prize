@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="app_name" translatable="false">LibreSudoku</string>
     <string name="nav_bar_statistics">Estatísticas</string>
@@ -105,7 +105,7 @@
     <string name="game_completed">Jogo finalizado</string>
     <string name="game_completed_text">Você completou o jogo. Você pode ficar ou sair para a tela principal para iniciar um novo jogo</string>
     <string name="game_over">Fim de jogo</string>
-    <string name="game_over_mistakes">Você perdeu, errou três vezes 😭</string>
+    <string name="game_over_mistakes">Você perdeu, errou três vezes &#128557;</string>
     <string name="dialog_generating">Gerando…</string>
     <string name="dialog_solving">Resolvendo…</string>
     <string name="statistics">Estatísticas</string>
@@ -127,7 +127,7 @@
     <string name="tip_card_win_streak_summ">Uma sequência de vitórias é zerada quando você perde (limite de erros), desiste ou começar um novo jogo sem completar o anterior, então tome cuidado</string>
     <string name="tip_card_records_list_title">Lista de recordes</string>
     <string name="tip_card_records_list_summ">Esta lista contém 5 de seus melhores recordes, ou menos. Você pode excluir um registro que não gosta segurando</string>
-    <string name="statistics_no_records">Nenhum registro encontrado 😭</string>
+    <string name="statistics_no_records">Nenhum registro encontrado &#128557;</string>
     <string name="history_title">Histórico</string>
     <string name="history_no_games">Você ainda não jogou</string>
     <string name="history_item_time">Tempo: %1$s</string>
@@ -203,7 +203,7 @@
     <string name="sort_by_game_id">ID</string>
     <string name="sort_label">Ordenar</string>
     <string name="filter_label">Filtrar</string>
-    <string name="help_translate">Ajude na tradução 🤩</string>
+    <string name="help_translate">Ajude na tradução &#129321;</string>
     <plurals name="number_puzzles_to_import">
         <item quantity="one">%1$d quebra-cabeça para importar</item>
         <item quantity="many">%1$d quebra-cabeças para importar</item>
@@ -262,4 +262,21 @@
     <string name="pref_crash_reporting_subtitle">Ajude-nos a corrigir erros. O aplicativo não envia nenhum log por si só, você será solicitado a enviar um relatório de falha por e-mail</string>
     <string name="pref_fun_keyboard_over_num">Teclado de função sobre os números</string>
     <string name="pref_fun_keyboard_over_num_subtitle">Coloque o teclado de função acima dos números</string>
+    <string name="nav_bar_gallery">Galeria de fotos</string>
+    <string name="pref_date_format">Formato de data</string>
+    <string name="pref_save_last_diff_and_type">Lembre-se do tipo e da dificuldade</string>
+    <string name="pref_save_last_diff_and_type_subtitle">Lembre-se do tipo e dificuldade do último jogo</string>
+    <string name="hints_used">Dicas: %1$d</string>
+    <string name="mistakes_made">Erros: %1$d</string>
+    <string name="notes_taken">Notas: %1$d</string>
+    <string name="stat_time_current">Atual: %1$s</string>
+    <string name="stat_time_average">Dezembro: %1$s</string>
+    <string name="stat_time_best">Melhor: %1$s</string>
+    <string name="pref_date_format_custom">Formato de data personalizado</string>
+    <string name="pref_date_format_custom_summ">Insira o padrão de data de acordo com Java DateTimeFormatter</string>
+    <string name="pref_date_format_custom_textfield_label">Padrão</string>
+    <string name="pref_date_format_custom_label">Personalizado</string>
+    <string name="theme_blue">Azul</string>
+    <string name="redo">Refazer</string>
+    <string name="uncovered_images">Fotos descobertas</string>
 </resources>

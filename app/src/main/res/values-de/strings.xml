@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="nav_bar_statistics">Statistiken</string>
     <string name="new_game">Neues Spiel</string>
@@ -256,7 +256,7 @@
     <string name="learn_hidden_pairs_1">Versteckte Paare sind fast das gleiche wie Freie Paare, der einzige Unterschied besteht darin, dass diese unter anderen versteckt sind. Diese beiden Zellen haben etwas gemeinsam. Beide können die Zahlen 6 und 9 annehmen und dieses beiden Zellen sind die einzigen in denen diese Zahlen stehen können</string>
     <string name="learn_hidden_pairs_2">Du kannst daraus schließen, dass diese beiden Zellen nur diese zwei Zahlen annehmen können und keine anderen. Somit kannst du andere unnötige Markierungen aus diesen Zellen löschen. Wie bei den Freien Paaren, funktioniert dies auf gleicher Weise mit Zeilen und Spalten</string>
     <string name="create_from_string_hint">Puzzle</string>
-    <string name="learn_basic_5">Die gleiche Logik gilt für Zeilen und Spalten. Schau dir die erste Zeile an. Hier blockiert die Zahl 4 in R7C3 die dritte Spalte in unserer Reihe. Die Zahl 4 in R3C5 blockiert zwei Spalten auf einmal (4 und 6), weil es keine anderen Vieren in der selben Box geben kann. R6C7 blockiert Spalte Nummer 7</string>
+    <string name="learn_basic_5">Die gleiche Logik gilt für Zeilen und Spalten. Schau dir die erste Zeile an. Hier blockiert die Zahl 4 in R7C3 die dritte Spalte in unserer Reihe. Die Zahl 4 in R3C5 blockiert zwei Spalten auf einmal (4 und 6), weil es keine anderen Vieren in derselben Box geben kann. R6C7 blockiert Spalte Nummer 7</string>
     <string name="win_rate_percentage">%1$d%%</string>
     <string name="pref_date_format">Datumsformat</string>
     <string name="theme_blue">Blau</string>
@@ -272,4 +272,9 @@
     <string name="notes_taken">Notizen: %1$d</string>
     <string name="pref_date_format_custom">Eigenes Datumsformat</string>
     <string name="pref_date_format_custom_summ">Datumsmuster gemäß Java DateTimeFormatter eingeben</string>
+    <string name="app_name">Sudoku und enge Kleider</string>
+    <string name="nav_bar_gallery">Bildergalerie</string>
+    <string name="no_value_default">--</string>
+    <string name="redo">Wiederholen</string>
+    <string name="uncovered_images">Aufgedeckte Bilder</string>
 </resources>

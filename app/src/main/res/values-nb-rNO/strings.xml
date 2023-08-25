@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="page_previous">Forrige</string>
     <string name="libraries_licenses_title">Frie lisenser</string>
@@ -272,4 +272,9 @@
     <string name="pref_date_format_custom">Egendefinert datoformat</string>
     <string name="pref_date_format_custom_label">Egendefinert</string>
     <string name="theme_blue">Blå</string>
+    <string name="app_name">Sudoku og trange kjoler</string>
+    <string name="nav_bar_gallery">Bildegalleri</string>
+    <string name="no_value_default">--</string>
+    <string name="redo">Gjøre om</string>
+    <string name="uncovered_images">Udekkede bilder</string>
 </resources>

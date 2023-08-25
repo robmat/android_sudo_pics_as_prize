@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="action_show_notes">显示标记</string>
     <string name="learn_app_toolbar_notes_menu">您可以按住“标记”按钮打开“标记”菜单，您可以在其中清除或计算标记并切换其可见性</string>
@@ -270,4 +270,8 @@
     <string name="action_exit">退出</string>
     <string name="pref_crash_reporting_subtitle">帮助我们修复错误。应用本身不会发送日志，系统将提示您通过电子邮件发送崩溃报告</string>
     <string name="redo">重做</string>
+    <string name="app_name">数独和紧身连衣裙</string>
+    <string name="nav_bar_gallery">图片库</string>
+    <string name="no_value_default">--</string>
+    <string name="uncovered_images">被发现的图片</string>
 </resources>

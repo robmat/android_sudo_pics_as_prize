@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="pref_remaining_uses">Usi rimasti</string>
     <string name="dialog_no">No</string>
@@ -255,4 +255,24 @@
     <string name="move_games_to_folder_subtitle">Seleziona la cartella nella quale vuoi spostare le partite selezionate</string>
     <string name="pref_cross_highlight_subtitle">Evidenzia alcune celle sulla tavola</string>
     <string name="pref_crash_reporting">Segnalazione crash</string>
+    <string name="app_name">Sudoku e abiti attillati</string>
+    <string name="nav_bar_gallery">Galleria di immagini</string>
+    <string name="no_value_default">--</string>
+    <string name="pref_boardtheme_accent">Applica colori accentati</string>
+    <string name="pref_cross_highlight">Evidenziazione incrociata</string>
+    <string name="pref_crash_reporting_subtitle">Aiutaci a correggere i bug. L\'app non invia i registri da sola, ti verrà richiesto di inviare un rapporto sugli arresti anomali tramite e-mail</string>
+    <string name="pref_fun_keyboard_over_num">Pannello funzioni sopra i valori</string>
+    <string name="pref_fun_keyboard_over_num_subtitle">Posiziona il pannello delle funzioni sopra la tastiera dei valori</string>
+    <string name="pref_date_format">Formato data</string>
+    <string name="pref_save_last_diff_and_type">Ricorda il tipo e la difficoltà</string>
+    <string name="pref_save_last_diff_and_type_subtitle">Ricorda il tipo e la difficoltà dell\'ultimo gioco</string>
+    <string name="hints_used">Suggerimenti: %1$d</string>
+    <string name="mistakes_made">Errori: %1$d</string>
+    <string name="notes_taken">Note: %1$d</string>
+    <string name="stat_time_current">Corrente: %1$s</string>
+    <string name="stat_time_average">Dic.: %1$s</string>
+    <string name="stat_time_best">Migliore: %1$s</string>
+    <string name="pref_date_format_custom">Formato data personalizzato</string>
+    <string name="pref_date_format_custom_summ">Immettere il modello di data in base a Java DateTimeFormatter</string>
+    <string name="uncovered_images">Immagini scoperte</string>
 </resources>
