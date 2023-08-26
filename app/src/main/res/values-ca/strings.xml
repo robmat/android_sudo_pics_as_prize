@@ -260,4 +260,7 @@
     <string name="uncovered_images">Imatges descobertes</string>
     <string name="game_completed">Joc completat, nova imatge afegida a la galeria</string>
     <string name="tip_card_win_streak_summ">Es restablirà una ratxa de victòries si perds (arribes al límit d\'errors), et rendeixes o inicies una nova partida sense acabar l\'anterior, així que vés amb compte.</string>
+    <string name="pref_cross_highlight_subtitle">Ressalteu algunes caselles a la pissarra</string>
+    <string name="pref_crash_reporting_subtitle">Ajuda\'ns a corregir errors. L\'aplicació no envia registres per si sola, se us demanarà que envieu un informe d\'error per correu electrònic</string>
+    <string name="more_games_like_this">Més jocs com aquest</string>
 </resources>

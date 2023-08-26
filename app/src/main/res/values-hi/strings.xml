@@ -261,4 +261,5 @@
     <string name="redo">फिर से करना</string>
     <string name="uncovered_images">उजागर तस्वीरें</string>
     <string name="game_completed">गेम पूरा हुआ, गैलरी में नई छवि जोड़ी गई</string>
+    <string name="more_games_like_this">इस तरह के और भी गेम</string>
 </resources>

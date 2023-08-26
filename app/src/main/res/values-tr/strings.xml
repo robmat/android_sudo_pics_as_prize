@@ -270,4 +270,5 @@
     <string name="redo">Yinele</string>
     <string name="uncovered_images">Ortaya çıkan resimler</string>
     <string name="game_completed">Oyun tamamlandı, galeriye yeni resim eklendi</string>
+    <string name="more_games_like_this">Bunun gibi daha fazla oyun</string>
 </resources>

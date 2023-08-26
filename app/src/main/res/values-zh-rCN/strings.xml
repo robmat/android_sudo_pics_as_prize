@@ -274,4 +274,5 @@
     <string name="no_value_default">--</string>
     <string name="uncovered_images">被发现的图片</string>
     <string name="game_completed">游戏已完成，新图像已添加到图库中</string>
+    <string name="more_games_like_this">更多类似的游戏</string>
 </resources>

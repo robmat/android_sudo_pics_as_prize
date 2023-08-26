@@ -279,4 +279,5 @@
     <string name="pref_date_format_custom_summ">Entrez le modèle de date selon Java DateTimeFormatter</string>
     <string name="uncovered_images">Images découvertes</string>
     <string name="game_completed">Jeu terminé, nouvelle image ajoutée à la galerie</string>
+    <string name="more_games_like_this">Plus de jeux comme celui-ci</string>
 </resources>

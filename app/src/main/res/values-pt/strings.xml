@@ -280,4 +280,5 @@
     <string name="redo">Refazer</string>
     <string name="uncovered_images">Fotos descobertas</string>
     <string name="game_completed">Jogo concluído, nova imagem adicionada à galeria</string>
+    <string name="more_games_like_this">Mais jogos como este</string>
 </resources>

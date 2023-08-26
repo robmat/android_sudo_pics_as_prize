@@ -283,4 +283,5 @@
     <string name="no_value_default">--</string>
     <string name="uncovered_images">Непокрытые фотографии</string>
     <string name="game_completed">Игра завершена, в галерею добавлено новое изображение.</string>
+    <string name="more_games_like_this">Больше таких игр</string>
 </resources>

@@ -277,4 +277,5 @@
     <string name="redo">Gjøre om</string>
     <string name="uncovered_images">Udekkede bilder</string>
     <string name="game_completed">Spillet er fullført, nytt bilde lagt til i galleriet</string>
+    <string name="more_games_like_this">Flere spill som dette</string>
 </resources>
