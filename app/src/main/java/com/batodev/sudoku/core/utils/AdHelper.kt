@@ -3,8 +3,6 @@ package com.batodev.sudoku.core.utils
 import android.app.Activity
 import android.util.Log
 import com.batodev.sudoku.BuildConfig
-import com.batodev.sudoku.data.settings.SettingsHelper
-
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -13,15 +11,8 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
 object AdHelper {
-    fun showAdIfNeeded(activity: Activity) {
-        if (SettingsHelper.settings.addCounter >= SettingsHelper.settings.displayAddEveryXPicView) {
-            SettingsHelper.settings.addCounter = 0
-            SettingsHelper.save(activity)
-            showAd(activity)
-        }
-    }
-
     fun showAd(activity: Activity) {
+        Log.d(AdHelper::class.simpleName, "showAd(activity: $activity)")
         val adRequest: AdRequest = AdRequest.Builder().build()
 
         InterstitialAd.load(

@@ -3,6 +3,9 @@ package com.batodev.sudoku
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedContent
@@ -45,6 +48,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navOptions
 import com.batodev.sudoku.core.PreferencesConstants
+import com.batodev.sudoku.core.utils.AdHelper
 import com.batodev.sudoku.data.datastore.AppSettingsManager
 import com.batodev.sudoku.data.datastore.ThemeSettingsManager
 import com.batodev.sudoku.data.settings.SettingsHelper
@@ -82,11 +86,14 @@ val LocalBoardColors = staticCompositionLocalOf { SudokuBoardColorsImpl() }
 class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var settings: AppSettingsManager
+    private var handler: Handler = Handler(Looper.getMainLooper())
+    private var isActivityVisible = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         SettingsHelper.createIfNotExists(this)
         SettingsHelper.load(this)
+        handlerAdPosting()
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -414,6 +421,30 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isActivityVisible = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isActivityVisible = false
+    }
+
+    fun isActivityVisible(): Boolean {
+        return isActivityVisible
+    }
+
+    private fun handlerAdPosting() {
+        handler.postDelayed({
+            Log.d(GalleryActivity::class.java.simpleName, "Showing ad.")
+            if (isActivityVisible()) {
+                AdHelper.showAd(this)
+            }
+            handlerAdPosting()
+        }, 60000)
     }
 }
 
