@@ -11,7 +11,7 @@ import org.acra.ktx.initAcra
 import java.time.LocalDate
 
 @HiltAndroidApp
-class LibreSudokuApp : Application() {
+class SudokuApp : Application() {
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
 
