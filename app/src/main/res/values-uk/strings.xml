@@ -206,7 +206,7 @@
     <string name="pref_board_theme_subtitle">Налаштувати вигляд дошки судоку</string>
     <string name="pref_cross_highlight_subtitle">Виділення деяких полів на дошці</string>
     <string name="pref_cross_highlight">Перехресне виділення</string>
-    <string name="dialog_crash_report_text">Упс, у LibreSudoku щойно стався збій. Хочете надіслати звіт про збій розробникам\?</string>
+    <string name="dialog_crash_report_text">Упс, у Sudoku щойно стався збій. Хочете надіслати звіт про збій розробникам\?</string>
     <string name="pref_crash_reporting">Звіт про збої</string>
     <string name="pref_save_last_diff_and_type">Запомніть тип і складність</string>
     <string name="pref_save_last_diff_and_type_subtitle">Запам\'ятати тип і складність останньої гри</string>

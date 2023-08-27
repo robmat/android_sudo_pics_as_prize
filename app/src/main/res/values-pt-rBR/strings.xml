@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="app_name" translatable="false">LibreSudoku</string>
     <string name="nav_bar_statistics">Estatísticas</string>
     <string name="nav_bar_more">Mais</string>
     <string name="nav_bar_home">Início</string>
@@ -256,7 +255,7 @@
     <string name="move_games_to_folder_subtitle">Selecione a pasta para onde você deseja mover os jogos selecionados</string>
     <string name="pref_cross_highlight">Destaque cruzado</string>
     <string name="pref_cross_highlight_subtitle">Destaque alguns blocos no tabuleiro</string>
-    <string name="dialog_crash_report_text">Ops, o LibreSudoku não está funcionando corretamente. Gostaria de enviar um relatório de bug para os desenvolvedores\?</string>
+    <string name="dialog_crash_report_text">Ops, o Sudoku não está funcionando corretamente. Gostaria de enviar um relatório de bug para os desenvolvedores\?</string>
     <string name="pref_crash_reporting">Relatório de falhas</string>
     <string name="pref_crash_reporting_subtitle">Ajude-nos a corrigir erros. O aplicativo não envia nenhum log por si só, você será solicitado a enviar um relatório de falha por e-mail</string>
     <string name="pref_fun_keyboard_over_num">Teclado de função sobre os números</string>
@@ -280,4 +279,5 @@
     <string name="uncovered_images">Fotos descobertas</string>
     <string name="game_completed">Jogo concluído, nova imagem adicionada à galeria</string>
     <string name="more_games_like_this">Mais jogos como este</string>
+    <string name="app_name">Sudoku e vestidos justos</string>
 </resources>

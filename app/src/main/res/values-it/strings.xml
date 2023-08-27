@@ -239,7 +239,7 @@
     <string name="redo">Rifai</string>
     <string name="pref_boardtheme_accent_subtitle">Rendi più colorata la tavola del sudoku</string>
     <string name="action_move_selected">Mossa selezionata</string>
-    <string name="dialog_crash_report_text">Oops, LibreSudoku è appena andato in crash. Vuoi inviare una segnalazione agli sviluppatori\?</string>
+    <string name="dialog_crash_report_text">Oops, Sudoku è appena andato in crash. Vuoi inviare una segnalazione agli sviluppatori\?</string>
     <string name="pref_date_format_custom_textfield_label">Schema</string>
     <plurals name="number_puzzles_to_import">
         <item quantity="one">%1$d puzzle da importare</item>

@@ -262,7 +262,7 @@
     <string name="move_games_to_folder_subtitle">Select the folder to which you want to move the selected games</string>
     <string name="pref_cross_highlight_subtitle">Highlight some boxes on the board</string>
     <string name="pref_cross_highlight">Cross highlight</string>
-    <string name="dialog_crash_report_text">Oops, LibreSudoku just crashed. Do you want to send a crash report to the developers?</string>
+    <string name="dialog_crash_report_text">Oops, Sudoku just crashed. Do you want to send a crash report to the developers?</string>
     <string name="pref_crash_reporting">Crash reporting</string>
     <string name="pref_crash_reporting_subtitle">Help us fix bugs. App doesn\'t send logs by itself, you will be prompted to send a crash report by email</string>
     <string name="pref_fun_keyboard_over_num">Function panel over the values</string>

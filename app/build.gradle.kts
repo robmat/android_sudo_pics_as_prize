@@ -1,5 +1,5 @@
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.androidApplication)
@@ -21,8 +21,8 @@ android {
         applicationId = "com.batodev.sudoku"
         minSdk = 26
         targetSdk = 34
-        versionCode = 7
-        versionName = "1.5.0"
+        versionCode = 1
+        versionName = "1.0.0"
 
         vectorDrawables {
             useSupportLibrary = true

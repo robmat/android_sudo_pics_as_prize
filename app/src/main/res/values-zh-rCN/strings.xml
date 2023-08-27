@@ -190,7 +190,7 @@
     <string name="new_game">新游戏</string>
     <string name="dialog_new_game_text">您有一局未完成的游戏，您真的想开始一个新的吗\?</string>
     <string name="pref_crash_reporting">报告崩溃日志</string>
-    <string name="dialog_crash_report_text">LibreSudoku 崩溃了。您想要向开发人员发送崩溃日志吗\?</string>
+    <string name="dialog_crash_report_text">Sudoku 崩溃了。您想要向开发人员发送崩溃日志吗\?</string>
     <string name="pref_cross_highlight_subtitle">在纸板上标出一些方框</string>
     <string name="move_games_to_folder_subtitle">选择要移动所选游戏的文件夹</string>
     <string name="help">帮助</string>

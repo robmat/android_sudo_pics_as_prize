@@ -13,14 +13,14 @@
         android:localeConfig="@xml/locales_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.LibreSudoku"
+        android:theme="@style/Theme.Sudoku"
         tools:targetApi="tiramisu">
         <activity
             android:name=".MainActivity"
             android:exported="true"
             tools:ignore="LockedOrientationActivity"
             android:screenOrientation="sensorPortrait"
-            android:theme="@style/Theme.LibreSudoku">
+            android:theme="@style/Theme.Sudoku">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

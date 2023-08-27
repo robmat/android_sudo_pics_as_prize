@@ -197,7 +197,7 @@
     <string name="action_move_selected">Przenieś wybrane</string>
     <string name="pref_cross_highlight_subtitle">Zaznacz niektóre kwadraty na tablicy</string>
     <string name="pref_cross_highlight">Krzyżowe zaznaczenie</string>
-    <string name="dialog_crash_report_text">Ups, LibreSudoku właśnie się zawiesiło. Czy chcesz wysłać raport o awarii do programistów\?</string>
+    <string name="dialog_crash_report_text">Ups, Sudoku właśnie się zawiesiło. Czy chcesz wysłać raport o awarii do programistów\?</string>
     <string name="pref_save_last_diff_and_type_subtitle">Zapamiętaj typ i poziom trudności ostatniej gry</string>
     <string name="pref_date_format">Format daty</string>
     <string name="pref_crash_reporting">Raportowanie błędu</string>

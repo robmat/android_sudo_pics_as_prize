@@ -248,7 +248,7 @@
     <string name="move_games_to_folder_subtitle">Seçilen oyunları taşımak istediğiniz klasörü seçin</string>
     <string name="pref_cross_highlight_subtitle">Tahtadaki bazı kutuları vurgulayın</string>
     <string name="pref_cross_highlight">Çapraz vurgu</string>
-    <string name="dialog_crash_report_text">Hata! LibreSudoku az önce çöktü. Geliştiricilere bir kilitlenme raporu göndermek ister misiniz?</string>
+    <string name="dialog_crash_report_text">Hata! Sudoku az önce çöktü. Geliştiricilere bir kilitlenme raporu göndermek ister misiniz?</string>
     <string name="pref_crash_reporting">Kilitlenme raporlaması</string>
     <string name="pref_crash_reporting_subtitle">Hataları düzeltmemize yardımcı olun. Uygulama günlükleri kendi başına göndermiyor; e-postayla bir kilitlenme raporu göndermeniz istenecek</string>
     <string name="pref_fun_keyboard_over_num">Değerlerin üzerindeki fonksiyon paneli</string>

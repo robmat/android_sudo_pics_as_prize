@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="app_name" translatable="false">LibreSudoku</string>
     <string name="nav_bar_statistics">Statistiques</string>
     <string name="nav_bar_home">Accueil</string>
     <string name="nav_bar_more">Plus</string>
@@ -257,7 +256,7 @@
     <string name="pref_cross_highlight_subtitle">Mettre en surbrillance certains blocs sur le plateau de jeu</string>
     <string name="pref_cross_highlight">Mise en évidence des croisements</string>
     <string name="pref_crash_reporting">Rapport d\'incident</string>
-    <string name="dialog_crash_report_text">Oups, LibreSudoku vient de planter. Souhaitez-vous envoyer un rapport de plantage aux développeurs \?</string>
+    <string name="dialog_crash_report_text">Oups, Sudoku vient de planter. Souhaitez-vous envoyer un rapport de plantage aux développeurs \?</string>
     <string name="pref_crash_reporting_subtitle">Aidez-nous à corriger les bugs. L\'application n\'envoie aucun journal par elle-même, vous serez invité à envoyer un rapport de plantage par e-mail</string>
     <string name="pref_date_format_custom_label">Personnalisé</string>
     <string name="redo">Refaire</string>
@@ -280,4 +279,5 @@
     <string name="uncovered_images">Images découvertes</string>
     <string name="game_completed">Jeu terminé, nouvelle image ajoutée à la galerie</string>
     <string name="more_games_like_this">Plus de jeux comme celui-ci</string>
+    <string name="app_name">Sudoku et robes moulantes</string>
 </resources>

@@ -280,7 +280,7 @@
         <item quantity="other">هل أنت متأكد من رغبتك في حذف %1$d لعبة؟</item>
     </plurals>
     <string name="pref_board_theme_subtitle">تخصيص مظهر لوحة سودوكو</string>
-    <string name="dialog_crash_report_text">عفوًا ، تعطل LibreSudoku للتو. هل تريد إرسال تقرير تعطل للمطورين؟</string>
+    <string name="dialog_crash_report_text">عفوًا ، تعطل Sudoku للتو. هل تريد إرسال تقرير تعطل للمطورين؟</string>
     <string name="pref_save_last_diff_and_type_subtitle">تذكر نوع اللعبة الأخيرة وصعوبتها</string>
     <string name="pref_fun_keyboard_over_num_subtitle">ضع لوحة الوظائف فوق لوحة مفاتيح القيم</string>
     <string name="app_name">سودوكو والفساتين الضيقة</string>

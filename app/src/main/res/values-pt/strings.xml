@@ -255,7 +255,7 @@
     <string name="move_games_to_folder_subtitle">Selecione a pasta para onde deseja mover os jogos selecionados</string>
     <string name="pref_cross_highlight_subtitle">Destaque alguns blocos no tabuleiro</string>
     <string name="pref_cross_highlight">Destaque cruzado</string>
-    <string name="dialog_crash_report_text">Ops, o LibreSudoku não funciona corretamente. Gostaria de enviar um relatório de bug para os programadores\?</string>
+    <string name="dialog_crash_report_text">Ops, o Sudoku não funciona corretamente. Gostaria de enviar um relatório de bug para os programadores\?</string>
     <string name="pref_crash_reporting">Relatório de falhas</string>
     <string name="pref_crash_reporting_subtitle">Ajude-nos a corrigir erros. A app não envia nenhum log por si só, será solicitado a enviar um relatório de falha por e-mail</string>
     <string name="pref_fun_keyboard_over_num">Teclado de função sobre os números</string>

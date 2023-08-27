@@ -239,7 +239,7 @@
     <string name="move_games_to_folder_subtitle">پوشه ای را که می خواهید بازی های انتخاب شده را به آن منتقل کنید انتخاب کنید</string>
     <string name="pref_cross_highlight_subtitle">برخی از کادرهای روی تخته را برجسته کنید</string>
     <string name="pref_cross_highlight">هایلایت متقاطع</string>
-    <string name="dialog_crash_report_text">اوه، LibreSudoku به تازگی خراب شده است. آیا می خواهید یک گزارش خرابی برای توسعه دهندگان ارسال کنید؟</string>
+    <string name="dialog_crash_report_text">اوه، Sudoku به تازگی خراب شده است. آیا می خواهید یک گزارش خرابی برای توسعه دهندگان ارسال کنید؟</string>
     <string name="pref_crash_reporting">گزارش خرابی</string>
     <string name="pref_crash_reporting_subtitle">به ما در رفع اشکالات کمک کنید. برنامه به تنهایی گزارش‌ها را ارسال نمی‌کند، از شما خواسته می‌شود گزارش خرابی را از طریق ایمیل ارسال کنید</string>
     <string name="pref_fun_keyboard_over_num">پانل تابع بیش از مقادیر</string>

@@ -215,7 +215,7 @@
     <string name="pref_cross_highlight_subtitle">Resaltar algunas casillas en la pizarra</string>
     <string name="pref_crash_reporting">Reportar incidente</string>
     <string name="pref_crash_reporting_subtitle">Ayúdanos a corregir los errores. La aplicación no envía registros por sí misma, se le pedirá que envíe un informe de bloqueo por correo electrónico</string>
-    <string name="dialog_crash_report_text">Ups, LibreSudoku se bloqueó. ¿Quieres enviar un informe de error a los desarrolladores\?</string>
+    <string name="dialog_crash_report_text">Ups, Sudoku se bloqueó. ¿Quieres enviar un informe de error a los desarrolladores\?</string>
     <string name="pref_fun_keyboard_over_num">Panel de funciones sobre los valores</string>
     <string name="pref_fun_keyboard_over_num_subtitle">Coloque el panel de funciones sobre el teclado de valores</string>
     <string name="sudoku_rules_mistakes_explanation">El primer error son dos 2 en la sexta casilla. ¿Recuerdas la regla de que no puede haber valores dobles en una casilla\? El segundo error es el número 6 en la fila 2, columna 8 (R2C8), porque ya hay un 6 en esa columna en R5C8</string>

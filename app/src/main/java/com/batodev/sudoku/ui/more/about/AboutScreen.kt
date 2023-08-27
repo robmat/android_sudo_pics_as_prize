@@ -82,15 +82,7 @@ fun AboutScreen(
                 title = stringResource(R.string.about_github_project),
                 painter = painterResource(R.drawable.ic_github_24dp),
                 onClick = {
-                    uriHandler.openUri("https://github.com/kaajjo/Libre-Sudoku")
-                }
-            )
-
-            PreferenceRow(
-                title = stringResource(R.string.help_translate),
-                painter = painterResource(R.drawable.ic_weblate),
-                onClick = {
-                    uriHandler.openUri("https://hosted.weblate.org/engage/libresudoku/")
+                    uriHandler.openUri("https://github.com/robmat/android_sudo_pics_as_prize")
                 }
             )
 

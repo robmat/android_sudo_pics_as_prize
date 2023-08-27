@@ -235,7 +235,7 @@
     <string name="learn_basic_2">Sjekk så 8, i rad fire, tredje kolonne (F4C3). Det blokkerer hele kolonnen i vår boks. 8 kan ikke stå der.</string>
     <string name="learn_basic_5">Samme logikk brukes for rader og kolonner. 4 i første rad, kolonne 3 (R7C3) blokkerer tredje kolonne i vår rad. 4 i R3C5 blokkerer to kolonner samtidig (fire go seks), fordi 4 må være unikt for samme boks. R6C7 blokkerer kolonne syv.</string>
     <string name="help_translate">Bistå oversettelsen</string>
-    <string name="dialog_crash_report_text">Oida. LibreSudoku krasjet. Send en rapport til utviklerne\?</string>
+    <string name="dialog_crash_report_text">Oida. Sudoku krasjet. Send en rapport til utviklerne\?</string>
     <string name="learn_app_toolbar_desc">Et panel under tastaturet</string>
     <string name="pref_disable_hints_summ">Liker du ikke hint\? De kan skrus av.</string>
     <string name="pref_reset_timer">Tilbakestill tidsuret når spillet startes på ny</string>

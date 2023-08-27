@@ -243,7 +243,7 @@
     <string name="action_move_selected">Mou el seleccionat</string>
     <string name="move_games_to_folder_subtitle">Seleccioneu la carpeta a la qual voleu moure els jocs seleccionats</string>
     <string name="pref_cross_highlight">Ressaltat creuat</string>
-    <string name="dialog_crash_report_text">Vaja, el LibreSudoku s\'ha bloquejat. Voleu enviar un informe d\'error als desenvolupadors?</string>
+    <string name="dialog_crash_report_text">Vaja, el Sudoku s\'ha bloquejat. Voleu enviar un informe d\'error als desenvolupadors?</string>
     <string name="pref_crash_reporting">Informe d\'accidents</string>
     <string name="pref_fun_keyboard_over_num">Panell de funcions sobre els valors</string>
     <string name="pref_fun_keyboard_over_num_subtitle">Col·loqueu el tauler de funcions a sobre del teclat de valors</string>

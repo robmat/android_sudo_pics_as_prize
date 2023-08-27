@@ -239,7 +239,7 @@
     <string name="move_games_to_folder_subtitle">Válassza ki a mappát, ahová a kiválasztott játékokat át szeretné helyezni</string>
     <string name="pref_cross_highlight_subtitle">Jelöljön ki néhány dobozt a táblán</string>
     <string name="pref_cross_highlight">Kereszt kiemelés</string>
-    <string name="dialog_crash_report_text">Hoppá, a LibreSudoku összeomlott. Szeretnél hibajelentést küldeni a fejlesztőknek?</string>
+    <string name="dialog_crash_report_text">Hoppá, a Sudoku összeomlott. Szeretnél hibajelentést küldeni a fejlesztőknek?</string>
     <string name="pref_crash_reporting">Összeomlási jelentés</string>
     <string name="pref_crash_reporting_subtitle">Segítsen a hibák kijavításában. Az alkalmazás önmagában nem küld naplókat, a rendszer felkéri, hogy küldjön összeomlási jelentést e-mailben</string>
     <string name="pref_fun_keyboard_over_num">Funkciópanel az értékek felett</string>

@@ -250,7 +250,7 @@
     </plurals>
     <string name="last_played_section_title">Senest spillede spil</string>
     <string name="pref_board_theme_subtitle">Tilpas sudoku-brættets udseende</string>
-    <string name="dialog_crash_report_text">Ups, LibreSudoku er lige gået ned. Vil du sende en nedbrudsrapport til udviklerne\?</string>
+    <string name="dialog_crash_report_text">Ups, Sudoku er lige gået ned. Vil du sende en nedbrudsrapport til udviklerne\?</string>
     <plurals name="puzzles_in_folder">
         <item quantity="one">%1$d spil</item>
         <item quantity="other">%1$d spil</item>

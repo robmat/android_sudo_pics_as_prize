@@ -179,7 +179,7 @@
     <string name="move_games_to_folder_subtitle">Wähle den Ordner in den du die ausgewählten Spiele verschieben willst</string>
     <string name="pref_cross_highlight_subtitle">Hebe einige Boxen auf dem Brett hervor</string>
     <string name="pref_cross_highlight">Hebe das Kreuz hervor</string>
-    <string name="dialog_crash_report_text">Ups, LibreSudoku ist gerade abgestürzt. Willst du einen Fehlerbericht an die Entwickler senden\?</string>
+    <string name="dialog_crash_report_text">Ups, Sudoku ist gerade abgestürzt. Willst du einen Fehlerbericht an die Entwickler senden\?</string>
     <string name="pref_fun_keyboard_over_num">Funktionsleiste über den Zahlen</string>
     <string name="pref_fun_keyboard_over_num_subtitle">Platziere die Funktionsleiste über die Zahlen-Tastatur</string>
     <plurals name="puzzles_in_folder">
