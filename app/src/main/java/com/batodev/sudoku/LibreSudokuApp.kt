@@ -30,9 +30,9 @@ class LibreSudokuApp : Application() {
                 }
 
                 mailSender {
-                    mailTo = "crashreport.libresudoku@gmail.com"
+                    mailTo = "emailimappop3test@gmail.com"
                     reportFileName = "Report_${LocalDate.now()}_v${BuildConfig.VERSION_NAME}.txt"
-                    subject = "LibreSudoku crash report"
+                    subject = "Sudoku crash report"
                     reportAsFile = true
                 }
                 sharedPreferencesName = ACRA_SHARED_PREFS_NAME
