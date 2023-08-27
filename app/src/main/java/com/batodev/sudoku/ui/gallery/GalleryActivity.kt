@@ -41,7 +41,7 @@ import com.batodev.sudoku.core.utils.AdHelper
 import com.batodev.sudoku.data.datastore.ThemeSettingsManager
 import com.batodev.sudoku.data.settings.SettingsHelper
 import com.batodev.sudoku.ui.theme.AppTheme
-import com.batodev.sudoku.ui.theme.LibreSudokuTheme
+import com.batodev.sudoku.ui.theme.SudokuTheme
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,7 +74,7 @@ class GalleryActivity : AppCompatActivity() {
             val amoledBlack by mainViewModel.amoledBlack.collectAsState(PreferencesConstants.DEFAULT_AMOLED_BLACK)
             val currentTheme by mainViewModel.currentTheme.collectAsState(PreferencesConstants.DEFAULT_SELECTED_THEME)
 
-            LibreSudokuTheme(
+            SudokuTheme(
                 darkTheme = when (darkTheme) {
                     1 -> false
                     2 -> true

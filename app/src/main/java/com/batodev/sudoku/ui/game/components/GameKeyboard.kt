@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.batodev.sudoku.core.qqwing.GameType
-import com.batodev.sudoku.ui.theme.LibreSudokuTheme
+import com.batodev.sudoku.ui.theme.SudokuTheme
 import com.batodev.sudoku.ui.util.LightDarkPreview
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -196,7 +196,7 @@ private fun KeyboardRow(
 @LightDarkPreview
 @Composable
 private fun KeyboardItemPreview() {
-    LibreSudokuTheme {
+    SudokuTheme {
         Surface {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -230,7 +230,7 @@ private fun KeyboardItemPreview() {
 @LightDarkPreview
 @Composable
 private fun KeyboardPreview9x9() {
-    LibreSudokuTheme {
+    SudokuTheme {
         Surface {
             DefaultGameKeyboard(
                 onClick = { },
@@ -245,7 +245,7 @@ private fun KeyboardPreview9x9() {
 @LightDarkPreview
 @Composable
 private fun KeyboardPreview12x12() {
-    LibreSudokuTheme {
+    SudokuTheme {
         Surface {
             DefaultGameKeyboard(
                 onClick = { },

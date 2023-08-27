@@ -43,9 +43,9 @@ import com.batodev.sudoku.core.Note
 import com.batodev.sudoku.core.qqwing.GameType
 import com.batodev.sudoku.core.utils.SudokuParser
 import com.batodev.sudoku.ui.theme.BoardColors
-import com.batodev.sudoku.ui.theme.LibreSudokuTheme
 import com.batodev.sudoku.ui.theme.SudokuBoardColors
 import com.batodev.sudoku.ui.theme.SudokuBoardColorsImpl
+import com.batodev.sudoku.ui.theme.SudokuTheme
 import com.batodev.sudoku.ui.util.LightDarkPreview
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -205,8 +205,12 @@ fun Board(
                     onTap = {
                         if (enabled) {
                             val totalOffset = it / zoom + offset
-                            val row = floor((totalOffset.y) / cellSize).toInt().coerceIn(board.indices)
-                            val column = floor((totalOffset.x) / cellSize).toInt().coerceIn(board.indices)
+                            val row = floor((totalOffset.y) / cellSize)
+                                .toInt()
+                                .coerceIn(board.indices)
+                            val column = floor((totalOffset.x) / cellSize)
+                                .toInt()
+                                .coerceIn(board.indices)
                             onClick(board[row][column])
                         }
                     },
@@ -534,7 +538,7 @@ private fun getSectionWidthForSize(size: Int): Int {
 @LightDarkPreview
 @Composable
 private fun BoardPreviewLight() {
-    LibreSudokuTheme {
+    SudokuTheme {
         Surface {
             val sudokuParser = SudokuParser()
             val board by remember {

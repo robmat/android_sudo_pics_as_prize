@@ -27,7 +27,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.batodev.sudoku.R
-import com.batodev.sudoku.ui.theme.LibreSudokuTheme
+import com.batodev.sudoku.ui.theme.SudokuTheme
 import com.batodev.sudoku.ui.util.LightDarkPreview
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -140,7 +140,7 @@ fun PreferenceRowSwitch(
 @LightDarkPreview
 @Composable
 private fun PreferenceRowPreview() {
-    LibreSudokuTheme {
+    SudokuTheme {
         Surface {
             Column {
                 PreferenceRow(
@@ -160,7 +160,7 @@ private fun PreferenceRowPreview() {
 @LightDarkPreview
 @Composable
 private fun PreferenceRowSwitchPreview() {
-    LibreSudokuTheme {
+    SudokuTheme {
         Surface {
             Column {
                 PreferenceRowSwitch(

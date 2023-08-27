@@ -14,9 +14,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -55,7 +55,7 @@ import com.batodev.sudoku.ui.components.collapsing_topappbar.rememberTopAppBarSc
 import com.batodev.sudoku.ui.settings.components.AppThemePreviewItem
 import com.batodev.sudoku.ui.theme.AppColorScheme
 import com.batodev.sudoku.ui.theme.AppTheme
-import com.batodev.sudoku.ui.theme.LibreSudokuTheme
+import com.batodev.sudoku.ui.theme.SudokuTheme
 import kotlinx.coroutines.launch
 import org.xmlpull.v1.XmlPullParser
 import java.time.ZonedDateTime
@@ -160,7 +160,7 @@ fun SettingsScreen(
                     val appTheme = AppColorScheme()
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         item {
-                            LibreSudokuTheme(
+                            SudokuTheme(
                                 dynamicColor = true,
                                 darkTheme = when (darkTheme) {
                                     0 -> isSystemInDarkTheme()
@@ -279,7 +279,7 @@ fun SettingsScreen(
             }
 
             item {
-                Divider(
+                HorizontalDivider(
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -347,7 +347,7 @@ fun SettingsScreen(
             }
 
             item {
-                Divider(
+                HorizontalDivider(
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -398,7 +398,7 @@ fun SettingsScreen(
 
 
             item {
-                Divider(
+                HorizontalDivider(
                     modifier = Modifier.fillMaxWidth()
                 )
 

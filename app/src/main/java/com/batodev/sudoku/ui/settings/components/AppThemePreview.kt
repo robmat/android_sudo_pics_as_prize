@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.batodev.sudoku.ui.theme.LibreSudokuTheme
+import com.batodev.sudoku.ui.theme.SudokuTheme
 import com.batodev.sudoku.ui.util.LightDarkPreview
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -173,7 +173,7 @@ fun AppThemePreviewItem(
 @LightDarkPreview
 @Composable
 fun AppThemePreviewItem_Preview() {
-    LibreSudokuTheme {
+    SudokuTheme {
         Surface {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp)

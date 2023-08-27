@@ -72,8 +72,8 @@ import com.batodev.sudoku.ui.settings.boardtheme.SettingsBoardTheme
 import com.batodev.sudoku.ui.statistics.StatisticsScreen
 import com.batodev.sudoku.ui.theme.AppTheme
 import com.batodev.sudoku.ui.theme.BoardColors
-import com.batodev.sudoku.ui.theme.LibreSudokuTheme
 import com.batodev.sudoku.ui.theme.SudokuBoardColorsImpl
+import com.batodev.sudoku.ui.theme.SudokuTheme
 import com.batodev.sudoku.ui.util.Route
 import com.batodev.sudoku.ui.util.findActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
             val amoledBlack by mainViewModel.amoledBlack.collectAsState(PreferencesConstants.DEFAULT_AMOLED_BLACK)
             val firstLaunch by mainViewModel.firstLaunch.collectAsState(false)
             val currentTheme by mainViewModel.currentTheme.collectAsState(PreferencesConstants.DEFAULT_SELECTED_THEME)
-            LibreSudokuTheme(
+            SudokuTheme(
                 darkTheme = when (darkTheme) {
                     1 -> false
                     2 -> true

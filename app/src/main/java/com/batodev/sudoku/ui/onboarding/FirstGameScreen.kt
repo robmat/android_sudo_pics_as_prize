@@ -34,7 +34,7 @@ import androidx.compose.ui.window.Dialog
 import com.batodev.sudoku.R
 import com.batodev.sudoku.ui.game.NotesMenu
 import com.batodev.sudoku.ui.game.components.ToolbarItem
-import com.batodev.sudoku.ui.theme.LibreSudokuTheme
+import com.batodev.sudoku.ui.theme.SudokuTheme
 
 @Composable
 fun FirstGameDialog(
@@ -166,7 +166,7 @@ private fun ToolRow(
 @Preview
 @Composable
 fun ScreenPreview() {
-    LibreSudokuTheme {
+    SudokuTheme {
         FirstGameDialog(
             onFinished = { }
         )

@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.batodev.sudoku.R
-import com.batodev.sudoku.ui.theme.LibreSudokuTheme
+import com.batodev.sudoku.ui.theme.SudokuTheme
 import com.batodev.sudoku.ui.util.LightDarkPreview
 
 enum class ToolBarItem {
@@ -43,7 +43,11 @@ fun ToolbarItem(
     Box(
         modifier = modifier
             .clip(MaterialTheme.shapes.large)
-            .background(if (toggled) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
+            .background(
+                if (toggled) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceColorAtElevation(
+                    2.dp
+                )
+            )
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick
@@ -68,7 +72,7 @@ fun ToolbarItem(
 @LightDarkPreview
 @Composable
 private fun KeyboardItemPreview() {
-    LibreSudokuTheme {
+    SudokuTheme {
         Surface {
             Row {
                 ToolbarItem(

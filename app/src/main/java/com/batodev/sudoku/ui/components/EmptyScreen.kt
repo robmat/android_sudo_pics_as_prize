@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.batodev.sudoku.ui.theme.LibreSudokuTheme
+import com.batodev.sudoku.ui.theme.SudokuTheme
 import com.batodev.sudoku.ui.util.LightDarkPreview
 
 @Composable
@@ -57,7 +57,7 @@ fun EmptyScreen(
 @LightDarkPreview
 @Composable
 private fun EmptyScreenPreview() {
-    LibreSudokuTheme {
+    SudokuTheme {
         Surface {
             EmptyScreen("There is so empty...")
         }

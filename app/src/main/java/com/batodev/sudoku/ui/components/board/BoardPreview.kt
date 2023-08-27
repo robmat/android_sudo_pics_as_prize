@@ -29,9 +29,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.batodev.sudoku.core.Cell
 import com.batodev.sudoku.ui.theme.BoardColors
-import com.batodev.sudoku.ui.theme.LibreSudokuTheme
 import com.batodev.sudoku.ui.theme.SudokuBoardColors
 import com.batodev.sudoku.ui.theme.SudokuBoardColorsImpl
+import com.batodev.sudoku.ui.theme.SudokuTheme
 import com.batodev.sudoku.ui.util.LightDarkPreview
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -152,7 +152,7 @@ fun BoardPreview(
 @LightDarkPreview
 @Composable
 private fun BoardPreviewPreview() {
-    LibreSudokuTheme {
+    SudokuTheme {
         Surface {
             BoardPreview(
                 boardString = "0000100000040000000000000700000000000900000000680000000000000005000000000000000",
