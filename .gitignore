@@ -32,3 +32,5 @@ google-services.json
 # Android Profiling
 *.hprof
 app/src/main/assets/*
+/play_store_graphic.png
+/Screenshot_*.png
