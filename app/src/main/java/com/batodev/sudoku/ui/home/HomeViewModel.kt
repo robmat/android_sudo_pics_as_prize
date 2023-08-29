@@ -93,9 +93,10 @@ class HomeViewModel
         solvedPuzzle = List(size) { row -> List(size) { col -> Cell(row, col, 0) } }
 
         val allImages = context.assets.list(PRIZE_IMAGES)!!.toMutableList()
-        allImages.removeAll(SettingsHelper.settings.uncoveredPics)
+        val settingsHelper = SettingsHelper(context)
+        allImages.removeAll(settingsHelper.preferences.uncoveredPics)
         prizeImageName =
-            if (allImages.isEmpty()) SettingsHelper.settings.uncoveredPics.random() else allImages.random()
+            if (allImages.isEmpty()) settingsHelper.preferences.uncoveredPics.random() else allImages.random()
 
         viewModelScope.launch(Dispatchers.Default) {
             if (saveSelectedGameDifficultyType.value) {

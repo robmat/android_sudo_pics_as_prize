@@ -300,9 +300,10 @@ class GameViewModel @Inject constructor(
         gameCompleted = isCompleted(new)
         Log.d("GameViewModel", "gameCompleted: $gameCompleted")
         if (gameCompleted) {
-            if (!SettingsHelper.settings.uncoveredPics.contains(boardEntity.prizeImageName)) {
-                SettingsHelper.settings.uncoveredPics.add(boardEntity.prizeImageName)
-                SettingsHelper.save(application)
+            val settingsHelper = SettingsHelper(application)
+            if (!settingsHelper.preferences.uncoveredPics.contains(boardEntity.prizeImageName)) {
+                boardEntity.prizeImageName?.let { settingsHelper.preferences.uncoveredPics.add(it) }
+                settingsHelper.savePreferences()
             }
         }
 

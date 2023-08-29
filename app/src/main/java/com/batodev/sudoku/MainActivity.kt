@@ -51,7 +51,6 @@ import com.batodev.sudoku.core.PreferencesConstants
 import com.batodev.sudoku.core.utils.AdHelper
 import com.batodev.sudoku.data.datastore.AppSettingsManager
 import com.batodev.sudoku.data.datastore.ThemeSettingsManager
-import com.batodev.sudoku.data.settings.SettingsHelper
 import com.batodev.sudoku.ui.components.animatedComposable
 import com.batodev.sudoku.ui.create_edit_sudoku.CreateSudokuScreen
 import com.batodev.sudoku.ui.explore_folder.ExploreFolderScreen
@@ -91,8 +90,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        SettingsHelper.createIfNotExists(this)
-        SettingsHelper.load(this)
         handlerAdPosting()
 
         WindowCompat.setDecorFitsSystemWindows(window, false)

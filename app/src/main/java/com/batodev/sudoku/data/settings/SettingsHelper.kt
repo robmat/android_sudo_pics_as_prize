@@ -1,33 +1,33 @@
 package com.batodev.sudoku.data.settings
 
 import android.content.Context
-import android.util.Log
-import org.simpleframework.xml.core.Persister
-import java.io.File
+import android.content.SharedPreferences
 
-const val SETTINGS_FILE_NAME: String = "settings.xml"
+class SettingsHelper(context: Context) {
+    private val sharedPreferences: SharedPreferences
+    val preferences: Preferences
 
-object SettingsHelper {
-    var settings: Settings = Settings()
-
-    fun createIfNotExists(activity: Context) {
-        val savePath = savePath(activity)
-        if (!File(savePath).exists()) save(activity)
+    init {
+        sharedPreferences = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
+        preferences = loadPreferences()
     }
 
-    fun save(activity: Context) {
-        val savePath = savePath(activity)
-        Persister().write(settings, File(savePath))
+    fun savePreferences() {
+        val editor = sharedPreferences.edit()
+        editor.putString("uncoveredPics", preferences.uncoveredPics.joinToString(","))
+        editor.apply()
     }
 
-    fun load(activity: Context) {
-        val savePath = savePath(activity)
-        if (File(savePath).exists()) {
-            this.settings = Persister().read(Settings(), File(savePath))
-            Log.d(SettingsHelper.javaClass.simpleName, File(savePath).readText())
-        }
+    private fun loadPreferences(): Preferences {
+        val preferences = Preferences(mutableListOf())
+        preferences.uncoveredPics =
+            sharedPreferences.getString("uncoveredPics", "")?.split(",")?.toMutableList()
+                ?: mutableListOf()
+        preferences.uncoveredPics = preferences.uncoveredPics.filter { it != "" }.toMutableList()
+        return preferences
     }
-
-    private fun savePath(activity: Context) =
-        activity.filesDir.absolutePath + File.separator + SETTINGS_FILE_NAME
 }
+
+data class Preferences(
+    var uncoveredPics: MutableList<String>,
+)

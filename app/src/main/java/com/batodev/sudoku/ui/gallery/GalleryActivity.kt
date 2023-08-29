@@ -143,6 +143,7 @@ fun ImageViewerScreen(galleryActivity: GalleryActivity) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ImageListScreen(navController: NavController, galleryActivity: GalleryActivity) {
+    val context = LocalContext.current
     Box(modifier = Modifier.fillMaxSize()) {
         TopAppBar(title = { Text(text = stringResource(id = R.string.uncovered_images)) },
             navigationIcon = {
@@ -152,7 +153,7 @@ fun ImageListScreen(navController: NavController, galleryActivity: GalleryActivi
             })
         Spacer(modifier = Modifier.height(16.dp))
         LazyColumn(modifier = Modifier.padding(0.dp, 60.dp, 0.dp, 0.dp)) {
-            val items = SettingsHelper.settings.uncoveredPics
+            val items = SettingsHelper(context).preferences.uncoveredPics
             items(items) { imageResId ->
                 ImageListItem(imageResId, navController)
             }
@@ -218,10 +219,11 @@ fun ImageDetailScreen(resId: String, navController: NavController) {
         ) {
             val currentPictureFileName =
                 currentPicture.value.substring(currentPicture.value.lastIndexOf("/") + 1)
+            val uncoveredPics = SettingsHelper(context).preferences.uncoveredPics
             IconButton(onClick = {
-                val index = SettingsHelper.settings.uncoveredPics.indexOf(currentPictureFileName)
+                val index = uncoveredPics.indexOf(currentPictureFileName)
                 currentPicture.value = "file:///android_asset/$PRIZE_IMAGES/${
-                    SettingsHelper.settings.uncoveredPics[Math.max(
+                    uncoveredPics[Math.max(
                         0, index - 1
                     )]
                 }"
@@ -230,10 +232,10 @@ fun ImageDetailScreen(resId: String, navController: NavController) {
             }
             Spacer(modifier = Modifier.width(16.dp))
             IconButton(onClick = {
-                val index = SettingsHelper.settings.uncoveredPics.indexOf(currentPictureFileName)
+                val index = uncoveredPics.indexOf(currentPictureFileName)
                 currentPicture.value = "file:///android_asset/$PRIZE_IMAGES/${
-                    SettingsHelper.settings.uncoveredPics[Math.min(
-                        SettingsHelper.settings.uncoveredPics.size - 1, index + 1
+                    uncoveredPics[Math.min(
+                        uncoveredPics.size - 1, index + 1
                     )]
                 }"
             }) {

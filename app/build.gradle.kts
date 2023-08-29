@@ -21,8 +21,8 @@ android {
         applicationId = "com.batodev.sudoku"
         minSdk = 26
         targetSdk = 34
-        versionCode = 2
-        versionName = "1.0.1"
+        versionCode = 3
+        versionName = "1.0.2"
 
         vectorDrawables {
             useSupportLibrary = true
@@ -107,7 +107,6 @@ dependencies {
 
     implementation(libs.aboutLibraries)
 
-    implementation ("org.simpleframework:simple-xml:2.7.1")
     implementation ("com.github.bumptech.glide:compose:1.0.0-alpha.1")
     implementation ("com.google.android.gms:play-services-ads:22.2.0")
     implementation ("com.github.mennovogel:zoom-compose:1.1")
