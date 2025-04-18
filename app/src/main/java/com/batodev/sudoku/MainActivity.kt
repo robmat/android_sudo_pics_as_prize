@@ -441,7 +441,7 @@ class MainActivity : AppCompatActivity() {
                 AdHelper.showAd(this)
             }
             handlerAdPosting()
-        }, 60000)
+        }, 60000 * 5)
     }
 }
 
