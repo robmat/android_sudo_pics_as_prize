@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.aboutLibraries)
     alias(libs.plugins.kapt)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.composeCompiler)
 }
 
 var localProperties = Properties()
@@ -15,12 +16,12 @@ localProperties.load(FileInputStream(rootProject.file("local.properties")))
 
 android {
     namespace = "com.batodev.sudoku"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.batodev.sudoku"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 3
         versionName = "1.0.2"
 
