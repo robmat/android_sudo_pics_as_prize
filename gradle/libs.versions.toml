@@ -1,7 +1,7 @@
 [versions]
-agp = "8.9.1"
+agp = "9.3.0"
 composeVersion = "1.0.0-alpha.1"
-kotlin = "2.1.20"
+kotlin = "2.2.10"
 playServicesAds = "24.2.0"
 room = "2.7.0"
 aboutLibraries = '10.6.1'
@@ -19,7 +19,7 @@ accompanist-pager = "0.28.0"
 accompanist-systemuicontroller = "0.28.0"
 navigation-compose = "2.8.9"
 acra = "5.9.7"
-ksp = "2.1.20-2.0.0"
+ksp = "2.3.2"
 zoomCompose = "1.1"
 
 [libraries]
