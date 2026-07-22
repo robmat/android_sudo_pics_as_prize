@@ -261,6 +261,8 @@ fun ImageDetailScreen(resId: String, navController: NavController) {
                 val uri =
                     Uri.parse("content://com.batodev.sudoku.data.provider.ImagesProvider/$tmpImgPath")
                 shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
+                shareIntent.clipData = android.content.ClipData.newRawUri("", uri)
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 shareIntent.type = "image/*"
                 ContextCompat.startActivity(context, shareIntent, null)
             }) {
