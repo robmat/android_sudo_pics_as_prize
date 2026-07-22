@@ -9,10 +9,21 @@ plugins {
     alias(libs.plugins.kapt)
     alias(libs.plugins.hilt)
     alias(libs.plugins.composeCompiler)
+    id("com.github.triplet.play")
+    id("com.batodev.releasetools")
 }
 
 var localProperties = Properties()
 localProperties.load(FileInputStream(rootProject.file("local.properties")))
+
+val keystorePropertiesFile = rootProject.file("../keystore.properties")
+val keystoreProperties = Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
+
+val versionProps = Properties()
+file("version.properties").inputStream().use { versionProps.load(it) }
 
 android {
     namespace = "com.batodev.sudoku"
@@ -22,8 +33,8 @@ android {
         applicationId = "com.batodev.sudoku"
         minSdk = 26
         targetSdk = 35
-        versionCode = 4
-        versionName = "1.0.3"
+        versionCode = versionProps.getProperty("versionCode").toInt()
+        versionName = versionProps.getProperty("versionName")
 
         vectorDrawables {
             useSupportLibrary = true
@@ -41,10 +52,22 @@ android {
         manifestPlaceholders.put("MANIFEST_AD_ID", localProperties.getProperty("manifest.ad.id"))
     }
 
+    signingConfigs {
+        create("release") {
+            if (keystorePropertiesFile.exists()) {
+                storeFile = rootProject.file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
@@ -71,6 +94,12 @@ android {
 aboutLibraries {
     // Remove the "generated" timestamp to allow for reproducible builds
     excludeFields = arrayOf("generated")
+}
+
+play {
+    serviceAccountCredentials.set(rootProject.file("../play-console-api-465319-0f9c399097c5.json"))
+    track.set("internal")
+    defaultToAppBundles.set(true)
 }
 
 dependencies {

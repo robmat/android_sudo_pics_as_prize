@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.androidLibrary) apply false
     alias(libs.plugins.composeCompiler) apply false
+    id("com.github.triplet.play") version "3.13.0" apply false
 }
 true // Needed to make the Suppress annotation work for the plugins block
 

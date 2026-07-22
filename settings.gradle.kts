@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("../release-tools")
     repositories {
         gradlePluginPortal()
         google()
