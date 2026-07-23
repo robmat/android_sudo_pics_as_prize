@@ -27,12 +27,12 @@ file("version.properties").inputStream().use { versionProps.load(it) }
 
 android {
     namespace = "com.batodev.sudoku"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.batodev.sudoku"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 37
         versionCode = versionProps.getProperty("versionCode").toInt()
         versionName = versionProps.getProperty("versionName")
 
