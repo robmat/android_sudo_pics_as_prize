@@ -11,6 +11,8 @@ plugins {
     alias(libs.plugins.composeCompiler)
     id("com.github.triplet.play")
     id("com.batodev.releasetools")
+    id("com.github.ben-manes.versions")
+    id("se.patrikerdes.use-latest-versions")
 }
 
 var localProperties = Properties()
