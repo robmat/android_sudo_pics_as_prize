@@ -45,6 +45,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
@@ -128,7 +129,7 @@ fun GameScreen(
             TopAppBar(
                 title = { },
                 navigationIcon = {
-                    IconButton(onClick = navigateBack) {
+                    IconButton(onClick = navigateBack, modifier = Modifier.testTag("game_back")) {
                         Icon(
                             painter = painterResource(R.drawable.ic_round_arrow_back_24),
                             contentDescription = null
@@ -178,7 +179,10 @@ fun GameScreen(
                     }
 
                     AnimatedVisibility(visible = !viewModel.endGame) {
-                        IconButton(onClick = { viewModel.restartDialog = true }) {
+                        IconButton(
+                            onClick = { viewModel.restartDialog = true },
+                            modifier = Modifier.testTag("game_restart")
+                        ) {
                             Icon(
                                 modifier = Modifier.rotate(restartButtonAnimation),
                                 painter = painterResource(R.drawable.ic_round_replay_24),
@@ -302,6 +306,7 @@ fun GameScreen(
 
                     Board(
                         modifier = Modifier
+                            .testTag("sudoku_board")
                             .blur(boardBlur)
                             .scale(scale, scale),
                         board = if (!viewModel.showSolution) viewModel.gameBoard else viewModel.solvedBoard,
@@ -374,6 +379,7 @@ fun GameScreen(
                                         onRedoClick = { viewModel.toolbarClick(ToolBarItem.Redo) }
                                     )
                                     ToolbarItem(
+                                        modifier = Modifier.testTag("game_undo"),
                                         painter = painterResource(R.drawable.ic_round_undo_24),
                                         onClick = { viewModel.toolbarClick(ToolBarItem.Undo) },
                                         onLongClick = { viewModel.showUndoRedoMenu = true }

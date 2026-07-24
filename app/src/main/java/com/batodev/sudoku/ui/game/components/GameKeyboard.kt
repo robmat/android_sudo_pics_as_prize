@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -127,7 +128,8 @@ fun DefaultGameKeyboard(
                                 KeyboardItem(
                                     modifier = itemModifier
                                         .weight(1f)
-                                        .alpha(if (hide) 0f else 1f),
+                                        .alpha(if (hide) 0f else 1f)
+                                        .testTag("keyboard_$number"),
                                     number = number,
                                     onClick = {
                                         if (!hide) {
@@ -159,7 +161,8 @@ fun DefaultGameKeyboard(
                     KeyboardItem(
                         modifier = itemModifier
                             .weight(1f)
-                            .alpha(if (hide) 0f else 1f),
+                            .alpha(if (hide) 0f else 1f)
+                            .testTag("keyboard_$number"),
                         number = number,
                         onClick = {
                             if (!hide) {

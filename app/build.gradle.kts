@@ -38,6 +38,8 @@ android {
         versionCode = versionProps.getProperty("versionCode").toInt()
         versionName = versionProps.getProperty("versionName")
 
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -142,4 +144,17 @@ dependencies {
     implementation (libs.compose)
     implementation (libs.play.services.ads)
     implementation (libs.zoom.compose)
+
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.7.0")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.8")
+    // ui-test-manifest (debugImplementation above) pulls old androidx.test:core/monitor/
+    // concurrent-futures onto the debug classpath; AGP forces androidTest to resolve those
+    // consistently with debug, so without bumping them here too, espresso/compose-test
+    // can't satisfy their floor (same issue/fix as snake-game-android-main).
+    debugImplementation("androidx.test:core:1.7.0")
+    debugImplementation("androidx.test:monitor:1.8.0")
+    debugImplementation("androidx.concurrent:concurrent-futures:1.2.0")
 }
