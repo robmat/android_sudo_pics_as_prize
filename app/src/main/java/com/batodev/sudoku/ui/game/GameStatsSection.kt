@@ -168,7 +168,6 @@ fun AfterGameStats(
     }
 }
 
-
 @Composable
 fun StatBox(
     text: @Composable () -> Unit,

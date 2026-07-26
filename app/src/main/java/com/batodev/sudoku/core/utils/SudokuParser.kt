@@ -6,7 +6,13 @@ import com.batodev.sudoku.core.qqwing.GameType
 
 class SudokuParser {
     private val emptySeparators = listOf('0', '.')
-    private val radix = 13
+    private val radix = RADIX
+
+    companion object {
+        private const val RADIX = 13
+        private const val MAX_STANDARD_DIGIT = 9
+        private const val NOTE_VALUE_CHAR_INDEX = 4
+    }
     fun parseBoard(
         board: String,
         gameType: GameType,
@@ -47,7 +53,7 @@ class SudokuParser {
         var boardString = ""
         boardList.forEach { cells ->
             cells.forEach { cell ->
-                boardString += if (cell.value <= 9) {
+                boardString += if (cell.value <= MAX_STANDARD_DIGIT) {
                     if (cell.value != 0) {
                         cell.value.toString()
                     } else {
@@ -64,7 +70,7 @@ class SudokuParser {
     fun boardToString(board: IntArray, emptySeparator: Char = '0'): String {
         var boardString = ""
         board.forEach {
-            boardString += if(it != 0) it.toString(radix) else emptySeparator
+            boardString += if (it != 0) it.toString(radix) else emptySeparator
         }
         return boardString
     }
@@ -78,7 +84,7 @@ class SudokuParser {
             val toParse = notesString.substring(i..index)
             val row = boardDigitToInt(toParse[0])
             val col = boardDigitToInt(toParse[2])
-            val value = boardDigitToInt(toParse[4])
+            val value = boardDigitToInt(toParse[NOTE_VALUE_CHAR_INDEX])
             notes.add(Note(row, col, value))
             i += index - i + 1
         }

@@ -11,15 +11,34 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -53,9 +72,11 @@ import java.io.InputStream
 import java.io.OutputStream
 import javax.inject.Inject
 
-const val tmpShared = "tmp_shared"
-const val tmpImgPath = "$tmpShared/tmp.jpg"
+const val TMP_SHARED = "tmp_shared"
+const val TMP_IMG_PATH = "$TMP_SHARED/tmp.jpg"
 const val PRIZE_IMAGES = "prize-images"
+private const val AD_CHECK_INTERVAL_MS = 20000L
+private const val COPY_BUFFER_SIZE = 1024
 
 @AndroidEntryPoint
 class GalleryActivity : AppCompatActivity() {
@@ -120,7 +141,7 @@ class GalleryActivity : AppCompatActivity() {
                 AdHelper.showAd(this)
             }
             handlerAdPosting()
-        }, 20000)
+        }, AD_CHECK_INTERVAL_MS)
     }
 }
 
@@ -145,12 +166,14 @@ fun ImageViewerScreen(galleryActivity: GalleryActivity) {
 fun ImageListScreen(navController: NavController, galleryActivity: GalleryActivity) {
     val context = LocalContext.current
     Box(modifier = Modifier.fillMaxSize()) {
-        TopAppBar(title = { Text(text = stringResource(id = R.string.uncovered_images)) },
+        TopAppBar(
+            title = { Text(text = stringResource(id = R.string.uncovered_images)) },
             navigationIcon = {
                 IconButton(onClick = { galleryActivity.finish() }) {
                     Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
                 }
-            })
+            }
+        )
         Spacer(modifier = Modifier.height(16.dp))
         LazyColumn(modifier = Modifier.padding(0.dp, 60.dp, 0.dp, 0.dp)) {
             val items = SettingsHelper(context).preferences.uncoveredPics
@@ -159,16 +182,17 @@ fun ImageListScreen(navController: NavController, galleryActivity: GalleryActivi
             }
         }
     }
-
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ImageListItem(imageResId: String, navController: NavController) {
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp)
-        .clickable { navController.navigate("imageDetail/$imageResId") }) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clickable { navController.navigate("imageDetail/$imageResId") }
+    ) {
         GlideImage(
             model = "file:///android_asset/$PRIZE_IMAGES/$imageResId",
             contentDescription = null,
@@ -178,6 +202,74 @@ fun ImageListItem(imageResId: String, navController: NavController) {
                 .clip(shape = MaterialTheme.shapes.medium),
             contentScale = ContentScale.Crop
         )
+    }
+}
+
+private fun previousImageUri(uncoveredPics: List<String>, currentFileName: String): String {
+    val index = uncoveredPics.indexOf(currentFileName)
+    return "file:///android_asset/$PRIZE_IMAGES/${uncoveredPics[(index - 1).coerceAtLeast(0)]}"
+}
+
+private fun nextImageUri(uncoveredPics: List<String>, currentFileName: String): String {
+    val index = uncoveredPics.indexOf(currentFileName)
+    return "file:///android_asset/$PRIZE_IMAGES/${uncoveredPics[(index + 1).coerceAtMost(uncoveredPics.size - 1)]}"
+}
+
+private fun shareImage(context: android.content.Context, currentPicture: String) {
+    val inputStream: InputStream =
+        context.assets.open("$PRIZE_IMAGES/${Uri.parse(currentPicture).lastPathSegment}")
+
+    val file = File(context.filesDir, TMP_IMG_PATH)
+    File(context.filesDir, TMP_SHARED).mkdirs()
+    file.delete()
+    val outputStream: OutputStream = FileOutputStream(file)
+    val buffer = ByteArray(COPY_BUFFER_SIZE)
+    var bytesRead: Int
+    while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+        outputStream.write(buffer, 0, bytesRead)
+    }
+    inputStream.close()
+    outputStream.close()
+    val shareIntent = Intent(Intent.ACTION_SEND)
+    val uri =
+        Uri.parse("content://com.batodev.sudoku.data.provider.ImagesProvider/$TMP_IMG_PATH")
+    shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
+    shareIntent.clipData = android.content.ClipData.newRawUri("", uri)
+    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    shareIntent.type = "image/*"
+    ContextCompat.startActivity(context, shareIntent, null)
+}
+
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalMaterial3Api::class)
+@Composable
+private fun ImageDetailNavigationRow(
+    context: android.content.Context,
+    currentPicture: androidx.compose.runtime.MutableState<String>
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        val currentPictureFileName =
+            currentPicture.value.substring(currentPicture.value.lastIndexOf("/") + 1)
+        val uncoveredPics = SettingsHelper(context).preferences.uncoveredPics
+        IconButton(onClick = {
+            currentPicture.value = previousImageUri(uncoveredPics, currentPictureFileName)
+        }) {
+            Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+        }
+        Spacer(modifier = Modifier.width(16.dp))
+        IconButton(onClick = {
+            currentPicture.value = nextImageUri(uncoveredPics, currentPictureFileName)
+        }) {
+            Icon(imageVector = Icons.Default.ArrowForward, contentDescription = null)
+        }
+        Spacer(modifier = Modifier.width(16.dp))
+        IconButton(onClick = {
+            shareImage(context, currentPicture.value)
+        }) {
+            Icon(imageVector = Icons.Default.Share, contentDescription = null)
+        }
     }
 }
 
@@ -193,12 +285,14 @@ fun ImageDetailScreen(resId: String, navController: NavController) {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
     ) {
-        TopAppBar(title = { Text(text = stringResource(id = R.string.uncovered_images)) },
+        TopAppBar(
+            title = { Text(text = stringResource(id = R.string.uncovered_images)) },
             navigationIcon = {
                 IconButton(onClick = { navController.popBackStack() }) {
                     Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
                 }
-            })
+            }
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -214,64 +308,9 @@ fun ImageDetailScreen(resId: String, navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
-        ) {
-            val currentPictureFileName =
-                currentPicture.value.substring(currentPicture.value.lastIndexOf("/") + 1)
-            val uncoveredPics = SettingsHelper(context).preferences.uncoveredPics
-            IconButton(onClick = {
-                val index = uncoveredPics.indexOf(currentPictureFileName)
-                currentPicture.value = "file:///android_asset/$PRIZE_IMAGES/${
-                    uncoveredPics[Math.max(
-                        0, index - 1
-                    )]
-                }"
-            }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
-            }
-            Spacer(modifier = Modifier.width(16.dp))
-            IconButton(onClick = {
-                val index = uncoveredPics.indexOf(currentPictureFileName)
-                currentPicture.value = "file:///android_asset/$PRIZE_IMAGES/${
-                    uncoveredPics[Math.min(
-                        uncoveredPics.size - 1, index + 1
-                    )]
-                }"
-            }) {
-                Icon(imageVector = Icons.Default.ArrowForward, contentDescription = null)
-            }
-            Spacer(modifier = Modifier.width(16.dp))
-            IconButton(onClick = {
-                val inputStream: InputStream =
-                    context.assets.open("$PRIZE_IMAGES/${Uri.parse(currentPicture.value).lastPathSegment}")
-
-                val file = File(context.filesDir, tmpImgPath)
-                File(context.filesDir, tmpShared).mkdirs()
-                file.delete()
-                val outputStream: OutputStream = FileOutputStream(file)
-                val buffer = ByteArray(1024)
-                var bytesRead: Int
-                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                    outputStream.write(buffer, 0, bytesRead)
-                }
-                inputStream.close()
-                outputStream.close()
-                val shareIntent = Intent(Intent.ACTION_SEND)
-                val uri =
-                    Uri.parse("content://com.batodev.sudoku.data.provider.ImagesProvider/$tmpImgPath")
-                shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
-                shareIntent.clipData = android.content.ClipData.newRawUri("", uri)
-                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                shareIntent.type = "image/*"
-                ContextCompat.startActivity(context, shareIntent, null)
-            }) {
-                Icon(imageVector = Icons.Default.Share, contentDescription = null)
-            }
-        }
+        ImageDetailNavigationRow(context, currentPicture)
     }
 }
-
 
 @HiltViewModel
 class GalleryActivityViewModel

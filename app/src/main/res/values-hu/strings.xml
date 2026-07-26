@@ -262,4 +262,17 @@
     <string name="uncovered_images">Fedetlen képek</string>
     <string name="game_completed">A játék befejeződött, új kép került a galériába</string>
     <string name="more_games_like_this">Még több ilyen játék</string>
+    <plurals name="number_puzzles_to_import">
+        <item quantity="one">%1$d rejtvény importálása</item>
+        <item quantity="other">%1$d rejtvény importálása</item>
+    </plurals>
+    <plurals name="puzzles_in_folder">
+        <item quantity="zero">Üres</item>
+        <item quantity="one">%1$d rejtvény</item>
+        <item quantity="other">%1$d rejtvény</item>
+    </plurals>
+    <plurals name="delete_selected_in_folder">
+        <item quantity="one">Biztosan törli a kiválasztott %1$d játékot\?</item>
+        <item quantity="other">Biztosan törli a kiválasztott %1$d játékot\?</item>
+    </plurals>
 </resources>

@@ -217,6 +217,10 @@
         <item quantity="one">%1$d bulmaca</item>
         <item quantity="other">%1$d bulmaca</item>
     </plurals>
+    <plurals name="delete_selected_in_folder">
+        <item quantity="one">%1$d oyunu silmek istediğinizden emin misiniz\?</item>
+        <item quantity="other">%1$d oyunu silmek istediğinizden emin misiniz\?</item>
+    </plurals>
     <string name="app_name">Sudoku ve dar elbiseler</string>
     <string name="nav_bar_gallery">Resim galerisi</string>
     <string name="no_value_default">--</string>

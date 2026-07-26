@@ -118,5 +118,4 @@ class StatisticsViewModel
             .count { it.completed && !it.giveUp && !it.canContinue } * 100f / savedGames.count()
             .toFloat()
     }
-
 }

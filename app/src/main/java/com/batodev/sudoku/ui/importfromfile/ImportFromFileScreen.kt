@@ -1,4 +1,4 @@
-package com.batodev.sudoku.ui.import_from_file
+package com.batodev.sudoku.ui.importfromfile
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -183,7 +183,8 @@ fun ImportFromFileScreen(
                             } else {
                                 viewModel.saveImported()
                             }
-                        }) {
+                        }
+                    ) {
                         Text(stringResource(R.string.action_save))
                     }
                 }

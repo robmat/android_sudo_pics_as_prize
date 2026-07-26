@@ -13,6 +13,7 @@ plugins {
     id("com.batodev.releasetools")
     id("com.github.ben-manes.versions")
     id("se.patrikerdes.use-latest-versions")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 var localProperties = Properties()
@@ -106,7 +107,14 @@ play {
     defaultToAppBundles.set(true)
 }
 
+detekt {
+    buildUponDefaultConfig = true
+    config.setFrom(files("$projectDir/config/detekt/detekt.yml"))
+}
+
 dependencies {
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
+
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.lifecycle.runtime.compose)

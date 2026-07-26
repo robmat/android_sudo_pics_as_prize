@@ -52,15 +52,15 @@ import com.batodev.sudoku.core.utils.AdHelper
 import com.batodev.sudoku.data.datastore.AppSettingsManager
 import com.batodev.sudoku.data.datastore.ThemeSettingsManager
 import com.batodev.sudoku.ui.components.animatedComposable
-import com.batodev.sudoku.ui.create_edit_sudoku.CreateSudokuScreen
-import com.batodev.sudoku.ui.explore_folder.ExploreFolderScreen
+import com.batodev.sudoku.ui.createeditsudoku.CreateSudokuScreen
+import com.batodev.sudoku.ui.explorefolder.ExploreFolderScreen
 import com.batodev.sudoku.ui.folders.FoldersScreen
 import com.batodev.sudoku.ui.gallery.GalleryActivity
 import com.batodev.sudoku.ui.game.GameScreen
 import com.batodev.sudoku.ui.gameshistory.GamesHistoryScreen
 import com.batodev.sudoku.ui.gameshistory.savedgame.SavedGameScreen
 import com.batodev.sudoku.ui.home.HomeScreen
-import com.batodev.sudoku.ui.import_from_file.ImportFromFileScreen
+import com.batodev.sudoku.ui.importfromfile.ImportFromFileScreen
 import com.batodev.sudoku.ui.learn.LearnScreen
 import com.batodev.sudoku.ui.more.MoreScreen
 import com.batodev.sudoku.ui.more.about.AboutLibrariesScreen
@@ -226,7 +226,7 @@ class MainActivity : AppCompatActivity() {
                             animatedComposable(Route.STATISTICS) {
                                 StatisticsScreen(
                                     navigateHistory = { navController.navigate(Route.HISTORY) },
-                                    navigateSavedGame = { navController.navigate("saved_game/${it}") },
+                                    navigateSavedGame = { navController.navigate("saved_game/$it") },
                                     hiltViewModel()
                                 )
                             }
@@ -236,7 +236,7 @@ class MainActivity : AppCompatActivity() {
                                     navigateBack = { navController.popBackStack() },
                                     navigateSavedGame = { uid ->
                                         navController.navigate(
-                                            "saved_game/${uid}"
+                                            "saved_game/$uid"
                                         )
                                     },
                                     hiltViewModel()
@@ -252,7 +252,7 @@ class MainActivity : AppCompatActivity() {
                             }
 
                             animatedComposable(
-                                route = "create_edit_sudoku/{game_uid}/{folder_uid}",
+                                route = "createeditsudoku/{game_uid}/{folder_uid}",
                                 arguments = listOf(
                                     navArgument("game_uid") {
                                         type = NavType.LongType
@@ -269,10 +269,12 @@ class MainActivity : AppCompatActivity() {
                             }
                             animatedComposable(
                                 route = Route.SETTINGS,
-                                arguments = listOf(navArgument("fromGame") {
-                                    defaultValue = false
-                                    type = NavType.BoolType
-                                })
+                                arguments = listOf(
+                                    navArgument("fromGame") {
+                                        defaultValue = false
+                                        type = NavType.BoolType
+                                    }
+                                )
                             ) {
                                 SettingsScreen(
                                     navigateBack = { navController.popBackStack() },
@@ -308,13 +310,13 @@ class MainActivity : AppCompatActivity() {
                                     navigateBack = { navController.popBackStack() },
                                     navigatePlayGame = { uid ->
                                         navController.navigate(
-                                            "game/${uid}/${true}"
+                                            "game/$uid/${true}"
                                         ) {
                                             popUpTo(Route.HISTORY)
                                         }
                                     },
                                     navigateToFolder = { uid ->
-                                        navController.navigate("explore_folder/$uid") {
+                                        navController.navigate("explorefolder/$uid") {
                                             popUpTo("history")
                                         }
                                     },
@@ -327,13 +329,13 @@ class MainActivity : AppCompatActivity() {
                                     viewModel = hiltViewModel(),
                                     navigateBack = { navController.popBackStack() },
                                     navigateExploreFolder = { uid ->
-                                        navController.navigate("explore_folder/$uid")
+                                        navController.navigate("explorefolder/$uid")
                                     },
                                     navigateImportSudokuFile = { uri ->
                                         navController.navigate("import_sudoku_file?$uri?-1")
                                     },
                                     navigateViewSavedGame = { uid ->
-                                        navController.navigate("saved_game/${uid}")
+                                        navController.navigate("saved_game/$uid")
                                     }
                                 )
                             }
@@ -357,7 +359,7 @@ class MainActivity : AppCompatActivity() {
                             }
 
                             animatedComposable(
-                                route = "explore_folder/{uid}",
+                                route = "explorefolder/{uid}",
                                 arguments = listOf(navArgument("uid") { type = NavType.LongType })
                             ) {
                                 ExploreFolderScreen(
@@ -367,7 +369,7 @@ class MainActivity : AppCompatActivity() {
                                         navController.navigate(
                                             "game/${args.first}/${args.second}"
                                         ) {
-                                            popUpTo("explore_folder/${args.third}")
+                                            popUpTo("explorefolder/${args.third}")
                                         }
                                     },
                                     navigateImportFromFile = { args ->
@@ -375,10 +377,10 @@ class MainActivity : AppCompatActivity() {
                                         navController.navigate("import_sudoku_file?${args.first}?${args.second}")
                                     },
                                     navigateEditGame = { args ->
-                                        navController.navigate("create_edit_sudoku/${args.first}/${args.second}")
+                                        navController.navigate("createeditsudoku/${args.first}/${args.second}")
                                     },
                                     navigateCreateSudoku = { folderUid ->
-                                        navController.navigate("create_edit_sudoku/-1/$folderUid")
+                                        navController.navigate("createeditsudoku/-1/$folderUid")
                                     }
                                 )
                             }
@@ -397,7 +399,9 @@ class MainActivity : AppCompatActivity() {
                                 if (activity != null) {
                                     val intentData = activity.intent.data
                                     if (intentData != null) {
-                                        navController.navigate("import_sudoku_file?${Uri.encode(intentData.toString())}?-1")
+                                        navController.navigate(
+                                            "import_sudoku_file?${Uri.encode(intentData.toString())}?-1"
+                                        )
                                     }
                                     LaunchedEffect(intentData) {
                                         if (activity.intent.data == null) {
@@ -484,7 +488,7 @@ fun NavigationBar(
                     selected = selectedScreen == Route.GALLERY,
                     label = {
                         Text(
-                            text = stringResource(  R.string.nav_bar_gallery),
+                            text = stringResource(R.string.nav_bar_gallery),
                             fontWeight = FontWeight.Bold
                         )
                     },

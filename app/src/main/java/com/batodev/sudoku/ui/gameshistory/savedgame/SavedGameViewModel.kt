@@ -40,6 +40,10 @@ class SavedGameViewModel
     themeSettingsManager: ThemeSettingsManager,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+    companion object {
+        private const val PERCENTAGE_MULTIPLIER = 100f
+    }
+
     val boardUid = savedStateHandle.get<Long>("uid")
 
     val fontSize = appSettingsManager.fontSize
@@ -113,7 +117,7 @@ class SavedGameViewModel
                 count =
                     totalCells - parsedCurrentBoard.sumOf { cells -> cells.count { cell -> cell.value == 0 } }
             }
-            _gameProgressPercentage.emit((count.toFloat() / totalCells.toFloat() * 100f).toInt())
+            _gameProgressPercentage.emit((count.toFloat() / totalCells.toFloat() * PERCENTAGE_MULTIPLIER).toInt())
         }
     }
 

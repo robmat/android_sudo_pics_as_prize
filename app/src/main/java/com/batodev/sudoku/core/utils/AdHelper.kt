@@ -16,7 +16,9 @@ object AdHelper {
         val adRequest: AdRequest = AdRequest.Builder().build()
 
         InterstitialAd.load(
-            activity, BuildConfig.AD_HELPER_AD_ID, adRequest,
+            activity,
+            BuildConfig.AD_HELPER_AD_ID,
+            adRequest,
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
                     // The mInterstitialAd reference will be null until
@@ -63,6 +65,7 @@ object AdHelper {
                     // Handle the error
                     Log.w(AdHelper::class.simpleName, "onAdLoaded: $loadAdError")
                 }
-            })
+            }
+        )
     }
 }

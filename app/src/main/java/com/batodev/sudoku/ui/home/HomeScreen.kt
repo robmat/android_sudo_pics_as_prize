@@ -68,14 +68,13 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround
         ) {
-
             val lastGame by viewModel.lastSavedGame.collectAsStateWithLifecycle()
 
             if (viewModel.readyToPlay) {
                 viewModel.readyToPlay = false
 
                 runBlocking {
-                    //viewModel.saveToDatabase()
+                    // viewModel.saveToDatabase()
                     val saved = lastGame?.completed ?: false
                     navigatePlayGame(Pair(viewModel.insertedBoardUid, saved))
                 }
@@ -157,7 +156,6 @@ fun HomeScreen(
                 }
             }
         }
-
 
         if (viewModel.isGenerating || viewModel.isSolving) {
             GeneratingDialog(

@@ -26,6 +26,8 @@ import androidx.lifecycle.viewModelScope
 import com.batodev.sudoku.LocalBoardColors
 import com.batodev.sudoku.R
 import com.batodev.sudoku.core.Cell
+import com.batodev.sudoku.core.qqwing.GameType
+import com.batodev.sudoku.core.utils.SudokuParser
 import com.batodev.sudoku.data.datastore.AppSettingsManager
 import com.batodev.sudoku.ui.components.board.Board
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -114,106 +116,11 @@ class WelcomeViewModel
 ) : ViewModel() {
     var selectedCell by mutableStateOf(Cell(-1, -1, 0))
 
-    val previewBoard = listOf(
-        listOf(
-            Cell(0, 0, 0),
-            Cell(0, 1, 0),
-            Cell(0, 2, 1),
-            Cell(0, 3, 0),
-            Cell(0, 4, 0),
-            Cell(0, 5, 0),
-            Cell(0, 6, 9),
-            Cell(0, 7, 0),
-            Cell(0, 8, 0)
-        ),
-        listOf(
-            Cell(1, 0, 0),
-            Cell(1, 1, 2),
-            Cell(1, 2, 0),
-            Cell(1, 3, 0),
-            Cell(1, 4, 1),
-            Cell(1, 5, 7),
-            Cell(1, 6, 0),
-            Cell(1, 7, 5),
-            Cell(1, 8, 4)
-        ),
-        listOf(
-            Cell(2, 0, 5),
-            Cell(2, 1, 0),
-            Cell(2, 2, 0),
-            Cell(2, 3, 0),
-            Cell(2, 4, 2),
-            Cell(2, 5, 4),
-            Cell(2, 6, 0),
-            Cell(2, 7, 0),
-            Cell(2, 8, 3)
-        ),
-        listOf(
-            Cell(3, 0, 2),
-            Cell(3, 1, 8),
-            Cell(3, 2, 0),
-            Cell(3, 3, 0),
-            Cell(3, 4, 0),
-            Cell(3, 5, 0),
-            Cell(3, 6, 0),
-            Cell(3, 7, 9),
-            Cell(3, 8, 0)
-        ),
-        listOf(
-            Cell(4, 0, 0),
-            Cell(4, 1, 0),
-            Cell(4, 2, 5),
-            Cell(4, 3, 2),
-            Cell(4, 4, 0),
-            Cell(4, 5, 0),
-            Cell(4, 6, 0),
-            Cell(4, 7, 4),
-            Cell(4, 8, 7)
-        ),
-        listOf(
-            Cell(5, 0, 0),
-            Cell(5, 1, 7),
-            Cell(5, 2, 4),
-            Cell(5, 3, 0),
-            Cell(5, 4, 9),
-            Cell(5, 5, 0),
-            Cell(5, 6, 0),
-            Cell(5, 7, 0),
-            Cell(5, 8, 1)
-        ),
-        listOf(
-            Cell(6, 0, 0),
-            Cell(6, 1, 0),
-            Cell(6, 2, 0),
-            Cell(6, 3, 0),
-            Cell(6, 4, 0),
-            Cell(6, 5, 0),
-            Cell(6, 6, 0),
-            Cell(6, 7, 0),
-            Cell(6, 8, 0)
-        ),
-        listOf(
-            Cell(7, 0, 0),
-            Cell(7, 1, 0),
-            Cell(7, 2, 9),
-            Cell(7, 3, 0),
-            Cell(7, 4, 0),
-            Cell(7, 5, 5),
-            Cell(7, 6, 0),
-            Cell(7, 7, 0),
-            Cell(7, 8, 0)
-        ),
-        listOf(
-            Cell(8, 0, 0),
-            Cell(8, 1, 0),
-            Cell(8, 2, 3),
-            Cell(8, 3, 0),
-            Cell(8, 4, 4),
-            Cell(8, 5, 0),
-            Cell(8, 6, 0),
-            Cell(8, 7, 0),
-            Cell(8, 8, 0)
-        ),
+    private val sudokuParser = SudokuParser()
+    val previewBoard = sudokuParser.parseBoard(
+        board = "..1...9...2..17.545...24..328.....9...52...47.74.9...1...........9..5.....3.4....",
+        gameType = GameType.Default9x9,
+        emptySeparator = '.'
     )
 
     fun setFirstLaunch(value: Boolean = false) {

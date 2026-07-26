@@ -16,7 +16,6 @@ import androidx.navigation.NavController
 import com.batodev.sudoku.LocalBoardColors
 import com.batodev.sudoku.R
 import com.batodev.sudoku.core.Cell
-import com.batodev.sudoku.core.Note
 import com.batodev.sudoku.core.qqwing.GameType
 import com.batodev.sudoku.core.utils.SudokuParser
 import com.batodev.sudoku.ui.components.board.Board
@@ -43,24 +42,8 @@ fun LearnHiddenPairs(
         }
         var notes by remember {
             mutableStateOf(
-                listOf(
-                    Note(3, 4, 4),
-                    Note(3, 4, 5),
-                    Note(3, 4, 8),
-                    Note(4, 3, 4),
-                    Note(4, 3, 5),
-                    Note(4, 3, 7),
-                    Note(4, 5, 4),
-                    Note(4, 5, 5),
-                    Note(5, 3, 6),
-                    Note(5, 3, 7),
-                    Note(5, 3, 8),
-                    Note(5, 3, 9),
-                    Note(5, 4, 7),
-                    Note(5, 4, 8),
-                    Note(5, 5, 6),
-                    Note(5, 5, 8),
-                    Note(5, 5, 9),
+                sudokuParser.parseNotes(
+                    "3,4,4;3,4,5;3,4,8;4,3,4;4,3,5;4,3,7;4,5,4;4,5,5;5,3,6;5,3,7;5,3,8;5,3,9;5,4,7;5,4,8;5,5,6;5,5,8;5,5,9;"
                 )
             )
         }
@@ -75,43 +58,10 @@ fun LearnHiddenPairs(
         LaunchedEffect(key1 = step) {
             when (step) {
                 0 -> {
-                    notes = listOf(
-                        Note(3, 4, 4),
-                        Note(3, 4, 5),
-                        Note(3, 4, 8),
-                        Note(4, 3, 4),
-                        Note(4, 3, 5),
-                        Note(4, 3, 7),
-                        Note(4, 5, 4),
-                        Note(4, 5, 5),
-                        Note(5, 3, 6),
-                        Note(5, 3, 7),
-                        Note(5, 3, 8),
-                        Note(5, 3, 9),
-                        Note(5, 4, 7),
-                        Note(5, 4, 8),
-                        Note(5, 5, 6),
-                        Note(5, 5, 8),
-                        Note(5, 5, 9)
-                    )
+                    notes = sudokuParser.parseNotes("3,4,4;3,4,5;3,4,8;4,3,4;4,3,5;4,3,7;4,5,4;4,5,5;5,3,6;5,3,7;5,3,8;5,3,9;5,4,7;5,4,8;5,5,6;5,5,8;5,5,9;")
                 }
                 1 -> {
-                    notes = listOf(
-                        Note(3, 4, 4),
-                        Note(3, 4, 5),
-                        Note(3, 4, 8),
-                        Note(4, 3, 4),
-                        Note(4, 3, 5),
-                        Note(4, 3, 7),
-                        Note(4, 5, 4),
-                        Note(4, 5, 5),
-                        Note(5, 3, 6),
-                        Note(5, 3, 9),
-                        Note(5, 4, 7),
-                        Note(5, 4, 8),
-                        Note(5, 5, 6),
-                        Note(5, 5, 9)
-                    )
+                    notes = sudokuParser.parseNotes("3,4,4;3,4,5;3,4,8;4,3,4;4,3,5;4,3,7;4,5,4;4,5,5;5,3,6;5,3,9;5,4,7;5,4,8;5,5,6;5,5,9;")
                 }
             }
         }

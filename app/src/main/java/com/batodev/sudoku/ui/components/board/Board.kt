@@ -51,6 +51,25 @@ import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.sqrt
 
+private const val MAIN_TEXT_SIZE_6X6_SP = 32
+private const val MAIN_TEXT_SIZE_9X9_SP = 26
+private const val MAIN_TEXT_SIZE_12X12_SP = 24
+private const val MAIN_TEXT_SIZE_DEFAULT_SP = 14
+private const val NOTE_TEXT_SIZE_6X6_SP = 18
+private const val NOTE_TEXT_SIZE_9X9_SP = 12
+private const val NOTE_TEXT_SIZE_12X12_SP = 7
+private const val NOTE_TEXT_SIZE_DEFAULT_SP = 14
+private const val LINE_WIDTH_DP = 1.3
+private const val BOARD_CORNER_RADIUS_PX = 15f
+private const val SELECTED_CELL_ALPHA = 0.2f
+private const val POSITION_LINE_ALPHA = 0.1f
+private const val HIGHLIGHT_CELL_ALPHA = 0.3f
+private const val MIN_ZOOM = 1f
+private const val MAX_ZOOM = 3f
+private const val ERROR_TEXT_COLOR_RED = 230
+private const val ERROR_TEXT_COLOR_GREEN = 67
+private const val ERROR_TEXT_COLOR_BLUE = 83
+
 @Composable
 fun Board(
     modifier: Modifier = Modifier,
@@ -58,16 +77,16 @@ fun Board(
     size: Int = board.size,
     notes: List<Note>? = null,
     mainTextSize: TextUnit = when (size) {
-        6 -> 32.sp
-        9 -> 26.sp
-        12 -> 24.sp
-        else -> 14.sp
+        6 -> MAIN_TEXT_SIZE_6X6_SP.sp
+        9 -> MAIN_TEXT_SIZE_9X9_SP.sp
+        12 -> MAIN_TEXT_SIZE_12X12_SP.sp
+        else -> MAIN_TEXT_SIZE_DEFAULT_SP.sp
     },
     noteTextSize: TextUnit = when (size) {
-        6 -> 18.sp
-        9 -> 12.sp
-        12 -> 7.sp
-        else -> 14.sp
+        6 -> NOTE_TEXT_SIZE_6X6_SP.sp
+        9 -> NOTE_TEXT_SIZE_9X9_SP.sp
+        12 -> NOTE_TEXT_SIZE_12X12_SP.sp
+        else -> NOTE_TEXT_SIZE_DEFAULT_SP.sp
     },
     selectedCell: Cell,
     onClick: (Cell) -> Unit,
@@ -115,8 +134,8 @@ fun Board(
         var fontSizePx = with(LocalDensity.current) { mainTextSize.toPx() }
         var noteSizePx = with(LocalDensity.current) { noteTextSize.toPx() }
 
-        val thinLineWidth = with(LocalDensity.current) { 1.3.dp.toPx() }
-        val thickLineWidth = with(LocalDensity.current) { 1.3.dp.toPx() }
+        val thinLineWidth = with(LocalDensity.current) { LINE_WIDTH_DP.dp.toPx() }
+        val thickLineWidth = with(LocalDensity.current) { LINE_WIDTH_DP.dp.toPx() }
 
         // paints
         // numbers
@@ -184,7 +203,7 @@ fun Board(
                 textSize = noteSizePx
             }
             errorTextPaint = Paint().apply {
-                color = Color(230, 67, 83).toArgb()
+                color = Color(ERROR_TEXT_COLOR_RED, ERROR_TEXT_COLOR_GREEN, ERROR_TEXT_COLOR_BLUE).toArgb()
                 isAntiAlias = true
                 textSize = fontSizePx
             }
@@ -231,10 +250,10 @@ fun Board(
                     onGesture = { gestureCentroid, gesturePan, gestureZoom, _ ->
                         if (enabled) {
                             val oldScale = zoom
-                            val newScale = (zoom * gestureZoom).coerceIn(1f..3f)
+                            val newScale = (zoom * gestureZoom).coerceIn(MIN_ZOOM..MAX_ZOOM)
 
                             offset = (offset + gestureCentroid / oldScale) -
-                                    (gestureCentroid / newScale + gesturePan / oldScale)
+                                (gestureCentroid / newScale + gesturePan / oldScale)
 
                             zoom = newScale
                             if (offset.x < 0) {
@@ -264,7 +283,7 @@ fun Board(
             if (selectedCell.row >= 0 && selectedCell.col >= 0) {
                 // current cell
                 drawRect(
-                    color = highlightColor.copy(alpha = 0.2f),
+                    color = highlightColor.copy(alpha = SELECTED_CELL_ALPHA),
                     topLeft = Offset(
                         x = selectedCell.col * cellSize,
                         y = selectedCell.row * cellSize
@@ -274,7 +293,7 @@ fun Board(
                 if (positionLines) {
                     // vertical position line
                     drawRect(
-                        color = highlightColor.copy(alpha = 0.1f),
+                        color = highlightColor.copy(alpha = POSITION_LINE_ALPHA),
                         topLeft = Offset(
                             x = selectedCell.col * cellSize,
                             y = 0f
@@ -283,7 +302,7 @@ fun Board(
                     )
                     // horizontal position line
                     drawRect(
-                        color = highlightColor.copy(alpha = 0.1f),
+                        color = highlightColor.copy(alpha = POSITION_LINE_ALPHA),
                         topLeft = Offset(
                             x = 0f,
                             y = selectedCell.row * cellSize
@@ -297,7 +316,7 @@ fun Board(
                     for (j in 0 until size) {
                         if (board[i][j].value == selectedCell.value && board[i][j].value != 0) {
                             drawRect(
-                                color = highlightColor.copy(alpha = 0.2f),
+                                color = highlightColor.copy(alpha = SELECTED_CELL_ALPHA),
                                 topLeft = Offset(
                                     x = board[i][j].col * cellSize,
                                     y = board[i][j].row * cellSize
@@ -310,7 +329,7 @@ fun Board(
             }
             cellsToHighlight?.forEach {
                 drawRect(
-                    color = highlightColor.copy(alpha = 0.3f),
+                    color = highlightColor.copy(alpha = HIGHLIGHT_CELL_ALPHA),
                     topLeft = Offset(
                         x = it.col * cellSize,
                         y = it.row * cellSize
@@ -323,7 +342,7 @@ fun Board(
                 thickLineColor = thickLineColor,
                 thickLineWidth = thickLineWidth,
                 maxWidth = maxWidth,
-                cornerRadius = CornerRadius(15f, 15f)
+                cornerRadius = CornerRadius(BOARD_CORNER_RADIUS_PX, BOARD_CORNER_RADIUS_PX)
             )
 
             // horizontal line
@@ -464,14 +483,18 @@ private fun DrawScope.drawNotes(
             val noteTextMeasure = paint.measureText(textToDraw)
             canvas.nativeCanvas.drawText(
                 textToDraw,
-                note.col * cellSize + cellSizeDivWidth / 2f + (cellSizeDivWidth * getNoteRowNumber(
-                    note.value,
-                    size
-                )) - noteTextMeasure / 2f,
-                note.row * cellSize + cellSizeDivHeight / 2f + (cellSizeDivHeight * getNoteColumnNumber(
-                    note.value,
-                    size
-                )) + noteBounds.height() / 2f,
+                note.col * cellSize + cellSizeDivWidth / 2f + (
+                    cellSizeDivWidth * getNoteRowNumber(
+                        note.value,
+                        size
+                    )
+                    ) - noteTextMeasure / 2f,
+                note.row * cellSize + cellSizeDivHeight / 2f + (
+                    cellSizeDivHeight * getNoteColumnNumber(
+                        note.value,
+                        size
+                    )
+                    ) + noteBounds.height() / 2f,
                 paint
             )
         }
@@ -550,7 +573,7 @@ private fun BoardPreviewLight() {
                     ).toList()
                 )
             }
-            val notes = listOf(Note(2, 3, 1), Note(2, 3, 5))
+            val notes = sudokuParser.parseNotes("2,3,1;2,3,5;")
             Board(
                 board = board,
                 notes = notes,

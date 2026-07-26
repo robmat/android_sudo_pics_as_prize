@@ -31,5 +31,4 @@ object ColorUtils {
             to = 1.0
         ) fraction: Float = 0.2f
     ): Color = blend(MaterialTheme.colorScheme.primary, fraction)
-
 }

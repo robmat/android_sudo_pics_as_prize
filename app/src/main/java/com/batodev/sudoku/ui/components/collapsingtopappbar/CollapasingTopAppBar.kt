@@ -1,4 +1,4 @@
-package com.batodev.sudoku.ui.components.collapsing_topappbar
+package com.batodev.sudoku.ui.components.collapsingtopappbar
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Box
@@ -66,8 +66,11 @@ fun CollapsingTopAppBar(
     }
 
     val containerColor = animateColorAsState(
-        if (showElevation) MaterialTheme.colorScheme.surfaceColorAtElevation(collapsedElevation)
-        else MaterialTheme.colorScheme.surface
+        if (showElevation) {
+            MaterialTheme.colorScheme.surfaceColorAtElevation(collapsedElevation)
+        } else {
+            MaterialTheme.colorScheme.surface
+        }
     )
 
     Surface(
@@ -156,7 +159,6 @@ fun CollapsingTopAppBar(
             val expandedTitleBottomPaddingPx = ExpandedTitleBottomPadding.toPx()
             val expandedTitleTopPadding = ExpandedTitleTopPadding.toPx()
 
-
             // Measuring widgets inside TopAppBar:
 
             val navigationIconPlaceable =
@@ -220,7 +222,6 @@ fun CollapsingTopAppBar(
 
             var layoutHeightPx = collapsedHeightPx
 
-
             // Calculating coordinates of widgets inside TopAppBar:
 
             // Current coordinates of navigation icon
@@ -229,8 +230,12 @@ fun CollapsingTopAppBar(
                 ((collapsedHeightPx - (navigationIconPlaceable?.height ?: 0)) / 2).roundToInt()
 
             // Current coordinates of actions
-            val actionsX = (constraints.maxWidth - (actionsPlaceable?.width
-                ?: 0) - horizontalPaddingPx).roundToInt()
+            val actionsX = (
+                constraints.maxWidth - (
+                    actionsPlaceable?.width
+                        ?: 0
+                    ) - horizontalPaddingPx
+                ).roundToInt()
             val actionsY = ((collapsedHeightPx - (actionsPlaceable?.height ?: 0)) / 2).roundToInt()
 
             // Current coordinates of title
@@ -274,7 +279,6 @@ fun CollapsingTopAppBar(
             val topAppBarHeightPx =
                 layoutHeightPx.roundToInt() + (additionalContentPlaceable?.height ?: 0)
 
-
             // Placing TopAppBar widgets:
 
             layout(constraints.maxWidth, topAppBarHeightPx) {
@@ -313,10 +317,8 @@ fun CollapsingTopAppBar(
                 )
             }
         }
-
     }
 }
-
 
 private fun lerp(a: Float, b: Float, fraction: Float): Float {
     return a + fraction * (b - a)
@@ -345,7 +347,6 @@ data class CollapsingTitle(
                 MaterialTheme.colorScheme.onSurface
             )
     }
-
 }
 
 private val MinCollapsedHeight = 64.dp

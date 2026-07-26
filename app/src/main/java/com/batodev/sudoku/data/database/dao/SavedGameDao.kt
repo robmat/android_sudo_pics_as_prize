@@ -1,6 +1,11 @@
 package com.batodev.sudoku.data.database.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.batodev.sudoku.data.database.model.SavedGame
 import com.batodev.sudoku.data.database.model.SudokuBoard
 import kotlinx.coroutines.flow.Flow
@@ -15,16 +20,16 @@ interface SavedGameDao {
 
     @Query(
         "SELECT * FROM saved_game " +
-                "JOIN board ON saved_game.board_uid == board.uid " +
-                "ORDER BY uid DESC"
+            "JOIN board ON saved_game.board_uid == board.uid " +
+            "ORDER BY uid DESC"
     )
     fun getSavedWithBoards(): Flow<Map<SavedGame, SudokuBoard>>
 
     @Query(
         "SELECT * " +
-                "FROM saved_game " +
-                "ORDER BY board_uid DESC " +
-                "LIMIT 1"
+            "FROM saved_game " +
+            "ORDER BY board_uid DESC " +
+            "LIMIT 1"
     )
     fun getLast(): Flow<SavedGame?>
 

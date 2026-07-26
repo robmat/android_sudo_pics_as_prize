@@ -128,7 +128,9 @@ fun StatisticsScreen(
             if (recordListState.value.isNotEmpty()) {
                 var averageTime by remember {
                     mutableStateOf(
-                        DateUtils.formatElapsedTime(recordListState.value.sumOf { it.time.seconds } / recordListState.value.count())
+                        DateUtils.formatElapsedTime(
+                            recordListState.value.sumOf { it.time.seconds } / recordListState.value.count()
+                        )
                     )
                 }
                 var bestTime by remember {
@@ -144,7 +146,6 @@ fun StatisticsScreen(
                     bestTime = DateUtils.formatElapsedTime(
                         recordListState.value.first().time.seconds
                     )
-
                 }
                 StatisticsSection(
                     title = stringResource(R.string.time),
@@ -219,13 +220,13 @@ fun StatisticsScreen(
                 StatsSectionName(
                     modifier = Modifier.padding(start = 12.dp, top = 12.dp),
                     title = stringResource(R.string.number_best_games, 5) +
-                            if (viewModel.selectedType != GameType.Unspecified && viewModel.selectedDifficulty != GameDifficulty.Unspecified
-                            ) {
-                                " ${stringResource(viewModel.selectedType.resName).lowercase()} " +
-                                        stringResource(viewModel.selectedDifficulty.resName).lowercase()
-                            } else {
-                                ""
-                            },
+                        if (viewModel.selectedType != GameType.Unspecified && viewModel.selectedDifficulty != GameDifficulty.Unspecified
+                        ) {
+                            " ${stringResource(viewModel.selectedType.resName).lowercase()} " +
+                                stringResource(viewModel.selectedDifficulty.resName).lowercase()
+                        } else {
+                            ""
+                        },
                     painter = painterResource(R.drawable.ic_outline_star_24)
                 )
                 Box(
@@ -282,7 +283,6 @@ fun StatisticsScreen(
         }
     }
 }
-
 
 @Composable
 fun ShowDeleteDialog(
@@ -354,7 +354,6 @@ fun StatisticsSection(
             Column(
                 modifier = Modifier.padding(12.dp)
             ) {
-
                 statRows.forEachIndexed { index, arr ->
                     StatRow(
                         startText = arr[0],
@@ -372,7 +371,6 @@ fun StatisticsSection(
         }
     }
 }
-
 
 @Composable
 fun StatsSectionName(

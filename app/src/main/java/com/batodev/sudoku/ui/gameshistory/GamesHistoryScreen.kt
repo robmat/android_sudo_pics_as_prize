@@ -61,7 +61,7 @@ import com.batodev.sudoku.ui.components.AnimatedIconFilterChip
 import com.batodev.sudoku.ui.components.EmptyScreen
 import com.batodev.sudoku.ui.components.ScrollbarLazyColumn
 import com.batodev.sudoku.ui.components.board.BoardPreview
-import com.batodev.sudoku.ui.create_edit_sudoku.GameStateFilter
+import com.batodev.sudoku.ui.createeditsudoku.GameStateFilter
 import com.batodev.sudoku.ui.util.disableSplitMotionEvents
 import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
@@ -149,7 +149,6 @@ fun GamesHistoryScreen(
                             type = stringResource(game.second.type.resName),
                             onClick = {
                                 navigateSavedGame(game.first.uid)
-
                             },
                             dateTimeFormatter = AppSettingsManager.dateFormat(dateFormat)
                         )
@@ -321,7 +320,6 @@ fun SudokuHistoryItem(
                     )
                     Text(stringResource(R.string.history_item_id, savedGame.uid))
                 }
-
 
                 if (savedGame.startedAt != null) {
                     val startedAtDate by remember(savedGame) {

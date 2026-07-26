@@ -1,4 +1,4 @@
-package com.batodev.sudoku.ui.explore_folder
+package com.batodev.sudoku.ui.explorefolder
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

@@ -24,7 +24,6 @@ class ZonedDateTimeConverter {
         } else {
             null
         }
-
     }
 
     /**

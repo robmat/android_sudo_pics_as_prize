@@ -262,4 +262,17 @@
     <string name="uncovered_images">تصاویر بدون پوشش</string>
     <string name="game_completed">بازی تکمیل شد، تصویر جدید به گالری اضافه شد</string>
     <string name="more_games_like_this">بازی های بیشتری از این دست</string>
+    <plurals name="number_puzzles_to_import">
+        <item quantity="one">%1$d پازل برای وارد کردن</item>
+        <item quantity="other">%1$d پازل برای وارد کردن</item>
+    </plurals>
+    <plurals name="puzzles_in_folder">
+        <item quantity="zero">خالی</item>
+        <item quantity="one">%1$d پازل</item>
+        <item quantity="other">%1$d پازل</item>
+    </plurals>
+    <plurals name="delete_selected_in_folder">
+        <item quantity="one">آیا مطمئن هستید که می‌خواهید %1$d بازی را حذف کنید\?</item>
+        <item quantity="other">آیا مطمئن هستید که می‌خواهید %1$d بازی را حذف کنید\?</item>
+    </plurals>
 </resources>

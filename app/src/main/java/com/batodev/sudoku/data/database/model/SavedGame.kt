@@ -10,12 +10,14 @@ import java.time.ZonedDateTime
 
 @Entity(
     tableName = "saved_game",
-    foreignKeys = [ForeignKey(
-        onDelete = CASCADE,
-        entity = SudokuBoard::class,
-        parentColumns = arrayOf("uid"),
-        childColumns = arrayOf("board_uid")
-    )]
+    foreignKeys = [
+        ForeignKey(
+            onDelete = CASCADE,
+            entity = SudokuBoard::class,
+            parentColumns = arrayOf("uid"),
+            childColumns = arrayOf("board_uid")
+        )
+    ]
 )
 data class SavedGame(
     @PrimaryKey

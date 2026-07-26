@@ -36,6 +36,14 @@ import com.batodev.sudoku.core.qqwing.GameType
 import com.batodev.sudoku.ui.theme.SudokuTheme
 import com.batodev.sudoku.ui.util.LightDarkPreview
 
+private const val KEYBOARD_NUMBER_FONT_SIZE_SP = 25
+private const val KEYBOARD_NUMBER_FONT_SIZE_NO_USES_SP = 36
+private const val KEYBOARD_REMAINING_USES_FONT_SIZE_SP = 11
+private const val KEYBOARD_12X12_ROW_SIZE = 6
+private const val SELECTED_ITEM_ALPHA = 0.5f
+private const val PREVIEW_REMAINING_USES = 5
+private const val HEX_RADIX = 16
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun KeyboardItem(
@@ -48,13 +56,17 @@ fun KeyboardItem(
 ) {
     val mutableInteractionSource by remember { mutableStateOf(MutableInteractionSource()) }
     val color by animateColorAsState(
-        targetValue = if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else Color.Transparent
+        targetValue = if (selected) {
+            MaterialTheme.colorScheme.primary.copy(alpha = SELECTED_ITEM_ALPHA)
+        } else {
+            Color.Transparent
+        }
     )
     val localView = LocalView.current
     val keyboardFontSize = if (remainingUses != null) {
-        25.sp
+        KEYBOARD_NUMBER_FONT_SIZE_SP.sp
     } else {
-        36.sp
+        KEYBOARD_NUMBER_FONT_SIZE_NO_USES_SP.sp
     }
     Box(
         modifier = modifier
@@ -82,14 +94,14 @@ fun KeyboardItem(
             verticalArrangement = Arrangement.Top
         ) {
             Text(
-                text = number.toString(16).uppercase(),
+                text = number.toString(HEX_RADIX).uppercase(),
                 fontWeight = FontWeight.Bold,
                 fontSize = keyboardFontSize,
             )
             if (remainingUses != null) {
                 Text(
                     text = remainingUses.toString(),
-                    fontSize = 11.sp
+                    fontSize = KEYBOARD_REMAINING_USES_FONT_SIZE_SP.sp
                 )
             }
         }
@@ -113,13 +125,16 @@ fun DefaultGameKeyboard(
     ) {
         if (size == GameType.Default12x12.size) {
             // double-height keyboard only for 12x12
-            val chunkedNumbers = numbers.chunked(6)
+            val chunkedNumbers = numbers.chunked(KEYBOARD_12X12_ROW_SIZE)
             if (chunkedNumbers.size == 2) {
                 chunkedNumbers.forEachIndexed { index, chunked ->
                     AnimatedVisibility(
                         visible =
-                        (remainingUses != null && remainingUses.chunked(6)[index].any { it > 0 }) ||
-                                remainingUses == null
+                        (
+                            remainingUses != null &&
+                                remainingUses.chunked(KEYBOARD_12X12_ROW_SIZE)[index].any { it > 0 }
+                            ) ||
+                            remainingUses == null
                     ) {
                         KeyboardRow {
                             chunked.forEach { number ->
@@ -203,7 +218,6 @@ private fun KeyboardRow(
     }
 }
 
-
 @LightDarkPreview
 @Composable
 private fun KeyboardItemPreview() {
@@ -223,12 +237,12 @@ private fun KeyboardItemPreview() {
                 )
                 KeyboardItem(
                     number = 1,
-                    remainingUses = 5,
+                    remainingUses = PREVIEW_REMAINING_USES,
                     onClick = { }
                 )
                 KeyboardItem(
                     number = 1,
-                    remainingUses = 5,
+                    remainingUses = PREVIEW_REMAINING_USES,
                     selected = true,
                     onClick = { }
                 )
@@ -236,7 +250,6 @@ private fun KeyboardItemPreview() {
         }
     }
 }
-
 
 @LightDarkPreview
 @Composable
@@ -246,8 +259,8 @@ private fun KeyboardPreview9x9() {
             DefaultGameKeyboard(
                 onClick = { },
                 onLongClick = { },
-                size = 9,
-                remainingUses = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9)
+                size = GameType.Default9x9.size,
+                remainingUses = (1..GameType.Default9x9.size).toList()
             )
         }
     }
@@ -261,8 +274,8 @@ private fun KeyboardPreview12x12() {
             DefaultGameKeyboard(
                 onClick = { },
                 onLongClick = { },
-                size = 12,
-                remainingUses = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+                size = GameType.Default12x12.size,
+                remainingUses = (1..GameType.Default12x12.size).toList()
             )
         }
     }

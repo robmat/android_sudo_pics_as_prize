@@ -18,7 +18,6 @@ class SudokuUtils {
         return cell.col - cell.col % sectionWidth until (cell.col - cell.col % sectionWidth) + sectionWidth
     }
 
-
     // returns candidates for given cell
     fun getCandidates(
         board: List<List<Cell>>,
@@ -56,18 +55,18 @@ class SudokuUtils {
         val sudokuUtils = SudokuUtils()
         for (i in sudokuUtils.getBoxRowRange(cell, type.sectionHeight)) {
             for (j in sudokuUtils.getBoxColRange(cell, type.sectionWidth)) {
-                if (board[i][j].value != 0 && board[i][j].value == cell.value &&
+                val isDuplicateInBox = board[i][j].value != 0 && board[i][j].value == cell.value &&
                     (i != cell.row || j != cell.col)
-                ) {
+                if (isDuplicateInBox) {
                     return false
                 }
             }
         }
 
         for (i in 0 until type.size) {
-            if ((board[i][cell.col].value == cell.value && i != cell.row) ||
+            val isDuplicateInRowOrCol = (board[i][cell.col].value == cell.value && i != cell.row) ||
                 (board[cell.row][i].value == cell.value && i != cell.col)
-            ) {
+            if (isDuplicateInRowOrCol) {
                 return false
             }
         }
@@ -89,17 +88,9 @@ class SudokuUtils {
 
     // compute all candidates for empty cells and returns them as notes
     fun computeNotes(board: List<List<Cell>>, type: GameType): List<Note> {
-        var notes = emptyList<Note>()
-        board.forEach { cells ->
-            cells.forEach { cell ->
-                if (cell.value == 0) {
-                    getCandidates(board, cell, type).forEach {
-                        notes = notes.plus(Note(cell.row, cell.col, it))
-                    }
-                }
-            }
-        }
-        return notes
+        return board.flatten()
+            .filter { it.value == 0 }
+            .flatMap { cell -> getCandidates(board, cell, type).map { Note(cell.row, cell.col, it) } }
     }
 
     fun autoEraseNotes(
@@ -131,37 +122,34 @@ class SudokuUtils {
     // factor: 0 - small, 1 medium (default), 2 - big
     fun getFontSize(type: GameType, factor: Int): TextUnit {
         return when (type) {
-            GameType.Unspecified -> {
-                when (factor) {
-                    1 -> 26.sp
-                    2 -> 34.sp
-                    else -> 22.sp
-                }
-            }
-
-            GameType.Default9x9 -> {
-                when (factor) {
-                    1 -> 28.sp
-                    2 -> 36.sp
-                    else -> 22.sp
-                }
-            }
-
-            GameType.Default12x12 -> {
-                when (factor) {
-                    1 -> 24.sp
-                    2 -> 32.sp
-                    else -> 18.sp
-                }
-            }
-
-            GameType.Default6x6 -> {
-                when (factor) {
-                    1 -> 34.sp
-                    2 -> 40.sp
-                    else -> 24.sp
-                }
-            }
+            GameType.Unspecified -> fontSizeUnspecified(factor)
+            GameType.Default9x9 -> fontSize9x9(factor)
+            GameType.Default12x12 -> fontSize12x12(factor)
+            GameType.Default6x6 -> fontSize6x6(factor)
         }
+    }
+
+    private fun fontSizeUnspecified(factor: Int): TextUnit = when (factor) {
+        1 -> 26.sp
+        2 -> 34.sp
+        else -> 22.sp
+    }
+
+    private fun fontSize9x9(factor: Int): TextUnit = when (factor) {
+        1 -> 28.sp
+        2 -> 36.sp
+        else -> 22.sp
+    }
+
+    private fun fontSize12x12(factor: Int): TextUnit = when (factor) {
+        1 -> 24.sp
+        2 -> 32.sp
+        else -> 18.sp
+    }
+
+    private fun fontSize6x6(factor: Int): TextUnit = when (factor) {
+        1 -> 34.sp
+        2 -> 40.sp
+        else -> 24.sp
     }
 }

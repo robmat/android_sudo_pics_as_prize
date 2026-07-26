@@ -30,11 +30,13 @@ import com.batodev.sudoku.LocalBoardColors
 import com.batodev.sudoku.R
 import com.batodev.sudoku.core.Cell
 import com.batodev.sudoku.core.PreferencesConstants
+import com.batodev.sudoku.core.qqwing.GameType
+import com.batodev.sudoku.core.utils.SudokuParser
 import com.batodev.sudoku.ui.components.PreferenceRowSwitch
 import com.batodev.sudoku.ui.components.board.Board
-import com.batodev.sudoku.ui.components.collapsing_topappbar.CollapsingTitle
-import com.batodev.sudoku.ui.components.collapsing_topappbar.CollapsingTopAppBar
-import com.batodev.sudoku.ui.components.collapsing_topappbar.rememberTopAppBarScrollBehavior
+import com.batodev.sudoku.ui.components.collapsingtopappbar.CollapsingTitle
+import com.batodev.sudoku.ui.components.collapsingtopappbar.CollapsingTopAppBar
+import com.batodev.sudoku.ui.components.collapsingtopappbar.rememberTopAppBarScrollBehavior
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,51 +62,63 @@ fun SettingsBoardTheme(
             )
         }
     ) { paddingValues ->
-        Column(
+        BoardThemeSettingsContent(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-        ) {
-            val positionLines by viewModel.positionLines.collectAsStateWithLifecycle(initialValue = PreferencesConstants.DEFAULT_POSITION_LINES)
-            val highlightMistakes by viewModel.highlightMistakes.collectAsState(initial = PreferencesConstants.DEFAULT_HIGHLIGHT_MISTAKES)
-            val boardCrossHighlight by viewModel.crossHighlight.collectAsState(initial = PreferencesConstants.DEFAULT_BOARD_CROSS_HIGHLIGHT)
-            BoardPreviewTheme(
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 16.dp),
-                positionLines = positionLines,
-                errosHighlight = highlightMistakes != 0,
-                crossHighlight = boardCrossHighlight
-            )
+                .verticalScroll(rememberScrollState()),
+            viewModel = viewModel
+        )
+    }
+}
 
-            val monetSudokuBoard by viewModel.monetSudokuBoard.collectAsStateWithLifecycle(
-                PreferencesConstants.DEFAULT_MONET_SUDOKU_BOARD
-            )
-            PreferenceRowSwitch(
-                title = stringResource(R.string.pref_boardtheme_accent),
-                subtitle = stringResource(R.string.pref_boardtheme_accent_subtitle),
-                checked = monetSudokuBoard,
-                painter = rememberVectorPainter(Icons.Outlined.Palette),
-                onClick = {
-                    viewModel.updateMonetSudokuBoardSetting(!monetSudokuBoard)
-                }
-            )
+@Composable
+private fun BoardThemeSettingsContent(modifier: Modifier, viewModel: SettingsBoardThemeViewModel) {
+    Column(modifier = modifier) {
+        val positionLines by viewModel.positionLines.collectAsStateWithLifecycle(
+            initialValue = PreferencesConstants.DEFAULT_POSITION_LINES
+        )
+        val highlightMistakes by viewModel.highlightMistakes.collectAsState(
+            initial = PreferencesConstants.DEFAULT_HIGHLIGHT_MISTAKES
+        )
+        val boardCrossHighlight by viewModel.crossHighlight.collectAsState(
+            initial = PreferencesConstants.DEFAULT_BOARD_CROSS_HIGHLIGHT
+        )
+        BoardPreviewTheme(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 16.dp),
+            positionLines = positionLines,
+            errosHighlight = highlightMistakes != 0,
+            crossHighlight = boardCrossHighlight
+        )
 
-            PreferenceRowSwitch(
-                title = stringResource(R.string.pref_position_lines),
-                subtitle = stringResource(R.string.pref_position_lines_summ),
-                checked = positionLines,
-                painter = rememberVectorPainter(Icons.Rounded.GridGoldenratio),
-                onClick = { viewModel.updatePositionLinesSetting(!positionLines) }
-            )
+        val monetSudokuBoard by viewModel.monetSudokuBoard.collectAsStateWithLifecycle(
+            PreferencesConstants.DEFAULT_MONET_SUDOKU_BOARD
+        )
+        PreferenceRowSwitch(
+            title = stringResource(R.string.pref_boardtheme_accent),
+            subtitle = stringResource(R.string.pref_boardtheme_accent_subtitle),
+            checked = monetSudokuBoard,
+            painter = rememberVectorPainter(Icons.Outlined.Palette),
+            onClick = {
+                viewModel.updateMonetSudokuBoardSetting(!monetSudokuBoard)
+            }
+        )
 
-            PreferenceRowSwitch(
-                title = stringResource(R.string.pref_cross_highlight),
-                subtitle = stringResource(R.string.pref_cross_highlight_subtitle),
-                checked = boardCrossHighlight,
-                painter = rememberVectorPainter(Icons.Rounded.GridOn),
-                onClick = { viewModel.updateBoardCrossHighlight(!boardCrossHighlight) }
-            )
-        }
+        PreferenceRowSwitch(
+            title = stringResource(R.string.pref_position_lines),
+            subtitle = stringResource(R.string.pref_position_lines_summ),
+            checked = positionLines,
+            painter = rememberVectorPainter(Icons.Rounded.GridGoldenratio),
+            onClick = { viewModel.updatePositionLinesSetting(!positionLines) }
+        )
+
+        PreferenceRowSwitch(
+            title = stringResource(R.string.pref_cross_highlight),
+            subtitle = stringResource(R.string.pref_cross_highlight_subtitle),
+            checked = boardCrossHighlight,
+            painter = rememberVectorPainter(Icons.Rounded.GridOn),
+            onClick = { viewModel.updateBoardCrossHighlight(!boardCrossHighlight) }
+        )
     }
 }
 
@@ -115,107 +129,20 @@ private fun BoardPreviewTheme(
     crossHighlight: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val previewBoard = listOf(
-        listOf(
-            Cell(0, 0, 0, locked = true),
-            Cell(0, 1, 0, locked = true),
-            Cell(0, 2, 1, locked = true),
-            Cell(0, 3, 0, locked = true),
-            Cell(0, 4, 0, locked = true),
-            Cell(0, 5, 0, locked = true),
-            Cell(0, 6, 9, locked = true),
-            Cell(0, 7, 0, locked = true),
-            Cell(0, 8, 0, locked = true)
-        ),
-        listOf(
-            Cell(1, 0, 0, locked = true),
-            Cell(1, 1, 2, locked = false),
-            Cell(1, 2, 0, locked = true),
-            Cell(1, 3, 0, locked = true),
-            Cell(1, 4, 1, locked = true),
-            Cell(1, 5, 7, locked = true),
-            Cell(1, 6, 0, locked = true),
-            Cell(1, 7, 5, locked = true),
-            Cell(1, 8, 4, locked = true)
-        ),
-        listOf(
-            Cell(2, 0, 5, locked = false),
-            Cell(2, 1, 0, locked = true),
-            Cell(2, 2, 0, locked = true),
-            Cell(2, 3, 0, locked = true),
-            Cell(2, 4, 2, locked = true),
-            Cell(2, 5, 4, locked = true),
-            Cell(2, 6, 0, locked = true),
-            Cell(2, 7, 0, locked = true),
-            Cell(2, 8, 3, locked = true)
-        ),
-        listOf(
-            Cell(3, 0, 2, locked = true),
-            Cell(3, 1, 8, locked = true),
-            Cell(3, 2, 0, locked = true),
-            Cell(3, 3, 0, locked = true),
-            Cell(3, 4, 0, locked = true),
-            Cell(3, 5, 0, locked = true),
-            Cell(3, 6, 0, locked = true),
-            Cell(3, 7, 9, locked = true),
-            Cell(3, 8, 0, locked = true)
-        ),
-        listOf(
-            Cell(4, 0, 0, locked = true),
-            Cell(4, 1, 0, locked = true),
-            Cell(4, 2, 5, locked = true),
-            Cell(4, 3, 2, locked = true),
-            Cell(4, 4, 9, error = true),
-            Cell(4, 5, 0, locked = true),
-            Cell(4, 6, 0, locked = true),
-            Cell(4, 7, 4, locked = true),
-            Cell(4, 8, 7, locked = true)
-        ),
-        listOf(
-            Cell(5, 0, 0, locked = true),
-            Cell(5, 1, 7, locked = true),
-            Cell(5, 2, 4, locked = true),
-            Cell(5, 3, 0, locked = true),
-            Cell(5, 4, 9, locked = false),
-            Cell(5, 5, 0, locked = true),
-            Cell(5, 6, 0, locked = true),
-            Cell(5, 7, 0, locked = true),
-            Cell(5, 8, 1, locked = false)
-        ),
-        listOf(
-            Cell(6, 0, 0, locked = true),
-            Cell(6, 1, 0, locked = true),
-            Cell(6, 2, 0, locked = true),
-            Cell(6, 3, 0, locked = true),
-            Cell(6, 4, 0, locked = true),
-            Cell(6, 5, 0, locked = true),
-            Cell(6, 6, 0, locked = true),
-            Cell(6, 7, 0, locked = true),
-            Cell(6, 8, 0, locked = true)
-        ),
-        listOf(
-            Cell(7, 0, 0, locked = true),
-            Cell(7, 1, 0, locked = true),
-            Cell(7, 2, 9, locked = true),
-            Cell(7, 3, 0, locked = true),
-            Cell(7, 4, 0, locked = true),
-            Cell(7, 5, 5, locked = true),
-            Cell(7, 6, 0, locked = true),
-            Cell(7, 7, 0, locked = true),
-            Cell(7, 8, 0, locked = true)
-        ),
-        listOf(
-            Cell(8, 0, 0, locked = true),
-            Cell(8, 1, 0, locked = true),
-            Cell(8, 2, 3, locked = true),
-            Cell(8, 3, 0, locked = true),
-            Cell(8, 4, 4, locked = true),
-            Cell(8, 5, 0, locked = true),
-            Cell(8, 6, 0, locked = true),
-            Cell(8, 7, 0, locked = true),
-            Cell(8, 8, 0, locked = true)
-        ),
-    )
+    val sudokuParser = SudokuParser()
+    val previewBoard = sudokuParser.parseBoard(
+        board = "..1...9...2..17.545...24..328.....9...529..47.74.9...1...........9..5.....3.4....",
+        gameType = GameType.Default9x9,
+        locked = true,
+        emptySeparator = '.'
+    ).also { grid ->
+        listOf(1 to 1, 2 to 0, 5 to 4, 5 to 8).forEach { (row, col) ->
+            grid[row][col].locked = false
+        }
+        listOf(4 to 4).forEach { (row, col) ->
+            grid[row][col].error = true
+        }
+    }
     var selectedCell by remember { mutableStateOf(Cell(-1, -1, 0)) }
     Board(
         modifier = modifier,

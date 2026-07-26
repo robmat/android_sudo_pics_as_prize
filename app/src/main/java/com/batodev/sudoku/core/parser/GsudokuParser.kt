@@ -2,13 +2,19 @@ package com.batodev.sudoku.core.parser
 
 import android.util.Log
 import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParserFactory
+import java.io.IOException
 
 /**
  * .1gsudoku - file type from "Sudoku 10'000" app.
  */
 class GsudokuParser : FileImportParser {
     private val tag = "GsudokuParser"
+
+    companion object {
+        private const val STANDARD_BOARD_LENGTH = 81
+    }
 
     /**
      * @param content .1gsudoku file content
@@ -30,7 +36,9 @@ class GsudokuParser : FileImportParser {
                     for (i in 0 until parser.attributeCount) {
                         if (parser.getAttributeName(i) == "data") {
                             val boardString = parser.getAttributeValue(i)
-                            if (boardString.length == 81 && boardString.all { char -> char.isDigit() }) {
+                            val isValidBoard = boardString.length == STANDARD_BOARD_LENGTH &&
+                                boardString.all { char -> char.isDigit() }
+                            if (isValidBoard) {
                                 parsedBoards.add(boardString)
                             } else {
                                 Log.i(tag, "Unexpected line: $boardString")
@@ -41,9 +49,11 @@ class GsudokuParser : FileImportParser {
                 }
                 eventType = parser.next()
             }
-        } catch (e: Exception) {
-            Log.e(tag, "Exception while parsing!")
-            e.printStackTrace()
+        } catch (e: XmlPullParserException) {
+            Log.e(tag, "Exception while parsing!", e)
+            return Pair(false, parsedBoards)
+        } catch (e: IOException) {
+            Log.e(tag, "Exception while parsing!", e)
             return Pair(false, parsedBoards)
         }
 

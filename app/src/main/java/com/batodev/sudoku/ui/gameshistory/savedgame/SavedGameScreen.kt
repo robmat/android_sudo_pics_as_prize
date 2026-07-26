@@ -145,7 +145,9 @@ fun SavedGameScreen(
                 val crossHighlight by viewModel.crossHighlight.collectAsStateWithLifecycle(
                     initialValue = PreferencesConstants.DEFAULT_BOARD_CROSS_HIGHLIGHT
                 )
-                val fontSizeFactor by viewModel.fontSize.collectAsState(initial = PreferencesConstants.DEFAULT_FONT_SIZE_FACTOR)
+                val fontSizeFactor by viewModel.fontSize.collectAsState(
+                    initial = PreferencesConstants.DEFAULT_FONT_SIZE_FACTOR
+                )
                 val fontSizeValue by remember(fontSizeFactor) {
                     mutableStateOf(
                         viewModel.getFontSize(factor = fontSizeFactor)
@@ -236,7 +238,6 @@ fun SavedGameScreen(
                     }
                 }
 
-
                 Column(
                     modifier = Modifier
                         .padding(horizontal = 12.dp)
@@ -268,7 +269,6 @@ fun SavedGameScreen(
                         ),
                         style = textStyle
                     )
-
 
                     viewModel.savedGame?.let { savedGame ->
                         if (savedGame.startedAt != null) {

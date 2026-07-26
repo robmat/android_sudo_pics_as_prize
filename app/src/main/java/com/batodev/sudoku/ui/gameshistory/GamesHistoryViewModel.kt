@@ -11,7 +11,7 @@ import com.batodev.sudoku.data.database.model.SavedGame
 import com.batodev.sudoku.data.database.model.SudokuBoard
 import com.batodev.sudoku.data.datastore.AppSettingsManager
 import com.batodev.sudoku.domain.repository.SavedGameRepository
-import com.batodev.sudoku.ui.create_edit_sudoku.GameStateFilter
+import com.batodev.sudoku.ui.createeditsudoku.GameStateFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -20,8 +20,7 @@ class HistoryViewModel
 @Inject constructor(
     savedGameRepository: SavedGameRepository,
     appSettingsManager: AppSettingsManager
-) : ViewModel(
-) {
+) : ViewModel() {
     val games = savedGameRepository.getWithBoards()
 
     var sortType by mutableStateOf(SortType.Descending)

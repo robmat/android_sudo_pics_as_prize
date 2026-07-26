@@ -262,4 +262,23 @@
     <string name="redo">Znovu</string>
     <string name="uncovered_images">Odkryté obrázky</string>
     <string name="more_games_like_this">Viac takýchto hier</string>
+    <plurals name="number_puzzles_to_import">
+        <item quantity="one">%1$d hádanka na import</item>
+        <item quantity="few">%1$d hádanky na import</item>
+        <item quantity="many">%1$d hádanky na import</item>
+        <item quantity="other">%1$d hádaniek na import</item>
+    </plurals>
+    <plurals name="puzzles_in_folder">
+        <item quantity="zero">Prázdne</item>
+        <item quantity="one">%1$d hádanka</item>
+        <item quantity="few">%1$d hádanky</item>
+        <item quantity="many">%1$d hádanky</item>
+        <item quantity="other">%1$d hádaniek</item>
+    </plurals>
+    <plurals name="delete_selected_in_folder">
+        <item quantity="one">Naozaj chcete odstrániť %1$d hru\?</item>
+        <item quantity="few">Naozaj chcete odstrániť %1$d hry\?</item>
+        <item quantity="many">Naozaj chcete odstrániť %1$d hry\?</item>
+        <item quantity="other">Naozaj chcete odstrániť %1$d hier\?</item>
+    </plurals>
 </resources>

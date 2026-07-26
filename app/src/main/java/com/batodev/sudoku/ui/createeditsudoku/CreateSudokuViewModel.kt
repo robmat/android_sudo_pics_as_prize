@@ -1,4 +1,4 @@
-package com.batodev.sudoku.ui.create_edit_sudoku
+package com.batodev.sudoku.ui.createeditsudoku
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -81,18 +81,19 @@ class CreateSudokuViewModel @Inject constructor(
     var multipleSolutionsDialog by mutableStateOf(false)
     var noSolutionsDialog by mutableStateOf(false)
 
-
     var gameType by mutableStateOf(GameType.Default9x9)
     var gameDifficulty by mutableStateOf(GameDifficulty.Easy)
-    var gameBoard by mutableStateOf(List(gameType.size) { row ->
-        List(gameType.size) { col ->
-            Cell(
-                row,
-                col,
-                0
-            )
+    var gameBoard by mutableStateOf(
+        List(gameType.size) { row ->
+            List(gameType.size) { col ->
+                Cell(
+                    row,
+                    col,
+                    0
+                )
+            }
         }
-    })
+    )
     var currCell by mutableStateOf(Cell(-1, -1, 0))
 
     var importStringValue by mutableStateOf("")
@@ -148,7 +149,6 @@ class CreateSudokuViewModel @Inject constructor(
             }
         }
     }
-
 
     private fun processNumberInput(number: Int) {
         if (currCell.row >= 0 && currCell.col >= 0) {

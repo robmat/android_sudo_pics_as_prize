@@ -49,9 +49,9 @@ import com.batodev.sudoku.data.datastore.AppSettingsManager
 import com.batodev.sudoku.ui.components.PreferenceRow
 import com.batodev.sudoku.ui.components.PreferenceRowSwitch
 import com.batodev.sudoku.ui.components.ScrollbarLazyColumn
-import com.batodev.sudoku.ui.components.collapsing_topappbar.CollapsingTitle
-import com.batodev.sudoku.ui.components.collapsing_topappbar.CollapsingTopAppBar
-import com.batodev.sudoku.ui.components.collapsing_topappbar.rememberTopAppBarScrollBehavior
+import com.batodev.sudoku.ui.components.collapsingtopappbar.CollapsingTitle
+import com.batodev.sudoku.ui.components.collapsingtopappbar.CollapsingTopAppBar
+import com.batodev.sudoku.ui.components.collapsingtopappbar.rememberTopAppBarScrollBehavior
 import com.batodev.sudoku.ui.settings.components.AppThemePreviewItem
 import com.batodev.sudoku.ui.theme.AppColorScheme
 import com.batodev.sudoku.ui.theme.AppTheme
@@ -98,23 +98,49 @@ fun SettingsScreen(
         val highlightMistakes by viewModel.highlightMistakes.collectAsStateWithLifecycle(
             initialValue = PreferencesConstants.DEFAULT_HIGHLIGHT_MISTAKES
         )
-        val inputMethod by viewModel.inputMethod.collectAsStateWithLifecycle(initialValue = PreferencesConstants.DEFAULT_INPUT_METHOD)
-        val darkTheme by viewModel.darkTheme.collectAsStateWithLifecycle(initialValue = PreferencesConstants.DEFAULT_DARK_THEME)
-        val fontSize by viewModel.fontSize.collectAsStateWithLifecycle(initialValue = PreferencesConstants.DEFAULT_FONT_SIZE_FACTOR)
+        val inputMethod by viewModel.inputMethod.collectAsStateWithLifecycle(
+            initialValue = PreferencesConstants.DEFAULT_INPUT_METHOD
+        )
+        val darkTheme by viewModel.darkTheme.collectAsStateWithLifecycle(
+            initialValue = PreferencesConstants.DEFAULT_DARK_THEME
+        )
+        val fontSize by viewModel.fontSize.collectAsStateWithLifecycle(
+            initialValue = PreferencesConstants.DEFAULT_FONT_SIZE_FACTOR
+        )
         val dateFormat by viewModel.dateFormat.collectAsStateWithLifecycle(initialValue = "")
-        val dynamicColors by viewModel.dynamicColors.collectAsStateWithLifecycle(initialValue = PreferencesConstants.DEFAULT_DYNAMIC_COLORS)
-        val amoledBlackState by viewModel.amoledBlack.collectAsStateWithLifecycle(initialValue = PreferencesConstants.DEFAULT_AMOLED_BLACK)
-        val currentTheme by viewModel.currentTheme.collectAsStateWithLifecycle(initialValue = PreferencesConstants.DEFAULT_SELECTED_THEME)
-        val hintDisabled by viewModel.disableHints.collectAsStateWithLifecycle(initialValue = PreferencesConstants.DEFAULT_HINTS_DISABLED)
-        val mistakesLimit by viewModel.mistakesLimit.collectAsStateWithLifecycle(initialValue = PreferencesConstants.DEFAULT_MISTAKES_LIMIT)
-        val timerEnabled by viewModel.timer.collectAsStateWithLifecycle(initialValue = PreferencesConstants.DEFAULT_SHOW_TIMER)
-        val resetTimer by viewModel.canResetTimer.collectAsStateWithLifecycle(initialValue = PreferencesConstants.DEFAULT_GAME_RESET_TIMER)
-        val keepScreenOn by viewModel.keepScreenOn.collectAsStateWithLifecycle(initialValue = PreferencesConstants.DEFAULT_KEEP_SCREEN_ON)
-        val autoEraseNotes by viewModel.autoEraseNotes.collectAsStateWithLifecycle(initialValue = PreferencesConstants.DEFAULT_AUTO_ERASE_NOTES)
+        val dynamicColors by viewModel.dynamicColors.collectAsStateWithLifecycle(
+            initialValue = PreferencesConstants.DEFAULT_DYNAMIC_COLORS
+        )
+        val amoledBlackState by viewModel.amoledBlack.collectAsStateWithLifecycle(
+            initialValue = PreferencesConstants.DEFAULT_AMOLED_BLACK
+        )
+        val currentTheme by viewModel.currentTheme.collectAsStateWithLifecycle(
+            initialValue = PreferencesConstants.DEFAULT_SELECTED_THEME
+        )
+        val hintDisabled by viewModel.disableHints.collectAsStateWithLifecycle(
+            initialValue = PreferencesConstants.DEFAULT_HINTS_DISABLED
+        )
+        val mistakesLimit by viewModel.mistakesLimit.collectAsStateWithLifecycle(
+            initialValue = PreferencesConstants.DEFAULT_MISTAKES_LIMIT
+        )
+        val timerEnabled by viewModel.timer.collectAsStateWithLifecycle(
+            initialValue = PreferencesConstants.DEFAULT_SHOW_TIMER
+        )
+        val resetTimer by viewModel.canResetTimer.collectAsStateWithLifecycle(
+            initialValue = PreferencesConstants.DEFAULT_GAME_RESET_TIMER
+        )
+        val keepScreenOn by viewModel.keepScreenOn.collectAsStateWithLifecycle(
+            initialValue = PreferencesConstants.DEFAULT_KEEP_SCREEN_ON
+        )
+        val autoEraseNotes by viewModel.autoEraseNotes.collectAsStateWithLifecycle(
+            initialValue = PreferencesConstants.DEFAULT_AUTO_ERASE_NOTES
+        )
         val highlightIdentical by viewModel.highlightIdentical.collectAsStateWithLifecycle(
             initialValue = PreferencesConstants.DEFAULT_HIGHLIGHT_IDENTICAL
         )
-        val remainingUse by viewModel.remainingUse.collectAsStateWithLifecycle(initialValue = PreferencesConstants.DEFAULT_REMAINING_USES)
+        val remainingUse by viewModel.remainingUse.collectAsStateWithLifecycle(
+            initialValue = PreferencesConstants.DEFAULT_REMAINING_USES
+        )
 
         ScrollbarLazyColumn(
             modifier = Modifier
@@ -202,7 +228,8 @@ fun SettingsScreen(
                                 AppTheme.BlackAndWhite -> stringResource(R.string.theme_black_and_white)
                             },
                             colorScheme = appTheme.getTheme(
-                                theme, when (darkTheme) {
+                                theme,
+                                when (darkTheme) {
                                     0 -> isSystemInDarkTheme()
                                     1 -> false
                                     else -> true
@@ -216,7 +243,7 @@ fun SettingsScreen(
                             amoledBlack = amoledBlackState,
                             darkTheme = darkTheme,
 
-                            )
+                        )
                     }
                 }
             }
@@ -385,7 +412,6 @@ fun SettingsScreen(
                     checked = remainingUse,
                     onClick = { viewModel.updateRemainingUse(!remainingUse) }
                 )
-
             }
 
             item {
@@ -396,7 +422,6 @@ fun SettingsScreen(
                 )
             }
 
-
             item {
                 HorizontalDivider(
                     modifier = Modifier.fillMaxWidth()
@@ -406,7 +431,9 @@ fun SettingsScreen(
                     title = stringResource(R.string.pref_other)
                 )
                 val saveLastSelectedDifficultyType by viewModel.saveLastSelectedDifficultyType
-                    .collectAsStateWithLifecycle(initialValue = PreferencesConstants.DEFAULT_SAVE_LAST_SELECTED_DIFF_TYPE)
+                    .collectAsStateWithLifecycle(
+                        initialValue = PreferencesConstants.DEFAULT_SAVE_LAST_SELECTED_DIFF_TYPE
+                    )
                 PreferenceRowSwitch(
                     title = stringResource(R.string.pref_save_last_diff_and_type),
                     subtitle = stringResource(R.string.pref_save_last_diff_and_type_subtitle),
@@ -587,11 +614,13 @@ fun SettingsScreen(
                     "${dateFormatEntry.ifEmpty { stringResource(R.string.label_default) }} ($dateString)"
                 },
                 customDateFormatText =
-                if (!DateFormats.contains(dateFormat))
+                if (!DateFormats.contains(dateFormat)) {
                     "$dateFormat (${
                         ZonedDateTime.now().format(DateTimeFormatter.ofPattern(dateFormat))
                     })"
-                else stringResource(R.string.pref_date_format_custom_label),
+                } else {
+                    stringResource(R.string.pref_date_format_custom_label)
+                },
                 selected = dateFormat,
                 onSelect = { format ->
                     if (format == "custom") {
@@ -603,7 +632,7 @@ fun SettingsScreen(
                 },
                 onDismiss = { viewModel.dateFormatDialog = false },
 
-                )
+            )
         }
 
         if (viewModel.customFormatDialog) {
@@ -612,7 +641,11 @@ fun SettingsScreen(
                     if (DateFormats.contains(
                             dateFormat
                         )
-                    ) "" else dateFormat
+                    ) {
+                        ""
+                    } else {
+                        dateFormat
+                    }
                 )
             }
             var invalidCustomDateFormat by rememberSaveable { mutableStateOf(false) }
@@ -691,7 +724,6 @@ fun AppThemeItem(
             .padding(start = 8.dp, end = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         AppThemePreviewItem(
             selected = selected,
             onClick = onClick,
@@ -711,7 +743,6 @@ fun AppThemeItem(
         )
     }
 }
-
 
 private fun getCurrentLocaleString(context: Context): String {
     val langs = getLangs(context)

@@ -136,7 +136,6 @@ fun PreferenceRowSwitch(
     )
 }
 
-
 @LightDarkPreview
 @Composable
 private fun PreferenceRowPreview() {

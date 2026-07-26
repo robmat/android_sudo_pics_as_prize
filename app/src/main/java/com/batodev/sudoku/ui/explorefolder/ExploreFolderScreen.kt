@@ -1,4 +1,4 @@
-package com.batodev.sudoku.ui.explore_folder
+package com.batodev.sudoku.ui.explorefolder
 
 import android.net.Uri
 import androidx.activity.compose.BackHandler
@@ -108,7 +108,8 @@ import kotlin.math.sqrt
 import kotlin.time.toKotlinDuration
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalAnimationApi::class,
     ExperimentalFoundationApi::class
 )
 @Composable
@@ -329,7 +330,6 @@ fun ExploreFolderScreen(
         )
     }
 
-
     if (addSudokuBottomSheet) {
         ModalBottomSheet(onDismissRequest = { addSudokuBottomSheet = false }) {
             Column(
@@ -392,7 +392,6 @@ fun ExploreFolderScreen(
         }
     }
 }
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -500,10 +499,11 @@ fun GameInFolderWidget(
                         IconWithText(
                             imageVector = Icons.Rounded.PlayArrow,
                             text =
-                            if (savedGame == null || !savedGame.canContinue)
+                            if (savedGame == null || !savedGame.canContinue) {
                                 stringResource(R.string.action_play)
-                            else
-                                stringResource(R.string.action_continue),
+                            } else {
+                                stringResource(R.string.action_continue)
+                            },
                             onClick = onPlayClick,
                             enabled = savedGame?.canContinue ?: true
                         )

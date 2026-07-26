@@ -262,4 +262,17 @@
     <string name="uncovered_images">வெளிவராத படங்கள்</string>
     <string name="game_completed">கேம் முடிந்தது, கேலரியில் புதிய படம் சேர்க்கப்பட்டது</string>
     <string name="more_games_like_this">இது போன்ற பல விளையாட்டுகள்</string>
+    <plurals name="number_puzzles_to_import">
+        <item quantity="one">இறக்குமதி செய்ய %1$d புதிர்</item>
+        <item quantity="other">இறக்குமதி செய்ய %1$d புதிர்கள்</item>
+    </plurals>
+    <plurals name="puzzles_in_folder">
+        <item quantity="zero">காலியாக உள்ளது</item>
+        <item quantity="one">%1$d புதிர்</item>
+        <item quantity="other">%1$d புதிர்கள்</item>
+    </plurals>
+    <plurals name="delete_selected_in_folder">
+        <item quantity="one">%1$d விளையாட்டை நீக்க விரும்புகிறீர்களா\?</item>
+        <item quantity="other">%1$d விளையாட்டுகளை நீக்க விரும்புகிறீர்களா\?</item>
+    </plurals>
 </resources>

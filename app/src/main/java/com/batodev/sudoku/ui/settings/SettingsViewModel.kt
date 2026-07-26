@@ -70,7 +70,6 @@ class SettingsViewModel
             appThemeDataStore.setAmoledBlack(enabled)
         }
 
-
     val mistakesLimit = settingsDataManager.mistakesLimit
     fun updateMistakesLimit(enabled: Boolean) =
         viewModelScope.launch(Dispatchers.IO) {

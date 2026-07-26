@@ -209,6 +209,7 @@
     <plurals name="number_puzzles_to_import">
         <item quantity="one">%1$d hádanka pro import</item>
         <item quantity="few">%1$d hádanky pro import</item>
+        <item quantity="many">%1$d hádanek pro import</item>
         <item quantity="other">%1$d hádanek pro import</item>
     </plurals>
     <string name="edit_name">Upravit název</string>
@@ -224,6 +225,7 @@
     <plurals name="puzzles_in_folder">
         <item quantity="one">%1$d hádanka</item>
         <item quantity="few">%1$d hádanky</item>
+        <item quantity="many">%1$d hádanek</item>
         <item quantity="other">%1$d hádanek</item>
     </plurals>
     <string name="dialog_delete_folder_text">Složka s názvem %1$s bude odstraněna</string>
@@ -243,6 +245,7 @@
     <plurals name="delete_selected_in_folder">
         <item quantity="one">Jste si jistí, že chcete odstranit %1$d hru\?</item>
         <item quantity="few">Jste si jistí, že chcete odstranit %1$d hry\?</item>
+        <item quantity="many">Jste si jistí, že chcete odstranit %1$d her\?</item>
         <item quantity="other">Jste si jistí, že chcete odstranit %1$d her\?</item>
     </plurals>
     <string name="last_played_section_title">Naposledy odehrané hry</string>

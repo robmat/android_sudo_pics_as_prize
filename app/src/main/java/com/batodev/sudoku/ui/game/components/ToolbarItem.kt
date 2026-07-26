@@ -44,9 +44,13 @@ fun ToolbarItem(
         modifier = modifier
             .clip(MaterialTheme.shapes.large)
             .background(
-                if (toggled) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceColorAtElevation(
-                    2.dp
-                )
+                if (toggled) {
+                    MaterialTheme.colorScheme.primaryContainer
+                } else {
+                    MaterialTheme.colorScheme.surfaceColorAtElevation(
+                        2.dp
+                    )
+                }
             )
             .combinedClickable(
                 onClick = onClick,

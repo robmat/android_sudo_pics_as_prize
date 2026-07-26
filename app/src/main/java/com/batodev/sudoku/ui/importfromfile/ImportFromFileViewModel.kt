@@ -1,4 +1,4 @@
-package com.batodev.sudoku.ui.import_from_file
+package com.batodev.sudoku.ui.importfromfile
 
 import android.net.Uri
 import androidx.compose.runtime.getValue

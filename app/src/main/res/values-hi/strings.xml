@@ -262,4 +262,17 @@
     <string name="uncovered_images">उजागर तस्वीरें</string>
     <string name="game_completed">गेम पूरा हुआ, गैलरी में नई छवि जोड़ी गई</string>
     <string name="more_games_like_this">इस तरह के और भी गेम</string>
+    <plurals name="number_puzzles_to_import">
+        <item quantity="one">आयात करने के लिए %1$d पहेली</item>
+        <item quantity="other">आयात करने के लिए %1$d पहेलियाँ</item>
+    </plurals>
+    <plurals name="puzzles_in_folder">
+        <item quantity="zero">खाली</item>
+        <item quantity="one">%1$d पहेली</item>
+        <item quantity="other">%1$d पहेलियाँ</item>
+    </plurals>
+    <plurals name="delete_selected_in_folder">
+        <item quantity="one">क्या आप वाकई %1$d गेम हटाना चाहते हैं\?</item>
+        <item quantity="other">क्या आप वाकई %1$d गेम हटाना चाहते हैं\?</item>
+    </plurals>
 </resources>

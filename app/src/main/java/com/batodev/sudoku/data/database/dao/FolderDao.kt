@@ -22,12 +22,11 @@ interface FolderDao {
 
     @Query(
         "SELECT * FROM saved_game" +
-                " INNER JOIN board ON board.folder_id NOT NULL AND board_uid = board.uid AND can_continue" +
-                " ORDER BY last_played DESC" +
-                " LIMIT :gamesCount"
+            " INNER JOIN board ON board.folder_id NOT NULL AND board_uid = board.uid AND can_continue" +
+            " ORDER BY last_played DESC" +
+            " LIMIT :gamesCount"
     )
     fun getLastSavedGamesAnyFolder(gamesCount: Int): Flow<List<SavedGame>>
-
 
     @Insert
     suspend fun insert(folder: Folder): Long

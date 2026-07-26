@@ -16,7 +16,6 @@ import androidx.navigation.NavController
 import com.batodev.sudoku.LocalBoardColors
 import com.batodev.sudoku.R
 import com.batodev.sudoku.core.Cell
-import com.batodev.sudoku.core.Note
 import com.batodev.sudoku.core.qqwing.GameType
 import com.batodev.sudoku.core.utils.SudokuParser
 import com.batodev.sudoku.ui.components.board.Board
@@ -43,27 +42,8 @@ fun LearnNakedPairs(
         }
         var notes by remember {
             mutableStateOf(
-                listOf(
-                    Note(3, 3, 1),
-                    Note(3, 3, 2),
-                    Note(3, 3, 4),
-                    Note(3, 3, 5),
-                    Note(3, 4, 1),
-                    Note(3, 4, 2),
-                    Note(3, 4, 4),
-                    Note(3, 4, 5),
-                    Note(3, 4, 7),
-                    Note(3, 5, 2),
-                    Note(3, 5, 4),
-                    Note(3, 5, 5),
-                    Note(3, 5, 7),
-                    Note(4, 4, 2),
-                    Note(4, 4, 3),
-                    Note(4, 5, 2),
-                    Note(4, 5, 3),
-                    Note(5, 5, 2),
-                    Note(5, 5, 3),
-                    Note(5, 5, 5),
+                sudokuParser.parseNotes(
+                    "3,3,1;3,3,2;3,3,4;3,3,5;3,4,1;3,4,2;3,4,4;3,4,5;3,4,7;3,5,2;3,5,4;3,5,5;3,5,7;4,4,2;4,4,3;4,5,2;4,5,3;5,5,2;5,5,3;5,5,5;"
                 )
             )
         }
@@ -78,47 +58,10 @@ fun LearnNakedPairs(
         LaunchedEffect(key1 = step) {
             when (step) {
                 0 -> {
-                    notes = listOf(
-                        Note(3, 3, 1),
-                        Note(3, 3, 2),
-                        Note(3, 3, 4),
-                        Note(3, 3, 5),
-                        Note(3, 4, 1),
-                        Note(3, 4, 2),
-                        Note(3, 4, 4),
-                        Note(3, 4, 5),
-                        Note(3, 4, 7),
-                        Note(3, 5, 2),
-                        Note(3, 5, 4),
-                        Note(3, 5, 5),
-                        Note(3, 5, 7),
-                        Note(4, 4, 2),
-                        Note(4, 4, 3),
-                        Note(4, 5, 2),
-                        Note(4, 5, 3),
-                        Note(5, 5, 2),
-                        Note(5, 5, 3),
-                        Note(5, 5, 5)
-                    )
+                    notes = sudokuParser.parseNotes("3,3,1;3,3,2;3,3,4;3,3,5;3,4,1;3,4,2;3,4,4;3,4,5;3,4,7;3,5,2;3,5,4;3,5,5;3,5,7;4,4,2;4,4,3;4,5,2;4,5,3;5,5,2;5,5,3;5,5,5;")
                 }
                 1 -> {
-                    notes = listOf(
-                        Note(3, 3, 1),
-                        Note(3, 3, 4),
-                        Note(3, 3, 5),
-                        Note(3, 4, 1),
-                        Note(3, 4, 4),
-                        Note(3, 4, 5),
-                        Note(3, 4, 7),
-                        Note(3, 5, 4),
-                        Note(3, 5, 5),
-                        Note(3, 5, 7),
-                        Note(4, 4, 2),
-                        Note(4, 4, 3),
-                        Note(4, 5, 2),
-                        Note(4, 5, 3),
-                        Note(5, 5, 5)
-                    )
+                    notes = sudokuParser.parseNotes("3,3,1;3,3,4;3,3,5;3,4,1;3,4,4;3,4,5;3,4,7;3,5,4;3,5,5;3,5,7;4,4,2;4,4,3;4,5,2;4,5,3;5,5,5;")
                 }
             }
         }
@@ -143,4 +86,3 @@ fun LearnNakedPairs(
         }
     }
 }
-

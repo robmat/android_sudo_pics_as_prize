@@ -39,4 +39,3 @@ fun ScrollbarLazyColumn(
         content = content,
     )
 }
-

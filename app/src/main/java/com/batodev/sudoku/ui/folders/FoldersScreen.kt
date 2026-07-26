@@ -101,7 +101,7 @@ fun FoldersScreen(
     val openDocumentLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument(),
         onResult = {
-            Log.d("FoldersScreen;openDocumentLauncher", "result uri: ${it.toString()}")
+            Log.d("FoldersScreen;openDocumentLauncher", "result uri: $it")
             contentUri = it
         }
     )

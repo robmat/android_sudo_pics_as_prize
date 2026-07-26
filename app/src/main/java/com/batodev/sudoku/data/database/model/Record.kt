@@ -12,12 +12,14 @@ import java.time.ZonedDateTime
 
 @Entity(
     tableName = "record",
-    foreignKeys = [ForeignKey(
-        onDelete = CASCADE,
-        entity = SudokuBoard::class,
-        parentColumns = arrayOf("uid"),
-        childColumns = arrayOf("board_uid")
-    )]
+    foreignKeys = [
+        ForeignKey(
+            onDelete = CASCADE,
+            entity = SudokuBoard::class,
+            parentColumns = arrayOf("uid"),
+            childColumns = arrayOf("board_uid")
+        )
+    ]
 )
 data class Record(
     @PrimaryKey @ColumnInfo(name = "board_uid") val board_uid: Long,

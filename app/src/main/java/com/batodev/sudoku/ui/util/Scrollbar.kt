@@ -85,7 +85,8 @@ private fun Modifier.drawScrollbar(
     orientation: Orientation,
     reverseScrolling: Boolean
 ): Modifier = drawScrollbar(
-    orientation, reverseScrolling
+    orientation,
+    reverseScrolling
 ) { reverseDirection, atEnd, color, alpha ->
     if (state.maxValue > 0) {
         val canvasSize = if (orientation == Orientation.Horizontal) size.width else size.height
@@ -93,7 +94,13 @@ private fun Modifier.drawScrollbar(
         val thumbSize = canvasSize / totalSize * canvasSize
         val startOffset = state.value / totalSize * canvasSize
         drawScrollbar(
-            orientation, reverseDirection, atEnd, color, alpha, thumbSize, startOffset
+            orientation,
+            reverseDirection,
+            atEnd,
+            color,
+            alpha,
+            thumbSize,
+            startOffset
         )
     }
 }
@@ -113,7 +120,8 @@ private fun Modifier.drawScrollbar(
     orientation: Orientation,
     reverseScrolling: Boolean
 ): Modifier = drawScrollbar(
-    orientation, reverseScrolling
+    orientation,
+    reverseScrolling
 ) { reverseDirection, atEnd, color, alpha ->
     val layoutInfo = state.layoutInfo
     val viewportSize = layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset
@@ -124,11 +132,21 @@ private fun Modifier.drawScrollbar(
         val totalSize = estimatedItemSize * layoutInfo.totalItemsCount
         val canvasSize = if (orientation == Orientation.Horizontal) size.width else size.height
         val thumbSize = viewportSize / totalSize * canvasSize
-        val startOffset = if (items.isEmpty()) 0f else items.first().run {
-            (estimatedItemSize * index - offset) / totalSize * canvasSize
+        val startOffset = if (items.isEmpty()) {
+            0f
+        } else {
+            items.first().run {
+                (estimatedItemSize * index - offset) / totalSize * canvasSize
+            }
         }
         drawScrollbar(
-            orientation, reverseDirection, atEnd, color, alpha, thumbSize, startOffset
+            orientation,
+            reverseDirection,
+            atEnd,
+            color,
+            alpha,
+            thumbSize,
+            startOffset
         )
     }
 }
@@ -138,7 +156,8 @@ fun Modifier.drawVerticalScrollbar(
     spanCount: Int,
     reverseScrolling: Boolean = false
 ): Modifier = drawScrollbar(
-    Orientation.Vertical, reverseScrolling
+    Orientation.Vertical,
+    reverseScrolling
 ) { reverseDirection, atEnd, color, alpha ->
     val layoutInfo = state.layoutInfo
     val viewportSize = layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset
@@ -154,12 +173,22 @@ fun Modifier.drawVerticalScrollbar(
         val totalSize = estimatedItemSize * totalRow
         val canvasSize = size.height
         val thumbSize = viewportSize / totalSize * canvasSize
-        val startOffset = if (rowCount == 0) 0f else items.first().run {
-            val rowIndex = index / spanCount
-            (estimatedItemSize * rowIndex - offset.y) / totalSize * canvasSize
+        val startOffset = if (rowCount == 0) {
+            0f
+        } else {
+            items.first().run {
+                val rowIndex = index / spanCount
+                (estimatedItemSize * rowIndex - offset.y) / totalSize * canvasSize
+            }
         }
         drawScrollbar(
-            Orientation.Vertical, reverseDirection, atEnd, color, alpha, thumbSize, startOffset
+            Orientation.Vertical,
+            reverseDirection,
+            atEnd,
+            color,
+            alpha,
+            thumbSize,
+            startOffset
         )
     }
 }
@@ -241,7 +270,9 @@ private fun Modifier.drawScrollbar(
     val isLtr = LocalLayoutDirection.current == LayoutDirection.Ltr
     val reverseDirection = if (orientation == Orientation.Horizontal) {
         if (isLtr) reverseScrolling else !reverseScrolling
-    } else reverseScrolling
+    } else {
+        reverseScrolling
+    }
     val atEnd = if (orientation == Orientation.Vertical) isLtr else true
 
     val color = BarColor

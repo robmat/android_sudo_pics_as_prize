@@ -121,7 +121,6 @@ class QQWingController {
                             // until end of input for solving, or
                             // until we have generated the specified number.
                             while (!done.get()) {
-
                                 // Record whether the puzzle was possible or not,
                                 // so that we don't try to solve impossible givens.
                                 var havePuzzle = false
@@ -149,7 +148,6 @@ class QQWingController {
                                 }
 
                                 if (havePuzzle) {
-
                                     solutionCount = qqWing.countSolutionsLimited()
 
                                     // Solve the puzzle
@@ -171,8 +169,10 @@ class QQWingController {
                                         } else {
                                             val numDone = puzzleCount.incrementAndGet()
                                             if (numDone >= options.numberToGenerate) done.set(true)
-                                            if (numDone > options.numberToGenerate) havePuzzle =
-                                                false
+                                            if (numDone > options.numberToGenerate) {
+                                                havePuzzle =
+                                                    false
+                                            }
                                         }
                                     }
                                     if (havePuzzle) {

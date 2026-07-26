@@ -246,6 +246,12 @@
         <item quantity="many">%1$d puzzle da importare</item>
         <item quantity="other">%1$d puzzle da importare</item>
     </plurals>
+    <plurals name="puzzles_in_folder">
+        <item quantity="zero">Vuoto</item>
+        <item quantity="one">%1$d puzzle</item>
+        <item quantity="many">%1$d puzzle</item>
+        <item quantity="other">%1$d puzzle</item>
+    </plurals>
     <plurals name="delete_selected_in_folder">
         <item quantity="one">Sei sicuro di voler cancellare %1$d partita\?</item>
         <item quantity="many">Sei sicuro di voler cancellare %1$d partite\?</item>

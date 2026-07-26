@@ -22,7 +22,6 @@ class UndoRedoManager(private val initialState: GameState) {
             states.remove(item)
         }
 
-
         states.add(gameState)
         currentState = states.size - 1
     }

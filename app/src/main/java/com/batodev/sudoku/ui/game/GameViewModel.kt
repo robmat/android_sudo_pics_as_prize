@@ -61,6 +61,12 @@ class GameViewModel @Inject constructor(
     private val getAllRecordsUseCase: GetAllRecordsUseCase,
     private val application: Application,
 ) : ViewModel() {
+    companion object {
+        private const val TIMER_UPDATE_RATE_MS = 50L
+        private const val RADIX = 13
+        private const val NANOS_PER_MILLI = 1e6
+    }
+
     init {
         val sudokuParser = SudokuParser()
         val continueSaved = savedStateHandle.get<Boolean>("saved")
@@ -73,7 +79,6 @@ class GameViewModel @Inject constructor(
                 gameType = boardEntity.type
                 gameDifficulty = boardEntity.difficulty
             }
-
 
             withContext(Dispatchers.Default) {
                 initialBoard = sudokuParser.parseBoard(
@@ -125,7 +130,7 @@ class GameViewModel @Inject constructor(
     var remainingUsesList = emptyList<Int>()
     val firstGame = appSettingsManager.firstGame
     private lateinit var boardEntity: SudokuBoard
-    var size by mutableIntStateOf(9)
+    var size by mutableIntStateOf(GameType.Default9x9.size)
     var gameType by mutableStateOf(GameType.Unspecified)
     var gameDifficulty by mutableStateOf(GameDifficulty.Unspecified)
 
@@ -183,7 +188,9 @@ class GameViewModel @Inject constructor(
     var notes by mutableStateOf(emptyList<Note>())
 
     private lateinit var initialBoard: List<List<Cell>>
-    var gameBoard by mutableStateOf(List(9) { row -> List(9) { col -> Cell(row, col, 0) } })
+    var gameBoard by mutableStateOf(
+        List(GameType.Default9x9.size) { row -> List(GameType.Default9x9.size) { col -> Cell(row, col, 0) } }
+    )
     var solvedBoard = emptyList<List<Cell>>()
 
     var currCell by mutableStateOf(Cell(-1, -1, 0))
@@ -223,8 +230,8 @@ class GameViewModel @Inject constructor(
     ): List<Note> {
         return notes.minus(
             notes.filter { note ->
-                note.row == row
-                        && note.col == col
+                note.row == row &&
+                    note.col == col
             }.toSet()
         )
     }
@@ -334,11 +341,15 @@ class GameViewModel @Inject constructor(
             if (currCell.row >= 0 && currCell.col >= 0 && !gameBoard[currCell.row][currCell.col].locked) {
                 if ((inputMethod.value == 1 || overrideInputMethodDF) && digitFirstNumber > 0) {
                     if (!longTap) {
-                        if ((remainingUsesList.size >= digitFirstNumber && remainingUsesList[digitFirstNumber - 1] > 0) || !remainingUse) {
+                        val hasRemainingUses = remainingUsesList.size >= digitFirstNumber &&
+                            remainingUsesList[digitFirstNumber - 1] > 0
+                        if (hasRemainingUses || !remainingUse) {
                             processNumberInput(digitFirstNumber)
                             undoRedoManager.addState(GameState(gameBoard, notes))
-                            if (notesToggled) currCell =
-                                Cell(currCell.row, currCell.col, digitFirstNumber)
+                            if (notesToggled) {
+                                currCell =
+                                    Cell(currCell.row, currCell.col, digitFirstNumber)
+                            }
                         }
                     } else if (!currCell.locked) {
                         gameBoard = setValueCell(0)
@@ -385,7 +396,6 @@ class GameViewModel @Inject constructor(
         }
     }
 
-
     private fun processNumberInput(number: Int) {
         if (currCell.row >= 0 && currCell.col >= 0 && gamePlaying && !currCell.locked) {
             if (!notesToggled) {
@@ -421,12 +431,12 @@ class GameViewModel @Inject constructor(
     fun startTimer() {
         if (!gamePlaying) {
             gamePlaying = true
-            val updateRate = 50L
+            val updateRate = TIMER_UPDATE_RATE_MS
 
             timer = fixedRateTimer(initialDelay = updateRate, period = updateRate) {
                 val prevTime = duration
 
-                duration = duration.plus((updateRate * 1e6).toDuration(DurationUnit.NANOSECONDS))
+                duration = duration.plus((updateRate * NANOS_PER_MILLI).toDuration(DurationUnit.NANOSECONDS))
                 // update text every second
                 if (prevTime.toInt(DurationUnit.SECONDS) != duration.toInt(DurationUnit.SECONDS)) {
                     timeText = duration.toFormattedString()
@@ -713,7 +723,7 @@ class GameViewModel @Inject constructor(
     // to make sure that solvedBoard really contains a solved board
     private fun solveBoard() {
         val qqWing = QQWingController()
-        val boardToSolve = boardEntity.initialBoard.map { it.digitToInt(13) }.toIntArray()
+        val boardToSolve = boardEntity.initialBoard.map { it.digitToInt(RADIX) }.toIntArray()
         val solved = qqWing.solve(boardToSolve, boardEntity.type)
 
         val newSolvedBoard = List(boardEntity.type.size) { row ->

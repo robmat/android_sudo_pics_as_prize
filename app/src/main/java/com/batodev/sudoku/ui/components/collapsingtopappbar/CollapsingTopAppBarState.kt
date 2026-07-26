@@ -1,4 +1,4 @@
-package com.batodev.sudoku.ui.components.collapsing_topappbar
+package com.batodev.sudoku.ui.components.collapsingtopappbar
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable

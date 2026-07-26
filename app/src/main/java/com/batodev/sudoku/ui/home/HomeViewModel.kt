@@ -80,7 +80,6 @@ class HomeViewModel
     private var solvedPuzzle =
         List(selectedType.size) { row -> List(selectedType.size) { col -> Cell(row, col, 0) } }
 
-
     fun startGame() {
         isSolving = false
         isGenerating = false

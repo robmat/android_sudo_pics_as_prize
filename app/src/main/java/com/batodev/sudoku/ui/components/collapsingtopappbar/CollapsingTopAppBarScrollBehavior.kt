@@ -1,4 +1,4 @@
-package com.batodev.sudoku.ui.components.collapsing_topappbar
+package com.batodev.sudoku.ui.components.collapsingtopappbar
 
 import androidx.compose.animation.core.AnimationState
 import androidx.compose.animation.core.DecayAnimationSpec
@@ -81,9 +81,7 @@ class CollapsingTopAppBarScrollBehavior(
             }
             return result
         }
-
     }
-
 }
 
 private suspend fun flingTopAppBar(

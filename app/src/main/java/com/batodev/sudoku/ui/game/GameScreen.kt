@@ -45,7 +45,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
@@ -56,6 +55,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -110,7 +110,9 @@ fun GameScreen(
         }
     }
 
-    val resetTimer by viewModel.resetTimerOnRestart.collectAsStateWithLifecycle(initialValue = PreferencesConstants.DEFAULT_GAME_RESET_TIMER)
+    val resetTimer by viewModel.resetTimerOnRestart.collectAsStateWithLifecycle(
+        initialValue = PreferencesConstants.DEFAULT_GAME_RESET_TIMER
+    )
 
     LaunchedEffect(viewModel.gameCompleted) {
         if (viewModel.gameCompleted) {
@@ -118,7 +120,6 @@ fun GameScreen(
             viewModel.endGame = true
         }
     }
-
 
     val mistakesLimit by viewModel.mistakesLimit.collectAsStateWithLifecycle(
         initialValue = PreferencesConstants.DEFAULT_MISTAKES_LIMIT
@@ -137,7 +138,9 @@ fun GameScreen(
                     }
                 },
                 actions = {
-                    AnimatedVisibility(visible = viewModel.endGame && (viewModel.mistakesCount >= PreferencesConstants.MISTAKES_LIMIT || viewModel.giveUp)) {
+                    AnimatedVisibility(
+                        visible = viewModel.endGame && (viewModel.mistakesCount >= PreferencesConstants.MISTAKES_LIMIT || viewModel.giveUp)
+                    ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -145,8 +148,11 @@ fun GameScreen(
                                 onClick = { viewModel.showSolution = !viewModel.showSolution }
                             ) {
                                 AnimatedContent(
-                                    if (viewModel.showSolution) stringResource(R.string.action_show_mine_sudoku)
-                                    else stringResource(R.string.action_show_solution),
+                                    if (viewModel.showSolution) {
+                                        stringResource(R.string.action_show_mine_sudoku)
+                                    } else {
+                                        stringResource(R.string.action_show_solution)
+                                    },
                                     label = "this_label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning"
                                 ) {
                                     Text(it)
@@ -219,7 +225,9 @@ fun GameScreen(
         Box {
             if (!viewModel.endGame) {
                 Image(
-                    bitmap = BitmapFactory.decodeStream(context.assets.open("$PRIZE_IMAGES/${viewModel.prizeImageName()}"))!!
+                    bitmap = BitmapFactory.decodeStream(
+                        context.assets.open("$PRIZE_IMAGES/${viewModel.prizeImageName()}")
+                    )!!
                         .asImageBitmap(),
                     contentScale = ContentScale.FillWidth,
                     contentDescription = stringResource(id = R.string.app_name),
@@ -289,8 +297,12 @@ fun GameScreen(
                     val positionLines by viewModel.positionLines.collectAsStateWithLifecycle(
                         initialValue = PreferencesConstants.DEFAULT_POSITION_LINES
                     )
-                    val boardBlur by animateDpAsState(targetValue = if (viewModel.gamePlaying || viewModel.endGame) 0.dp else 10.dp)
-                    val scale by animateFloatAsState(targetValue = if (viewModel.gamePlaying || viewModel.endGame) 1f else 0.90f)
+                    val boardBlur by animateDpAsState(
+                        targetValue = if (viewModel.gamePlaying || viewModel.endGame) 0.dp else 10.dp
+                    )
+                    val scale by animateFloatAsState(
+                        targetValue = if (viewModel.gamePlaying || viewModel.endGame) 1f else 0.90f
+                    )
                     val crossHighlight by viewModel.crossHighlight.collectAsStateWithLifecycle(
                         initialValue = PreferencesConstants.DEFAULT_BOARD_CROSS_HIGHLIGHT
                     )
@@ -384,7 +396,6 @@ fun GameScreen(
                                         onClick = { viewModel.toolbarClick(ToolBarItem.Undo) },
                                         onLongClick = { viewModel.showUndoRedoMenu = true }
                                     )
-
                                 }
                                 val hintsDisabled by viewModel.disableHints.collectAsStateWithLifecycle(
                                     initialValue = PreferencesConstants.DEFAULT_HINTS_DISABLED
@@ -421,7 +432,6 @@ fun GameScreen(
                                             }
                                         }
                                     )
-
                                 }
                                 ToolbarItem(
                                     modifier = Modifier.weight(1f),
@@ -465,7 +475,9 @@ fun GameScreen(
         }
     }
 
-    val keepScreenOn by viewModel.keepScreenOn.collectAsStateWithLifecycle(initialValue = PreferencesConstants.DEFAULT_KEEP_SCREEN_ON)
+    val keepScreenOn by viewModel.keepScreenOn.collectAsStateWithLifecycle(
+        initialValue = PreferencesConstants.DEFAULT_KEEP_SCREEN_ON
+    )
     if (keepScreenOn) {
         KeepScreenOn()
     }

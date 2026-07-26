@@ -115,7 +115,8 @@ fun FirstGameScreen() {
                     onComputeNotesClick = { },
                     onClearNotesClick = { },
                     renderNotes = renderNotes,
-                    onRenderNotesClick = { renderNotes = !renderNotes })
+                    onRenderNotesClick = { renderNotes = !renderNotes }
+                )
                 ToolbarItem(
                     toggled = noteToggled,
                     painter = painterResource(R.drawable.ic_round_edit_24),

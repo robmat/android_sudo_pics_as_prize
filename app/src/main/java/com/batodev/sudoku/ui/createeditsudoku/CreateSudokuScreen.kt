@@ -1,4 +1,4 @@
-package com.batodev.sudoku.ui.create_edit_sudoku
+package com.batodev.sudoku.ui.createeditsudoku
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -66,10 +66,11 @@ fun CreateSudokuScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = if (viewModel.gameUid == -1L)
+                        text = if (viewModel.gameUid == -1L) {
                             stringResource(R.string.create_sudoku_title)
-                        else
+                        } else {
                             stringResource(R.string.edit_sudoku)
+                        }
                     )
                 },
                 navigationIcon = {
@@ -116,7 +117,9 @@ fun CreateSudokuScreen(
                 .padding(paddingValues)
                 .padding(horizontal = 12.dp)
         ) {
-            val highlightIdentical by viewModel.highlightIdentical.collectAsState(initial = PreferencesConstants.DEFAULT_HIGHLIGHT_IDENTICAL)
+            val highlightIdentical by viewModel.highlightIdentical.collectAsState(
+                initial = PreferencesConstants.DEFAULT_HIGHLIGHT_IDENTICAL
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -170,20 +173,27 @@ fun CreateSudokuScreen(
                         if (viewModel.saveGame()) {
                             navigateBack()
                         }
-                    }) {
+                    }
+                ) {
                     Text(stringResource(R.string.action_save))
                 }
             }
 
-            val fontSizeFactor by viewModel.fontSize.collectAsState(initial = PreferencesConstants.DEFAULT_FONT_SIZE_FACTOR)
+            val fontSizeFactor by viewModel.fontSize.collectAsState(
+                initial = PreferencesConstants.DEFAULT_FONT_SIZE_FACTOR
+            )
             val fontSizeValue by remember(fontSizeFactor, viewModel.gameType) {
                 mutableStateOf(
                     viewModel.getFontSize(factor = fontSizeFactor)
                 )
             }
 
-            val positionLines by viewModel.positionLines.collectAsState(initial = PreferencesConstants.DEFAULT_POSITION_LINES)
-            val crossHighlight by viewModel.crossHighlight.collectAsState(initial = PreferencesConstants.DEFAULT_BOARD_CROSS_HIGHLIGHT)
+            val positionLines by viewModel.positionLines.collectAsState(
+                initial = PreferencesConstants.DEFAULT_POSITION_LINES
+            )
+            val crossHighlight by viewModel.crossHighlight.collectAsState(
+                initial = PreferencesConstants.DEFAULT_BOARD_CROSS_HIGHLIGHT
+            )
             Board(
                 modifier = Modifier.padding(vertical = 12.dp),
                 size = viewModel.gameType.size,

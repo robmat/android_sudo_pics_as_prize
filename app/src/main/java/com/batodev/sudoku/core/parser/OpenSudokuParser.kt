@@ -6,7 +6,6 @@ import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.IOException
 
-
 // File type from OpenSudoku app (https://gitlab.com/opensudoku/opensudoku)
 // https://gitlab.com/opensudoku/opensudoku/-/blob/develop/app/src/main/java/org/moire/opensudoku/gui/importing/OpenSudokuImportTask.java
 /**
@@ -14,6 +13,10 @@ import java.io.IOException
  */
 class OpenSudokuParser : FileImportParser {
     private val tag = "OpenSudokuParser"
+
+    companion object {
+        private const val STANDARD_BOARD_LENGTH = 81
+    }
 
     /**
      * @param content .opensudoku file content
@@ -47,10 +50,10 @@ class OpenSudokuParser : FileImportParser {
                 eventType = parser.next()
             }
         } catch (e: XmlPullParserException) {
-            e.printStackTrace()
+            Log.e(tag, "Exception while parsing!", e)
             return result.copy(first = false)
         } catch (e: IOException) {
-            e.printStackTrace()
+            Log.e(tag, "Exception while parsing!", e)
             return result.copy(first = false)
         }
         return result
@@ -66,7 +69,7 @@ class OpenSudokuParser : FileImportParser {
                 if (lastTag == "game") {
                     val boardString = parser.getAttributeValue(null, "data")
 
-                    if (boardString.length == 81 && boardString.all { char -> char.isDigit() }) {
+                    if (boardString.length == STANDARD_BOARD_LENGTH && boardString.all { char -> char.isDigit() }) {
                         boards.add(boardString)
                     } else {
                         Log.i("$tag/ImportV1", "This line was skipped $boardString")
@@ -78,11 +81,10 @@ class OpenSudokuParser : FileImportParser {
         return Pair(true, boards)
     }
 
-
     private fun importV2(parser: XmlPullParser): Pair<Boolean, List<String>> {
         var eventType = parser.eventType
         var lastTag = ""
-        //var folderName: String? = null
+        // var folderName: String? = null
         val boards = mutableListOf<String>()
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if (eventType == XmlPullParser.START_TAG) {
@@ -98,7 +100,7 @@ class OpenSudokuParser : FileImportParser {
                     // val timer = parseLong(parser.getAttributeValue(null, "time"), 0)
 
                     val boardString = parser.getAttributeValue(null, "data")
-                    if (boardString.length == 81) {
+                    if (boardString.length == STANDARD_BOARD_LENGTH) {
                         boards.add(boardString)
                     } else {
                         Log.i("$tag/ImportV2", "This line was skipped $boardString")
