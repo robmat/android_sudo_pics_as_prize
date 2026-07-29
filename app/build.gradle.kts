@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.ksp)
     alias(libs.plugins.aboutLibraries)
-    alias(libs.plugins.kapt)
     alias(libs.plugins.hilt)
     alias(libs.plugins.composeCompiler)
     id("com.github.triplet.play")
@@ -135,7 +134,7 @@ dependencies {
 
     implementation(libs.hilt)
     implementation(libs.hilt.navigation)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
