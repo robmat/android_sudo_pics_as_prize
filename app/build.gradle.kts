@@ -2,12 +2,13 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-    alias(sharedLibs.plugins.android.application)
-    alias(sharedLibs.plugins.kotlin.android)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.aboutLibraries)
-    alias(libs.plugins.hilt)
-    alias(sharedLibs.plugins.kotlin.compose)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    id("com.google.devtools.ksp")
+    // aboutlibraries isn't in the shared catalog (single-repo use).
+    id("com.mikepenz.aboutlibraries.plugin") version "10.6.1"
+    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.kotlin.compose)
     id("com.github.triplet.play")
     id("com.batodev.releasetools")
     id("io.gitlab.arturbosch.detekt")
@@ -110,56 +111,66 @@ detekt {
 }
 
 dependencies {
-    detektPlugins(sharedLibs.detekt.formatting)
+    detektPlugins(libs.detekt.formatting)
 
-    implementation(libs.core.ktx)
-    implementation(libs.lifecycle.runtime.ktx)
-    implementation(libs.lifecycle.runtime.compose)
-    implementation(libs.activity.compose)
-    implementation(libs.ui)
-    implementation(libs.ui.util)
-    implementation(libs.ui.graphics)
-    implementation(libs.ui.tooling.preview)
-    implementation(libs.material3)
-    implementation(libs.material.icons.extended)
-    debugImplementation(libs.ui.tooling)
-    debugImplementation(libs.ui.test.manifest)
+    // core-ktx/lifecycle-runtime/activity-compose/compose/material3/navigation-compose/
+    // accompanist/appcompat intentionally not on the shared catalog's values - this
+    // repo is behind on all of them; bumping would be a real, untested-here change,
+    // not a mechanical catalog migration.
+    implementation("androidx.core:core-ktx:1.16.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+    implementation("androidx.activity:activity-compose:1.10.1")
+    implementation("androidx.compose.ui:ui:1.7.8")
+    implementation("androidx.compose.ui:ui-util:1.7.8")
+    implementation("androidx.compose.ui:ui-graphics:1.7.8")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.7.8")
+    implementation("androidx.compose.material3:material3:1.3.2")
+    implementation("androidx.compose.material:material-icons-extended")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.7.8")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.8")
 
-    implementation(libs.navigation.compose)
+    implementation("androidx.navigation:navigation-compose:2.8.9")
 
-    implementation(libs.accompanist.systemuicontroller)
-    implementation(libs.accompanist.pager.indicators)
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.28.0")
 
-    implementation(libs.hilt)
-    implementation(libs.hilt.navigation)
-    ksp(libs.hilt.compiler)
+    // Hilt/Room/ACRA/aboutlibraries/zoom-compose aren't in the shared catalog
+    // (single-repo use).
+    implementation("com.google.dagger:hilt-android:2.56.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    ksp("com.google.dagger:hilt-compiler:2.56.1")
 
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    ksp(libs.room.compiler)
+    implementation("androidx.room:room-runtime:2.7.0")
+    implementation("androidx.room:room-ktx:2.7.0")
+    ksp("androidx.room:room-compiler:2.7.0")
 
-    implementation(libs.datastore.preferences)
+    // datastore-preferences intentionally not on the shared catalog's value
+    // (1.1.7) - this repo is behind at 1.1.4.
+    implementation("androidx.datastore:datastore-preferences:1.1.4")
 
-    implementation(libs.appcompat)
-    implementation(libs.acra.dialog)
-    implementation(libs.acra.mail)
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("ch.acra:acra-dialog:5.9.7")
+    implementation("ch.acra:acra-mail:5.9.7")
 
-    implementation(libs.aboutLibraries)
+    implementation("com.mikepenz:aboutlibraries-compose:10.6.1")
 
-    implementation (sharedLibs.bumptech.glide.compose)
-    implementation (libs.play.services.ads)
-    implementation (libs.zoom.compose)
+    implementation (libs.bumptech.glide.compose)
+    // play-services-ads intentionally not on the shared catalog's value
+    // (25.4.0) - this repo is behind at 24.2.0.
+    implementation ("com.google.android.gms:play-services-ads:24.2.0")
+    implementation ("com.github.mennovogel:zoom-compose:1.1")
 
-    testImplementation(sharedLibs.junit)
-    androidTestImplementation(sharedLibs.androidx.test.ext.junit)
-    androidTestImplementation(sharedLibs.androidx.test.espresso.core)
-    androidTestImplementation(sharedLibs.androidx.test.espresso.intents)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.androidx.test.espresso.intents)
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.8")
     // ui-test-manifest (debugImplementation above) pulls old androidx.test:core/monitor/
     // concurrent-futures onto the debug classpath; AGP forces androidTest to resolve those
     // consistently with debug, so without bumping them here too, espresso/compose-test
     // can't satisfy their floor (same issue/fix as snake-game-android-main).
-    debugImplementation(sharedLibs.androidx.test.core)
-    debugImplementation(sharedLibs.androidx.test.monitor)
-    debugImplementation(sharedLibs.androidx.concurrent.futures)
+    debugImplementation(libs.androidx.test.core)
+    debugImplementation(libs.androidx.test.monitor)
+    debugImplementation(libs.androidx.concurrent.futures)
 }
