@@ -2,16 +2,14 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.kotlinAndroid)
+    alias(sharedLibs.plugins.android.application)
+    alias(sharedLibs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.aboutLibraries)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.composeCompiler)
+    alias(sharedLibs.plugins.kotlin.compose)
     id("com.github.triplet.play")
     id("com.batodev.releasetools")
-    id("com.github.ben-manes.versions")
-    id("se.patrikerdes.use-latest-versions")
     id("io.gitlab.arturbosch.detekt")
 }
 
@@ -112,7 +110,7 @@ detekt {
 }
 
 dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
+    detektPlugins(sharedLibs.detekt.formatting)
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
@@ -148,20 +146,20 @@ dependencies {
 
     implementation(libs.aboutLibraries)
 
-    implementation (libs.compose)
+    implementation (sharedLibs.bumptech.glide.compose)
     implementation (libs.play.services.ads)
     implementation (libs.zoom.compose)
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.3.0")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
-    androidTestImplementation("androidx.test.espresso:espresso-intents:3.7.0")
+    testImplementation(sharedLibs.junit)
+    androidTestImplementation(sharedLibs.androidx.test.ext.junit)
+    androidTestImplementation(sharedLibs.androidx.test.espresso.core)
+    androidTestImplementation(sharedLibs.androidx.test.espresso.intents)
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.8")
     // ui-test-manifest (debugImplementation above) pulls old androidx.test:core/monitor/
     // concurrent-futures onto the debug classpath; AGP forces androidTest to resolve those
     // consistently with debug, so without bumping them here too, espresso/compose-test
     // can't satisfy their floor (same issue/fix as snake-game-android-main).
-    debugImplementation("androidx.test:core:1.7.0")
-    debugImplementation("androidx.test:monitor:1.8.0")
-    debugImplementation("androidx.concurrent:concurrent-futures:1.2.0")
+    debugImplementation(sharedLibs.androidx.test.core)
+    debugImplementation(sharedLibs.androidx.test.monitor)
+    debugImplementation(sharedLibs.androidx.concurrent.futures)
 }

@@ -13,6 +13,11 @@ dependencyResolutionManagement {
         mavenCentral()
         maven("https://jitpack.io")
     }
+    versionCatalogs {
+        create("sharedLibs") {
+            from(files("../release-tools/gradle/libs.versions.toml"))
+        }
+    }
 }
 rootProject.name = "Sudoku"
 include(":app")
