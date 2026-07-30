@@ -113,30 +113,30 @@ detekt {
 dependencies {
     detektPlugins(libs.detekt.formatting)
 
-    // core-ktx/lifecycle-runtime/activity-compose/compose/material3/navigation-compose/
-    // accompanist/appcompat intentionally not on the shared catalog's values - this
-    // repo is behind on all of them; bumping would be a real, untested-here change,
-    // not a mechanical catalog migration.
-    implementation("androidx.core:core-ktx:1.16.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
+    // Behind the shared catalog's versions - still sourced from it, strictly
+    // pinned to this repo's own values rather than bumped as a side effect.
+    implementation(libs.androidx.core.ktx) { version { strictly("1.16.0") } }
+    implementation(libs.androidx.lifecycle.runtime.ktx) { version { strictly("2.8.7") } }
+    // lifecycle-runtime-compose isn't in the shared catalog.
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
-    implementation("androidx.activity:activity-compose:1.10.1")
-    implementation("androidx.compose.ui:ui:1.7.8")
+    implementation(libs.androidx.activity.compose) { version { strictly("1.10.1") } }
+    implementation(libs.androidx.compose.ui) { version { strictly("1.7.8") } }
+    // ui-util isn't in the shared catalog.
     implementation("androidx.compose.ui:ui-util:1.7.8")
-    implementation("androidx.compose.ui:ui-graphics:1.7.8")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.7.8")
-    implementation("androidx.compose.material3:material3:1.3.2")
-    implementation("androidx.compose.material:material-icons-extended")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.7.8")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.8")
+    implementation(libs.androidx.compose.ui.graphics) { version { strictly("1.7.8") } }
+    implementation(libs.androidx.compose.ui.tooling.preview) { version { strictly("1.7.8") } }
+    implementation(libs.androidx.compose.material3) { version { strictly("1.3.2") } }
+    implementation(libs.androidx.compose.material.icons.extended)
+    debugImplementation(libs.androidx.compose.ui.tooling) { version { strictly("1.7.8") } }
+    debugImplementation(libs.androidx.compose.ui.test.manifest) { version { strictly("1.7.8") } }
 
-    implementation("androidx.navigation:navigation-compose:2.8.9")
+    implementation(libs.androidx.navigation.compose) { version { strictly("2.8.9") } }
 
+    // accompanist-systemuicontroller/-pager-indicators aren't in the shared catalog.
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.28.0")
 
-    // Hilt/Room/ACRA/aboutlibraries/zoom-compose aren't in the shared catalog
-    // (single-repo use).
+    // Hilt/Room/ACRA/aboutlibraries aren't in the shared catalog (single-repo use).
     implementation("com.google.dagger:hilt-android:2.56.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     ksp("com.google.dagger:hilt-compiler:2.56.1")
@@ -145,21 +145,17 @@ dependencies {
     implementation("androidx.room:room-ktx:2.7.0")
     ksp("androidx.room:room-compiler:2.7.0")
 
-    // datastore-preferences intentionally not on the shared catalog's value
-    // (1.1.7) - this repo is behind at 1.1.4.
-    implementation("androidx.datastore:datastore-preferences:1.1.4")
+    implementation(libs.androidx.datastore.preferences) { version { strictly("1.1.4") } }
 
-    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation(libs.androidx.appcompat) { version { strictly("1.7.0") } }
     implementation("ch.acra:acra-dialog:5.9.7")
     implementation("ch.acra:acra-mail:5.9.7")
 
     implementation("com.mikepenz:aboutlibraries-compose:10.6.1")
 
     implementation (libs.bumptech.glide.compose)
-    // play-services-ads intentionally not on the shared catalog's value
-    // (25.4.0) - this repo is behind at 24.2.0.
-    implementation ("com.google.android.gms:play-services-ads:24.2.0")
-    implementation ("com.github.mennovogel:zoom-compose:1.1")
+    implementation (libs.play.services.ads) { version { strictly("24.2.0") } }
+    implementation (libs.mennovogel.zoom.compose) { version { strictly("1.1") } }
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
