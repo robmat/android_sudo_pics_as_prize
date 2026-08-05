@@ -110,12 +110,10 @@ dependencies {
     // pinned to this repo's own values rather than bumped as a side effect.
     implementation(libs.androidx.core.ktx) { version { strictly("1.16.0") } }
     implementation(libs.androidx.lifecycle.runtime.ktx) { version { strictly("2.8.7") } }
-    // lifecycle-runtime-compose isn't in the shared catalog.
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+    implementation(libs.sudoku.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.activity.compose) { version { strictly("1.10.1") } }
     implementation(libs.androidx.compose.ui) { version { strictly("1.7.8") } }
-    // ui-util isn't in the shared catalog.
-    implementation("androidx.compose.ui:ui-util:1.7.8")
+    implementation(libs.sudoku.androidx.compose.ui.util)
     implementation(libs.androidx.compose.ui.graphics) { version { strictly("1.7.8") } }
     implementation(libs.androidx.compose.ui.tooling.preview) { version { strictly("1.7.8") } }
     implementation(libs.androidx.compose.material3) { version { strictly("1.3.2") } }
@@ -125,14 +123,12 @@ dependencies {
 
     implementation(libs.androidx.navigation.compose) { version { strictly("2.8.9") } }
 
-    // accompanist-systemuicontroller/-pager-indicators aren't in the shared catalog.
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
-    implementation("com.google.accompanist:accompanist-pager-indicators:0.28.0")
+    implementation(libs.google.accompanist.systemuicontroller)
+    implementation(libs.google.accompanist.pager.indicators)
 
-    // Hilt/ACRA/aboutlibraries aren't in the shared catalog (single-repo use).
-    implementation("com.google.dagger:hilt-android:2.56.1")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    ksp("com.google.dagger:hilt-compiler:2.56.1")
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
 
     // Behind the shared catalog's value (2.8.4) - still sourced from it,
     // strictly pinned to this repo's own value.
@@ -143,10 +139,10 @@ dependencies {
     implementation(libs.androidx.datastore.preferences) { version { strictly("1.1.4") } }
 
     implementation(libs.androidx.appcompat) { version { strictly("1.7.0") } }
-    implementation("ch.acra:acra-dialog:5.9.7")
-    implementation("ch.acra:acra-mail:5.9.7")
+    implementation(libs.acra.dialog)
+    implementation(libs.acra.mail)
 
-    implementation("com.mikepenz:aboutlibraries-compose:10.6.1")
+    implementation(libs.mikepenz.aboutlibraries.compose)
 
     implementation (libs.bumptech.glide.compose)
     implementation (libs.play.services.ads) { version { strictly("24.2.0") } }
@@ -156,7 +152,7 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(libs.androidx.test.espresso.intents)
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.8")
+    androidTestImplementation(libs.sudoku.androidx.compose.ui.test.junit4)
     // ui-test-manifest (debugImplementation above) pulls old androidx.test:core/monitor/
     // concurrent-futures onto the debug classpath; AGP forces androidTest to resolve those
     // consistently with debug, so without bumping them here too, espresso/compose-test
