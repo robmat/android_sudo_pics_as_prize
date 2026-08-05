@@ -129,14 +129,16 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.28.0")
 
-    // Hilt/Room/ACRA/aboutlibraries aren't in the shared catalog (single-repo use).
+    // Hilt/ACRA/aboutlibraries aren't in the shared catalog (single-repo use).
     implementation("com.google.dagger:hilt-android:2.56.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     ksp("com.google.dagger:hilt-compiler:2.56.1")
 
-    implementation("androidx.room:room-runtime:2.7.0")
-    implementation("androidx.room:room-ktx:2.7.0")
-    ksp("androidx.room:room-compiler:2.7.0")
+    // Behind the shared catalog's value (2.8.4) - still sourced from it,
+    // strictly pinned to this repo's own value.
+    implementation(libs.androidx.room.runtime) { version { strictly("2.7.0") } }
+    implementation(libs.androidx.room.ktx) { version { strictly("2.7.0") } }
+    ksp(libs.androidx.room.compiler) { version { strictly("2.7.0") } }
 
     implementation(libs.androidx.datastore.preferences) { version { strictly("1.1.4") } }
 
