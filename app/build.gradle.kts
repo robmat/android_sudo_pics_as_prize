@@ -9,7 +9,6 @@ plugins {
     id("com.mikepenz.aboutlibraries.plugin") version "10.6.1"
     id("com.google.dagger.hilt.android")
     alias(libs.plugins.kotlin.compose)
-    id("com.github.triplet.play")
     id("com.batodev.releasetools")
     id("io.gitlab.arturbosch.detekt")
 }
@@ -97,12 +96,6 @@ android {
 aboutLibraries {
     // Remove the "generated" timestamp to allow for reproducible builds
     excludeFields = arrayOf("generated")
-}
-
-play {
-    serviceAccountCredentials.set(rootProject.file("../play-console-api-465319-0f9c399097c5.json"))
-    track.set("internal")
-    defaultToAppBundles.set(true)
 }
 
 detekt {
