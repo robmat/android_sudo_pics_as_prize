@@ -68,7 +68,7 @@ internal fun GameTopBar(
     viewModel: GameViewModel,
     navigateBack: () -> Unit,
     navigateSettings: () -> Unit,
-    restartButtonAnimation: Float
+    restartButtonAnimation: Float,
 ) {
     TopAppBar(
         title = { },
@@ -76,7 +76,7 @@ internal fun GameTopBar(
             IconButton(onClick = navigateBack, modifier = Modifier.testTag("game_back")) {
                 Icon(
                     painter = painterResource(R.drawable.ic_round_arrow_back_24),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
         },
@@ -85,7 +85,7 @@ internal fun GameTopBar(
             PlayPauseAction(viewModel)
             RestartAction(viewModel, restartButtonAnimation)
             GameMenuAction(viewModel, navigateSettings)
-        }
+        },
     )
 }
 
@@ -94,37 +94,43 @@ internal fun GamePrizeImage(viewModel: GameViewModel) {
     if (viewModel.endGame) return
     val context = LocalContext.current
     Image(
-        bitmap = BitmapFactory.decodeStream(
-            context.assets.open("$PRIZE_IMAGES/${viewModel.prizeImageName()}")
-        )!!
-            .asImageBitmap(),
+        bitmap =
+            BitmapFactory
+                .decodeStream(
+                    context.assets.open("$PRIZE_IMAGES/${viewModel.prizeImageName()}"),
+                )!!
+                .asImageBitmap(),
         contentScale = ContentScale.FillWidth,
         contentDescription = stringResource(id = R.string.app_name),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp, PRIZE_IMAGE_PADDING_TOP.dp, 8.dp, 8.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .border(
-                1.dp,
-                LocalBoardColors.current.thickLineColor,
-                RoundedCornerShape(8.dp)
-            )
-            .alpha(PRIZE_IMAGE_BACKGROUND_ALPHA)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(8.dp, PRIZE_IMAGE_PADDING_TOP.dp, 8.dp, 8.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .border(
+                    1.dp,
+                    LocalBoardColors.current.thickLineColor,
+                    RoundedCornerShape(8.dp),
+                ).alpha(PRIZE_IMAGE_BACKGROUND_ALPHA),
     )
 }
 
 @Composable
-internal fun GameStatsRow(viewModel: GameViewModel, mistakesLimit: Boolean) {
+internal fun GameStatsRow(
+    viewModel: GameViewModel,
+    mistakesLimit: Boolean,
+) {
     val errorHighlight by viewModel.mistakesMethod.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_HIGHLIGHT_MISTAKES
+        initialValue = PreferencesConstants.DEFAULT_HIGHLIGHT_MISTAKES,
     )
     AnimatedVisibility(visible = !viewModel.endGame) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 24.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             TopBoardSection(stringResource(viewModel.gameDifficulty.resName))
 
@@ -133,13 +139,13 @@ internal fun GameStatsRow(viewModel: GameViewModel, mistakesLimit: Boolean) {
                     stringResource(
                         R.string.mistakes_number_out_of,
                         viewModel.mistakesCount,
-                        PreferencesConstants.MISTAKES_LIMIT
-                    )
+                        PreferencesConstants.MISTAKES_LIMIT,
+                    ),
                 )
             }
 
             val timerEnabled by viewModel.timerEnabled.collectAsStateWithLifecycle(
-                initialValue = PreferencesConstants.DEFAULT_SHOW_TIMER
+                initialValue = PreferencesConstants.DEFAULT_SHOW_TIMER,
             )
             AnimatedVisibility(visible = timerEnabled || viewModel.endGame) {
                 TopBoardSection(viewModel.timeText)
@@ -156,38 +162,38 @@ private data class GameBoardPrefs(
     val scale: Float,
     val crossHighlight: Boolean,
     val errorHighlight: Int,
-    val fontSizeValue: TextUnit
+    val fontSizeValue: TextUnit,
 )
 
 @Composable
 private fun rememberGameBoardPrefs(viewModel: GameViewModel): GameBoardPrefs {
     val remainingUse by viewModel.remainingUse.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_REMAINING_USES
+        initialValue = PreferencesConstants.DEFAULT_REMAINING_USES,
     )
     val highlightIdentical by viewModel.identicalHighlight.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_HIGHLIGHT_IDENTICAL
+        initialValue = PreferencesConstants.DEFAULT_HIGHLIGHT_IDENTICAL,
     )
     val positionLines by viewModel.positionLines.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_POSITION_LINES
+        initialValue = PreferencesConstants.DEFAULT_POSITION_LINES,
     )
     val boardBlur by animateDpAsState(
-        targetValue = if (viewModel.gamePlaying || viewModel.endGame) 0.dp else 10.dp
+        targetValue = if (viewModel.gamePlaying || viewModel.endGame) 0.dp else 10.dp,
     )
     val scale by animateFloatAsState(
-        targetValue = if (viewModel.gamePlaying || viewModel.endGame) 1f else BOARD_DIM_SCALE
+        targetValue = if (viewModel.gamePlaying || viewModel.endGame) 1f else BOARD_DIM_SCALE,
     )
     val crossHighlight by viewModel.crossHighlight.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_BOARD_CROSS_HIGHLIGHT
+        initialValue = PreferencesConstants.DEFAULT_BOARD_CROSS_HIGHLIGHT,
     )
     val errorHighlight by viewModel.mistakesMethod.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_HIGHLIGHT_MISTAKES
+        initialValue = PreferencesConstants.DEFAULT_HIGHLIGHT_MISTAKES,
     )
     val fontSizeFactor by viewModel.fontSize.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_FONT_SIZE_FACTOR
+        initialValue = PreferencesConstants.DEFAULT_FONT_SIZE_FACTOR,
     )
     val fontSizeValue by remember(fontSizeFactor, viewModel.gameType) {
         mutableStateOf(
-            viewModel.getFontSize(factor = fontSizeFactor)
+            viewModel.getFontSize(factor = fontSizeFactor),
         )
     }
     return GameBoardPrefs(
@@ -198,17 +204,22 @@ private fun rememberGameBoardPrefs(viewModel: GameViewModel): GameBoardPrefs {
         scale,
         crossHighlight,
         errorHighlight,
-        fontSizeValue
+        fontSizeValue,
     )
 }
 
 @Composable
-internal fun GameBoardArea(viewModel: GameViewModel, renderNotesState: MutableState<Boolean>, localView: View) {
+internal fun GameBoardArea(
+    viewModel: GameViewModel,
+    renderNotesState: MutableState<Boolean>,
+    localView: View,
+) {
     val prefs = rememberGameBoardPrefs(viewModel)
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
     ) {
         GameSudokuBoard(viewModel, prefs, renderNotesState, localView)
     }
@@ -219,48 +230,54 @@ private fun GameSudokuBoard(
     viewModel: GameViewModel,
     prefs: GameBoardPrefs,
     renderNotesState: MutableState<Boolean>,
-    localView: View
+    localView: View,
 ) {
     val renderNotes = renderNotesState.value
     Board(
-        modifier = Modifier
-            .testTag("sudoku_board")
-            .blur(prefs.boardBlur)
-            .scale(prefs.scale, prefs.scale),
-        data = BoardData(
-            board = if (!viewModel.showSolution) viewModel.gameBoard else viewModel.solvedBoard,
-            size = viewModel.size,
-            notes = viewModel.notes
-        ),
-        interaction = BoardInteraction(
-            selectedCell = viewModel.currCell,
-            onClick = { cell ->
-                viewModel.processInput(
-                    cell = cell,
-                    remainingUse = prefs.remainingUse,
-                )
-            },
-            onLongClick = { cell ->
-                if (viewModel.processInput(cell, prefs.remainingUse, longTap = true)) {
-                    localView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                }
-            }
-        ),
-        style = BoardStyle(
-            boardColors = LocalBoardColors.current,
-            textSizes = BoardTextSizes(mainTextSize = prefs.fontSizeValue),
-            displayOptions = BoardDisplayOptions(
-                identicalNumbersHighlight = prefs.highlightIdentical,
-                errorsHighlight = prefs.errorHighlight != 0,
-                positionLines = prefs.positionLines,
-                enabled = viewModel.gamePlaying && !viewModel.endGame,
-                questions = !(viewModel.gamePlaying || viewModel.endGame) &&
-                    Build.VERSION.SDK_INT < Build.VERSION_CODES.R,
-                renderNotes = renderNotes && !viewModel.showSolution,
-                zoomable = viewModel.gameType == GameType.Default12x12,
-                crossHighlight = prefs.crossHighlight
-            )
-        )
+        modifier =
+            Modifier
+                .testTag("sudoku_board")
+                .blur(prefs.boardBlur)
+                .scale(prefs.scale, prefs.scale),
+        data =
+            BoardData(
+                board = if (!viewModel.showSolution) viewModel.gameBoard else viewModel.solvedBoard,
+                size = viewModel.size,
+                notes = viewModel.notes,
+            ),
+        interaction =
+            BoardInteraction(
+                selectedCell = viewModel.currCell,
+                onClick = { cell ->
+                    viewModel.processInput(
+                        cell = cell,
+                        remainingUse = prefs.remainingUse,
+                    )
+                },
+                onLongClick = { cell ->
+                    if (viewModel.processInput(cell, prefs.remainingUse, longTap = true)) {
+                        localView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                    }
+                },
+            ),
+        style =
+            BoardStyle(
+                boardColors = LocalBoardColors.current,
+                textSizes = BoardTextSizes(mainTextSize = prefs.fontSizeValue),
+                displayOptions =
+                    BoardDisplayOptions(
+                        identicalNumbersHighlight = prefs.highlightIdentical,
+                        errorsHighlight = prefs.errorHighlight != 0,
+                        positionLines = prefs.positionLines,
+                        enabled = viewModel.gamePlaying && !viewModel.endGame,
+                        questions =
+                            !(viewModel.gamePlaying || viewModel.endGame) &&
+                                Build.VERSION.SDK_INT < Build.VERSION_CODES.R,
+                        renderNotes = renderNotes && !viewModel.showSolution,
+                        zoomable = viewModel.gameType == GameType.Default12x12,
+                        crossHighlight = prefs.crossHighlight,
+                    ),
+            ),
     )
 }
 
@@ -269,11 +286,11 @@ internal fun GameBottomContent(
     viewModel: GameViewModel,
     renderNotesState: MutableState<Boolean>,
     localView: View,
-    mistakesLimit: Boolean
+    mistakesLimit: Boolean,
 ) {
     AnimatedContent(
         !viewModel.endGame,
-        label = "this_label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning"
+        label = "this_label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning",
     ) { contentState ->
         if (contentState) {
             GamePlayingContent(viewModel, renderNotesState, localView)
@@ -284,7 +301,11 @@ internal fun GameBottomContent(
 }
 
 @Composable
-internal fun GameDialogs(viewModel: GameViewModel, resetTimer: Boolean, restartButtonAngleState: MutableFloatState) {
+internal fun GameDialogs(
+    viewModel: GameViewModel,
+    resetTimer: Boolean,
+    restartButtonAngleState: MutableFloatState,
+) {
     if (viewModel.restartDialog) {
         viewModel.pauseTimer()
         AlertDialog(
@@ -311,7 +332,7 @@ internal fun GameDialogs(viewModel: GameViewModel, resetTimer: Boolean, restartB
             onDismissRequest = {
                 viewModel.restartDialog = false
                 viewModel.startTimer()
-            }
+            },
         )
     } else if (viewModel.giveUpDialog) {
         viewModel.pauseTimer()

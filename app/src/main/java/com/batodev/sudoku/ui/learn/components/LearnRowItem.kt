@@ -18,16 +18,17 @@ fun LearnRowItem(
     title: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    subtitle: String? = null
+    subtitle: String? = null,
 ) {
     PreferenceRow(
         modifier = modifier,
-        info = PreferenceRowInfo(
-            title = title,
-            subtitle = subtitle,
-            painter = painterResource(R.drawable.ic_outline_help_outline_24)
-        ),
+        info =
+            PreferenceRowInfo(
+                title = title,
+                subtitle = subtitle,
+                painter = painterResource(R.drawable.ic_outline_help_outline_24),
+            ),
         interactions = PreferenceRowInteractions(onClick = onClick),
-        shape = null
+        shape = null,
     )
 }

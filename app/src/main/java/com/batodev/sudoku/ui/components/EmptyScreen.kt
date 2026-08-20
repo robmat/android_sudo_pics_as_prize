@@ -22,7 +22,7 @@ import com.batodev.sudoku.ui.util.LightDarkPreview
 fun EmptyScreen(
     text: String,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit = { }
+    content: @Composable () -> Unit = { },
 ) {
     val emptyFace by remember {
         mutableStateOf(
@@ -30,25 +30,26 @@ fun EmptyScreen(
                 "Σ(ಠ_ಠ)",
                 "(･Д･。",
                 "(っ˘̩╭╮˘̩)っ",
-                "ಥ_ಥ"
-            ).random()
+                "ಥ_ಥ",
+            ).random(),
         )
     }
 
     Column(
-        modifier = modifier
-            .fillMaxSize(),
+        modifier =
+            modifier
+                .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = emptyFace,
-            style = MaterialTheme.typography.displayMedium
+            style = MaterialTheme.typography.displayMedium,
         )
         Text(
             modifier = Modifier.padding(vertical = 8.dp),
             text = text,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
         content()
     }

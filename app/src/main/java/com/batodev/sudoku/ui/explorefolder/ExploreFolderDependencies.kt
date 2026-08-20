@@ -9,16 +9,20 @@ import com.batodev.sudoku.domain.usecase.folder.GetFolderUseCase
 import com.batodev.sudoku.domain.usecase.folder.GetFoldersUseCase
 import javax.inject.Inject
 
-class ExploreFolderBoardWriteUseCases @Inject constructor(
-    val updateBoardUseCase: UpdateBoardUseCase,
-    val updateManyBoardsUseCase: UpdateManyBoardsUseCase,
-    val deleteBoardUseCase: DeleteBoardUseCase,
-    val deleteBoardsUseCase: DeleteBoardsUseCase
-)
+class ExploreFolderBoardWriteUseCases
+    @Inject
+    constructor(
+        val updateBoardUseCase: UpdateBoardUseCase,
+        val updateManyBoardsUseCase: UpdateManyBoardsUseCase,
+        val deleteBoardUseCase: DeleteBoardUseCase,
+        val deleteBoardsUseCase: DeleteBoardsUseCase,
+    )
 
-class ExploreFolderDependencies @Inject constructor(
-    val getFolderUseCase: GetFolderUseCase,
-    val getBoardsInFolderWithSavedUseCase: GetBoardsInFolderWithSavedUseCase,
-    val getFoldersUseCase: GetFoldersUseCase,
-    val writeUseCases: ExploreFolderBoardWriteUseCases
-)
+class ExploreFolderDependencies
+    @Inject
+    constructor(
+        val getFolderUseCase: GetFolderUseCase,
+        val getBoardsInFolderWithSavedUseCase: GetBoardsInFolderWithSavedUseCase,
+        val getFoldersUseCase: GetFoldersUseCase,
+        val writeUseCases: ExploreFolderBoardWriteUseCases,
+    )

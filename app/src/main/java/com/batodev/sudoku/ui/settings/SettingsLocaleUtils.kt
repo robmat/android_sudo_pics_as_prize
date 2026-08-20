@@ -63,9 +63,10 @@ private fun getDisplayName(lang: String?): String {
         return ""
     }
 
-    val locale = when (lang) {
-        "" -> LocaleListCompat.getAdjustedDefault()[0]
-        else -> Locale.forLanguageTag(lang)
-    }
+    val locale =
+        when (lang) {
+            "" -> LocaleListCompat.getAdjustedDefault()[0]
+            else -> Locale.forLanguageTag(lang)
+        }
     return locale!!.getDisplayName(locale).replaceFirstChar { it.uppercase(locale) }
 }

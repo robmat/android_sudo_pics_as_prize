@@ -37,12 +37,13 @@ private const val THIN_LINE_WIDTH_DP = 0.6
 private const val THICK_LINE_WIDTH_DP = 1.1
 private const val SINGLE_DIGIT_SAMPLE_TEXT = "1"
 
-private fun defaultMainTextSize(size: Int): TextUnit = when (size) {
-    BOARD_SIZE_6X6 -> TEXT_SIZE_6X6
-    BOARD_SIZE_9X9 -> TEXT_SIZE_9X9
-    BOARD_SIZE_12X12 -> TEXT_SIZE_12X12
-    else -> TEXT_SIZE_DEFAULT
-}
+private fun defaultMainTextSize(size: Int): TextUnit =
+    when (size) {
+        BOARD_SIZE_6X6 -> TEXT_SIZE_6X6
+        BOARD_SIZE_9X9 -> TEXT_SIZE_9X9
+        BOARD_SIZE_12X12 -> TEXT_SIZE_12X12
+        else -> TEXT_SIZE_DEFAULT
+    }
 
 /** The data a [BoardPreview] renders: either a parsed [board] or a raw [boardString]. */
 data class BoardPreviewContent(
@@ -50,7 +51,7 @@ data class BoardPreviewContent(
     val size: Int = 9,
     val boardString: String? = null,
     val board: List<List<Cell>>? = null,
-    val mainTextSize: TextUnit? = null
+    val mainTextSize: TextUnit? = null,
 )
 
 /** Everything [drawBoardPreviewNumbers] needs to paint the digit glyphs onto the canvas. */
@@ -59,10 +60,13 @@ private class BoardPreviewTextDrawing(
     val cellSize: Float,
     val textWidth: Float,
     val textPaint: Paint,
-    val textBounds: Rect
+    val textBounds: Rect,
 )
 
-private fun BoardPreviewTextDrawing.drawParsedBoardNumbers(size: Int, board: List<List<Cell>>) {
+private fun BoardPreviewTextDrawing.drawParsedBoardNumbers(
+    size: Int,
+    board: List<List<Cell>>,
+) {
     for (i in 0 until size) {
         for (j in 0 until size) {
             if (board[i][j].value == 0) continue
@@ -70,13 +74,16 @@ private fun BoardPreviewTextDrawing.drawParsedBoardNumbers(size: Int, board: Lis
                 board[i][j].value.toString(),
                 board[i][j].col * cellSize + (cellSize - textWidth) / 2f,
                 (board[i][j].row * cellSize + cellSize) - (cellSize - textBounds.height()) / 2f,
-                textPaint
+                textPaint,
             )
         }
     }
 }
 
-private fun BoardPreviewTextDrawing.drawBoardStringNumbers(size: Int, boardString: String) {
+private fun BoardPreviewTextDrawing.drawBoardStringNumbers(
+    size: Int,
+    boardString: String,
+) {
     for (i in 0 until size) {
         for (j in 0 until size) {
             if (boardString[size * j + i] == '0') continue
@@ -84,13 +91,16 @@ private fun BoardPreviewTextDrawing.drawBoardStringNumbers(size: Int, boardStrin
                 boardString[size * j + i].uppercase(),
                 i * cellSize + (cellSize - textWidth) / 2f,
                 j * cellSize + cellSize - (cellSize - textBounds.height()) / 2f,
-                textPaint
+                textPaint,
             )
         }
     }
 }
 
-private fun drawBoardPreviewNumbers(drawing: BoardPreviewTextDrawing, content: BoardPreviewContent) {
+private fun drawBoardPreviewNumbers(
+    drawing: BoardPreviewTextDrawing,
+    content: BoardPreviewContent,
+) {
     val size = content.size
     val board = content.board
     val boardString = content.boardString
@@ -104,7 +114,7 @@ private fun drawBoardPreviewNumbers(drawing: BoardPreviewTextDrawing, content: B
 @Composable
 fun BoardPreview(
     content: BoardPreviewContent,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val size = content.size
     val mainTextSize = content.mainTextSize ?: defaultMainTextSize(size)
@@ -126,7 +136,7 @@ fun BoardPreview(
                     color = foregroundColor.toArgb()
                     isAntiAlias = true
                     textSize = fontSizePx
-                }
+                },
             )
         }
         val textWidth by remember { mutableFloatStateOf(textPaint.measureText(SINGLE_DIGIT_SAMPLE_TEXT)) }
@@ -134,20 +144,21 @@ fun BoardPreview(
         val thinLineWidth = with(LocalDensity.current) { THIN_LINE_WIDTH_DP.dp.toPx() }
         val thickLineWidth = with(LocalDensity.current) { THICK_LINE_WIDTH_DP.dp.toPx() }
         Canvas(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier =
+                Modifier
+                    .fillMaxSize(),
         ) {
             drawRoundRect(
                 color = thickLineColor,
                 topLeft = Offset.Zero,
                 size = Size(maxWidth, maxWidth),
                 cornerRadius = CornerRadius(BOARD_CORNER_RADIUS, BOARD_CORNER_RADIUS),
-                style = Stroke(width = boardStrokeWidth)
+                style = Stroke(width = boardStrokeWidth),
             )
 
             drawSudokuGridLines(
                 geometry = GridGeometry(size, cellSize, maxWidth, horThick, vertThick),
-                style = GridLineStyle(thickLineColor, thinLineColor, thickLineWidth, thinLineWidth)
+                style = GridLineStyle(thickLineColor, thinLineColor, thickLineWidth, thinLineWidth),
             )
 
             val textBounds = Rect()
@@ -167,10 +178,11 @@ private fun BoardPreviewPreview() {
     SudokuTheme {
         Surface {
             BoardPreview(
-                content = BoardPreviewContent(
-                    boardString = "0000100000040000000000000700000000000900000000680000000000000005000000000000000",
-                    boardColors = previewSudokuBoardColors()
-                )
+                content =
+                    BoardPreviewContent(
+                        boardString = "0000100000040000000000000700000000000900000000680000000000000005000000000000000",
+                        boardColors = previewSudokuBoardColors(),
+                    ),
             )
         }
     }

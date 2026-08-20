@@ -13,57 +13,73 @@ import com.batodev.sudoku.ui.components.PreferenceRowInteractions
 import com.batodev.sudoku.ui.components.PreferenceRowSwitch
 
 @Composable
-private fun AssistanceMistakesCheckRow(highlightMistakes: Int, onClick: () -> Unit) {
+private fun AssistanceMistakesCheckRow(
+    highlightMistakes: Int,
+    onClick: () -> Unit,
+) {
     PreferenceRow(
-        info = PreferenceRowInfo(
-            title = stringResource(R.string.pref_mistakes_check),
-            subtitle = when (highlightMistakes) {
-                0 -> stringResource(R.string.pref_mistakes_check_off)
-                1 -> stringResource(R.string.pref_mistakes_check_violations)
-                2 -> stringResource(R.string.pref_mistakes_check_final)
-                else -> stringResource(R.string.pref_mistakes_check_off)
-            }
-        ),
-        interactions = PreferenceRowInteractions(onClick = onClick)
+        info =
+            PreferenceRowInfo(
+                title = stringResource(R.string.pref_mistakes_check),
+                subtitle =
+                    when (highlightMistakes) {
+                        0 -> stringResource(R.string.pref_mistakes_check_off)
+                        1 -> stringResource(R.string.pref_mistakes_check_violations)
+                        2 -> stringResource(R.string.pref_mistakes_check_final)
+                        else -> stringResource(R.string.pref_mistakes_check_off)
+                    },
+            ),
+        interactions = PreferenceRowInteractions(onClick = onClick),
     )
 }
 
 @Composable
-private fun AssistanceHighlightIdenticalSwitch(highlightIdentical: Boolean, onClick: () -> Unit) {
+private fun AssistanceHighlightIdenticalSwitch(
+    highlightIdentical: Boolean,
+    onClick: () -> Unit,
+) {
     PreferenceRowSwitch(
-        info = PreferenceRowInfo(
-            title = stringResource(R.string.pref_highlight_identical),
-            subtitle = stringResource(R.string.pref_highlight_identical_summ)
-        ),
+        info =
+            PreferenceRowInfo(
+                title = stringResource(R.string.pref_highlight_identical),
+                subtitle = stringResource(R.string.pref_highlight_identical_summ),
+            ),
         checked = highlightIdentical,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
 @Composable
-private fun AssistanceRemainingUsesSwitch(remainingUse: Boolean, onClick: () -> Unit) {
+private fun AssistanceRemainingUsesSwitch(
+    remainingUse: Boolean,
+    onClick: () -> Unit,
+) {
     PreferenceRowSwitch(
-        info = PreferenceRowInfo(
-            title = stringResource(R.string.pref_remaining_uses),
-            subtitle = stringResource(R.string.pref_remaining_uses_summ)
-        ),
+        info =
+            PreferenceRowInfo(
+                title = stringResource(R.string.pref_remaining_uses),
+                subtitle = stringResource(R.string.pref_remaining_uses_summ),
+            ),
         checked = remainingUse,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
 @Composable
-private fun AssistanceAutoEraseNotesSwitch(autoEraseNotes: Boolean, onClick: () -> Unit) {
+private fun AssistanceAutoEraseNotesSwitch(
+    autoEraseNotes: Boolean,
+    onClick: () -> Unit,
+) {
     PreferenceRowSwitch(
         info = PreferenceRowInfo(title = stringResource(R.string.pref_auto_erase_notes)),
         checked = autoEraseNotes,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
 internal fun LazyListScope.settingsAssistanceItems(
     state: SettingsPreferencesState,
-    viewModel: SettingsViewModel
+    viewModel: SettingsViewModel,
 ) {
     item {
         HorizontalDivider(modifier = Modifier.fillMaxWidth())

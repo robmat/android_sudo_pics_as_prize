@@ -13,29 +13,32 @@ class SudokuParser {
         private const val MAX_STANDARD_DIGIT = 9
         private const val NOTE_VALUE_CHAR_INDEX = 4
     }
+
     fun parseBoard(
         board: String,
         gameType: GameType,
         locked: Boolean = false,
-        emptySeparator: Char? = null
+        emptySeparator: Char? = null,
     ): MutableList<MutableList<Cell>> {
         if (board.isEmpty()) {
             throw BoardParseException(message = "Input string was empty")
         }
 
         val size = gameType.size
-        val listBoard = MutableList(size) { row ->
-            MutableList(size) { col ->
-                Cell(row, col, 0)
+        val listBoard =
+            MutableList(size) { row ->
+                MutableList(size) { col ->
+                    Cell(row, col, 0)
+                }
             }
-        }
 
         for (i in board.indices) {
-            val value = if (emptySeparator != null) {
-                if (board[i] == emptySeparator) 0 else boardDigitToInt(board[i])
-            } else {
-                if (board[i] in emptySeparators) 0 else boardDigitToInt(board[i])
-            }
+            val value =
+                if (emptySeparator != null) {
+                    if (board[i] == emptySeparator) 0 else boardDigitToInt(board[i])
+                } else {
+                    if (board[i] in emptySeparators) 0 else boardDigitToInt(board[i])
+                }
 
             listBoard[i / size][i % size].value = value
             listBoard[i / size][i % size].locked = locked
@@ -49,7 +52,10 @@ class SudokuParser {
      * @param boardList Sudoku board
      * @return Sudoku in string
      */
-    private fun cellToChar(cell: Cell, emptySeparator: Char): String {
+    private fun cellToChar(
+        cell: Cell,
+        emptySeparator: Char,
+    ): String {
         val isStandardDigit = cell.value <= MAX_STANDARD_DIGIT
         return when {
             isStandardDigit && cell.value != 0 -> cell.value.toString()
@@ -58,7 +64,10 @@ class SudokuParser {
         }
     }
 
-    fun boardToString(boardList: List<List<Cell>>, emptySeparator: Char = '0'): String {
+    fun boardToString(
+        boardList: List<List<Cell>>,
+        emptySeparator: Char = '0',
+    ): String {
         var boardString = ""
         boardList.forEach { cells ->
             cells.forEach { cell -> boardString += cellToChar(cell, emptySeparator) }
@@ -66,7 +75,10 @@ class SudokuParser {
         return boardString
     }
 
-    fun boardToString(board: IntArray, emptySeparator: Char = '0'): String {
+    fun boardToString(
+        board: IntArray,
+        emptySeparator: Char = '0',
+    ): String {
         var boardString = ""
         board.forEach {
             boardString += if (it != 0) it.toString(radix) else emptySeparator
@@ -101,9 +113,9 @@ class SudokuParser {
         return notesString
     }
 
-    private fun boardDigitToInt(char: Char): Int {
-        return char.digitToInt(radix)
-    }
+    private fun boardDigitToInt(char: Char): Int = char.digitToInt(radix)
 }
 
-class BoardParseException(message: String) : Exception(message)
+class BoardParseException(
+    message: String,
+) : Exception(message)

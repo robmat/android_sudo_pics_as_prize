@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 fun AnimatedIconFilterChip(
     selected: Boolean,
     label: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     FilterChip(
         selected = selected,
@@ -26,9 +26,9 @@ fun AnimatedIconFilterChip(
             AnimatedVisibility(selected) {
                 Icon(
                     imageVector = Icons.Rounded.Done,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
-        }
+        },
     )
 }

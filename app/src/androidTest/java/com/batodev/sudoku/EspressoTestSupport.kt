@@ -28,9 +28,10 @@ private const val START_NEW_GAME_TEXT = "Start new"
  */
 fun resetFirstLaunchFlag() {
     val context = ApplicationProvider.getApplicationContext<Context>()
-    val appSettingsManager = EntryPointAccessors
-        .fromApplication(context, AppSettingsManagerEntryPoint::class.java)
-        .appSettingsManager()
+    val appSettingsManager =
+        EntryPointAccessors
+            .fromApplication(context, AppSettingsManagerEntryPoint::class.java)
+            .appSettingsManager()
     runBlocking { appSettingsManager.setFirstLaunch(true) }
 }
 
@@ -75,7 +76,10 @@ fun ComposeTestRule.clickPlayAndConfirmIfAsked() {
     }
 }
 
-fun assertEventuallyDestroyed(scenario: ActivityScenario<*>, timeoutMs: Long = 8000) {
+fun assertEventuallyDestroyed(
+    scenario: ActivityScenario<*>,
+    timeoutMs: Long = 8000,
+) {
     val start = System.currentTimeMillis()
     while (System.currentTimeMillis() - start < timeoutMs) {
         if (scenario.state == Lifecycle.State.DESTROYED) return
@@ -83,6 +87,6 @@ fun assertEventuallyDestroyed(scenario: ActivityScenario<*>, timeoutMs: Long = 8
     }
     assertTrue(
         "Expected activity to reach DESTROYED within ${timeoutMs}ms, was ${scenario.state}",
-        scenario.state == Lifecycle.State.DESTROYED
+        scenario.state == Lifecycle.State.DESTROYED,
     )
 }

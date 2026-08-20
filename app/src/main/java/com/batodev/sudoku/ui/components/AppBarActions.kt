@@ -22,11 +22,14 @@ import com.batodev.sudoku.R
  * app. Extracted to remove the repeated back-arrow-icon boilerplate.
  */
 @Composable
-fun BackIconButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun BackIconButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(
             painter = painterResource(R.drawable.ic_round_arrow_back_24),
-            contentDescription = null
+            contentDescription = null,
         )
     }
 }
@@ -37,20 +40,18 @@ fun BackIconButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
  * a `closeMenu` callback that dismisses the menu, for use in each item's `onClick`.
  */
 @Composable
-fun OverflowMenuButton(
-    menuItems: @Composable ColumnScope.(closeMenu: () -> Unit) -> Unit
-) {
+fun OverflowMenuButton(menuItems: @Composable ColumnScope.(closeMenu: () -> Unit) -> Unit) {
     var showMenu by remember { mutableStateOf(false) }
     Box {
         IconButton(onClick = { showMenu = !showMenu }) {
             Icon(
                 Icons.Default.MoreVert,
-                contentDescription = null
+                contentDescription = null,
             )
         }
         RoundedDropdownMenu(
             expanded = showMenu,
-            onDismissRequest = { showMenu = false }
+            onDismissRequest = { showMenu = false },
         ) {
             menuItems { showMenu = false }
         }
@@ -66,14 +67,14 @@ fun RoundedDropdownMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     MaterialTheme(shapes = MaterialTheme.shapes.copy(extraSmall = MaterialTheme.shapes.large)) {
         DropdownMenu(
             modifier = modifier,
             expanded = expanded,
             onDismissRequest = onDismissRequest,
-            content = content
+            content = content,
         )
     }
 }

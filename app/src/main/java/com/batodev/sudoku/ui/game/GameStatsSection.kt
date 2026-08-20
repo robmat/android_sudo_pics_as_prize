@@ -33,67 +33,76 @@ import kotlin.time.toKotlinDuration
 @Composable
 private fun ColumnScope.AfterGameStatsTitle(info: AfterGameStatsInfo) {
     Text(
-        text = if (info.giveUp) {
-            if (info.mistakesLimit && info.mistakesLimitCount >= PreferencesConstants.MISTAKES_LIMIT) {
-                stringResource(R.string.saved_game_mistakes_limit)
+        text =
+            if (info.giveUp) {
+                if (info.mistakesLimit && info.mistakesLimitCount >= PreferencesConstants.MISTAKES_LIMIT) {
+                    stringResource(R.string.saved_game_mistakes_limit)
+                } else {
+                    stringResource(R.string.saved_game_give_up)
+                }
             } else {
-                stringResource(R.string.saved_game_give_up)
-            }
-        } else {
-            stringResource(R.string.game_completed)
-        },
+                stringResource(R.string.game_completed)
+            },
         style = MaterialTheme.typography.titleMedium,
-        modifier = Modifier
-            .align(Alignment.CenterHorizontally)
-            .padding(bottom = 8.dp)
+        modifier =
+            Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 8.dp),
     )
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun AfterGameTimeSection(timeText: String, records: List<Record>) {
+private fun AfterGameTimeSection(
+    timeText: String,
+    records: List<Record>,
+) {
     Text(
         text = stringResource(R.string.time),
         style = MaterialTheme.typography.titleMedium,
-        modifier = Modifier.padding(bottom = 8.dp)
+        modifier = Modifier.padding(bottom = 8.dp),
     )
 
     FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         StatBoxWithBottomPadding(
             text = {
                 Text(
                     stringResource(
                         R.string.stat_time_current,
-                        timeText
-                    )
+                        timeText,
+                    ),
                 )
-            }
+            },
         )
 
         if (records.isNotEmpty()) {
             StatBoxWithBottomPadding(
                 text = {
                     Text(
-                        text = stringResource(
-                            R.string.stat_time_average,
-                            DateUtils.formatElapsedTime(records.sumOf { it.time.seconds } / records.count())
-                        )
+                        text =
+                            stringResource(
+                                R.string.stat_time_average,
+                                DateUtils.formatElapsedTime(records.sumOf { it.time.seconds } / records.count()),
+                            ),
                     )
-                }
+                },
             )
             StatBoxWithBottomPadding(
                 text = {
                     Text(
-                        text = stringResource(
-                            R.string.stat_time_best,
-                            records.first().time
-                                .toKotlinDuration()
-                                .toFormattedString()
-                        )
+                        text =
+                            stringResource(
+                                R.string.stat_time_best,
+                                records
+                                    .first()
+                                    .time
+                                    .toKotlinDuration()
+                                    .toFormattedString(),
+                            ),
                     )
-                }
+                },
             )
         }
     }
@@ -103,52 +112,52 @@ private fun AfterGameTimeSection(timeText: String, records: List<Record>) {
 @Composable
 private fun AfterGameSummarySection(info: AfterGameStatsInfo) {
     FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         StatBoxWithBottomPadding(
             text = {
                 Text(
                     "${stringResource(info.difficulty.resName)} ${
                         stringResource(
-                            info.type.resName
+                            info.type.resName,
                         )
-                    }"
+                    }",
                 )
             },
-            icon = { Icon(Icons.Rounded.Grade, contentDescription = null) }
+            icon = { Icon(Icons.Rounded.Grade, contentDescription = null) },
         )
         StatBoxWithBottomPadding(
             text = {
                 Text(
                     stringResource(
                         R.string.hints_used,
-                        info.hintsUsed
-                    )
+                        info.hintsUsed,
+                    ),
                 )
             },
-            icon = { Icon(Icons.Rounded.Lightbulb, contentDescription = null) }
+            icon = { Icon(Icons.Rounded.Lightbulb, contentDescription = null) },
         )
         StatBoxWithBottomPadding(
             text = {
                 Text(
                     stringResource(
                         R.string.mistakes_made,
-                        info.mistakesMade
-                    )
+                        info.mistakesMade,
+                    ),
                 )
             },
-            icon = { Icon(Icons.Rounded.Cancel, contentDescription = null) }
+            icon = { Icon(Icons.Rounded.Cancel, contentDescription = null) },
         )
         StatBoxWithBottomPadding(
             text = {
                 Text(
                     stringResource(
                         R.string.notes_taken,
-                        info.notesTaken
-                    )
+                        info.notesTaken,
+                    ),
                 )
             },
-            icon = { Icon(Icons.Rounded.Edit, contentDescription = null) }
+            icon = { Icon(Icons.Rounded.Edit, contentDescription = null) },
         )
     }
 }
@@ -156,7 +165,7 @@ private fun AfterGameSummarySection(info: AfterGameStatsInfo) {
 @Composable
 fun AfterGameStats(
     info: AfterGameStatsInfo,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier) {
         AfterGameStatsTitle(info)
@@ -168,7 +177,7 @@ fun AfterGameStats(
         Text(
             text = stringResource(R.string.statistics),
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(top = 12.dp, bottom = 8.dp)
+            modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
         )
         AfterGameSummarySection(info)
     }
@@ -178,17 +187,18 @@ fun AfterGameStats(
 fun StatBox(
     text: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    icon: @Composable () -> Unit = { }
+    icon: @Composable () -> Unit = { },
 ) {
     Box(
-        modifier = modifier
-            .clip(MaterialTheme.shapes.medium)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+        modifier =
+            modifier
+                .clip(MaterialTheme.shapes.medium)
+                .background(MaterialTheme.colorScheme.surfaceVariant),
     ) {
         Row(
             modifier = Modifier.padding(vertical = 6.dp, horizontal = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             icon()
             text()
@@ -206,11 +216,11 @@ fun StatBox(
 fun StatBoxWithBottomPadding(
     text: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    icon: @Composable () -> Unit = { }
+    icon: @Composable () -> Unit = { },
 ) {
     StatBox(
         text = text,
         icon = icon,
-        modifier = modifier.padding(bottom = 8.dp)
+        modifier = modifier.padding(bottom = 8.dp),
     )
 }

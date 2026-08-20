@@ -77,7 +77,7 @@ import kotlin.time.toKotlinDuration
 private fun GamesHistoryTopBar(
     navigateBack: () -> Unit,
     onFilterClick: () -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
 ) {
     TopAppBar(
         title = { Text(stringResource(R.string.history_title)) },
@@ -85,7 +85,7 @@ private fun GamesHistoryTopBar(
             IconButton(onClick = navigateBack) {
                 Icon(
                     painter = painterResource(R.drawable.ic_round_arrow_back_24),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
         },
@@ -93,11 +93,11 @@ private fun GamesHistoryTopBar(
             IconButton(onClick = onFilterClick) {
                 Icon(
                     painter = painterResource(R.drawable.ic_round_filter_list_24),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
         },
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
     )
 }
 
@@ -107,12 +107,12 @@ private fun GamesHistoryList(
     dateFormat: String,
     viewModel: HistoryViewModel,
     navigateSavedGame: (Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val lazyListState = rememberLazyListState()
     var filteredAndSortedBoards by remember {
         mutableStateOf(
-            emptyList<Pair<SavedGame, SudokuBoard>>()
+            emptyList<Pair<SavedGame, SudokuBoard>>(),
         )
     }
     LaunchedEffect(
@@ -120,39 +120,42 @@ private fun GamesHistoryList(
         viewModel.sortEntry,
         viewModel.filterDifficulties,
         viewModel.filterGameTypes,
-        viewModel.filterByGameState
+        viewModel.filterByGameState,
     ) {
         filteredAndSortedBoards = viewModel.applySortAndFilter(games.toList())
         lazyListState.animateScrollToItem(0)
     }
 
     ScrollbarLazyColumn(
-        modifier = modifier
-            .disableSplitMotionEvents(),
-        state = lazyListState
+        modifier =
+            modifier
+                .disableSplitMotionEvents(),
+        state = lazyListState,
     ) {
         itemsIndexed(
             filteredAndSortedBoards,
-            key = { _, game -> game.first.uid }
+            key = { _, game -> game.first.uid },
         ) { index, game ->
             SudokuHistoryItem(
-                info = SudokuHistoryItemInfo(
-                    board = game.first.currentBoard,
-                    savedGame = game.first,
-                    difficulty = stringResource(game.second.difficulty.resName),
-                    type = stringResource(game.second.type.resName),
-                    dateTimeFormatter = AppSettingsManager.dateFormat(dateFormat)
-                ),
+                info =
+                    SudokuHistoryItemInfo(
+                        board = game.first.currentBoard,
+                        savedGame = game.first,
+                        difficulty = stringResource(game.second.difficulty.resName),
+                        type = stringResource(game.second.type.resName),
+                        dateTimeFormatter = AppSettingsManager.dateFormat(dateFormat),
+                    ),
                 onClick = {
                     navigateSavedGame(game.first.uid)
-                }
+                },
             )
             if (index < filteredAndSortedBoards.size - 1) {
                 Divider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(CircleShape)
-                        .padding(horizontal = 12.dp, vertical = 1.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .clip(CircleShape)
+                            .padding(horizontal = 12.dp, vertical = 1.dp),
                 )
             }
         }
@@ -164,7 +167,7 @@ private fun GamesHistorySortFilterRow(viewModel: HistoryViewModel) {
     Text(
         text = stringResource(R.string.sort_label),
         color = MaterialTheme.colorScheme.onPrimaryContainer,
-        modifier = Modifier.padding(start = 12.dp)
+        modifier = Modifier.padding(start = 12.dp),
     )
     FilterOptionsRow {
         item {
@@ -173,7 +176,7 @@ private fun GamesHistorySortFilterRow(viewModel: HistoryViewModel) {
                 label = { Text(stringResource(R.string.sort_ascending)) },
                 onClick = {
                     viewModel.switchSortType()
-                }
+                },
             )
         }
         items(enumValues<SortEntry>().toList()) {
@@ -182,7 +185,7 @@ private fun GamesHistorySortFilterRow(viewModel: HistoryViewModel) {
                 label = { Text(stringResource(it.resName)) },
                 onClick = {
                     viewModel.selectSortEntry(it)
-                }
+                },
             )
         }
     }
@@ -198,14 +201,14 @@ private fun GamesHistoryFilterChipsRows(viewModel: HistoryViewModel) {
                 GameDifficulty.Hard,
                 GameDifficulty.Challenge,
                 GameDifficulty.Custom,
-            )
+            ),
         ) {
             AnimatedIconFilterChip(
                 selected = viewModel.filterDifficulties.contains(it),
                 label = stringResource(it.resName),
                 onClick = {
                     viewModel.selectFilter(it)
-                }
+                },
             )
         }
     }
@@ -215,14 +218,14 @@ private fun GamesHistoryFilterChipsRows(viewModel: HistoryViewModel) {
                 GameType.Default9x9,
                 GameType.Default6x6,
                 GameType.Default12x12,
-            )
+            ),
         ) {
             AnimatedIconFilterChip(
                 selected = viewModel.filterGameTypes.contains(it),
                 label = stringResource(it.resName),
                 onClick = {
                     viewModel.selectFilter(it)
-                }
+                },
             )
         }
     }
@@ -232,14 +235,14 @@ private fun GamesHistoryFilterChipsRows(viewModel: HistoryViewModel) {
                 GameStateFilter.All,
                 GameStateFilter.Completed,
                 GameStateFilter.InProgress,
-            )
+            ),
         ) {
             FilterChip(
                 selected = it == viewModel.filterByGameState,
                 label = { Text(stringResource(it.resName)) },
                 onClick = {
                     viewModel.selectFilter(it)
-                }
+                },
             )
         }
     }
@@ -247,14 +250,17 @@ private fun GamesHistoryFilterChipsRows(viewModel: HistoryViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun GamesHistoryFilterSheet(viewModel: HistoryViewModel, onDismissRequest: () -> Unit) {
+private fun GamesHistoryFilterSheet(
+    viewModel: HistoryViewModel,
+    onDismissRequest: () -> Unit,
+) {
     ModalBottomSheet(onDismissRequest = onDismissRequest) {
         Column(Modifier.padding(vertical = 12.dp)) {
             GamesHistorySortFilterRow(viewModel)
             Text(
                 text = stringResource(R.string.filter_label),
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
-                modifier = Modifier.padding(start = 12.dp)
+                modifier = Modifier.padding(start = 12.dp),
             )
             GamesHistoryFilterChipsRows(viewModel)
         }
@@ -266,20 +272,21 @@ private fun GamesHistoryFilterSheet(viewModel: HistoryViewModel, onDismissReques
 fun GamesHistoryScreen(
     navigateBack: () -> Unit,
     navigateSavedGame: (Long) -> Unit,
-    viewModel: HistoryViewModel
+    viewModel: HistoryViewModel,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     var filterBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
-        modifier = Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier =
+            Modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             GamesHistoryTopBar(
                 navigateBack = navigateBack,
                 onFilterClick = { coroutineScope.launch { filterBottomSheet = true } },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
             )
         },
     ) { innerPadding ->
@@ -288,7 +295,7 @@ fun GamesHistoryScreen(
 
         if (games.isNotEmpty()) {
             Column(
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding(innerPadding),
             ) {
                 GamesHistoryList(games, dateFormat, viewModel, navigateSavedGame)
             }
@@ -308,7 +315,7 @@ private fun FilterOptionsRow(content: LazyListScope.() -> Unit) {
     LazyRow(
         contentPadding = PaddingValues(horizontal = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        content = content
+        content = content,
     )
 }
 
@@ -318,23 +325,25 @@ data class SudokuHistoryItemInfo(
     val difficulty: String,
     val type: String,
     val savedGame: SavedGame,
-    val dateTimeFormatter: DateTimeFormatter
+    val dateTimeFormatter: DateTimeFormatter,
 )
 
 @Composable
 private fun RowScope.SudokuHistoryItemPreview(board: String) {
     Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(4.dp))
-            .size(130.dp)
-            .align(Alignment.CenterVertically)
+        modifier =
+            Modifier
+                .clip(RoundedCornerShape(4.dp))
+                .size(130.dp)
+                .align(Alignment.CenterVertically),
     ) {
         BoardPreview(
-            content = BoardPreviewContent(
-                size = sqrt(board.length.toFloat()).toInt(),
-                boardString = board,
-                boardColors = LocalBoardColors.current
-            )
+            content =
+                BoardPreviewContent(
+                    size = sqrt(board.length.toFloat()).toInt(),
+                    boardString = board,
+                    boardColors = LocalBoardColors.current,
+                ),
         )
     }
 }
@@ -344,18 +353,20 @@ private fun RowScope.SudokuHistoryItemPreview(board: String) {
 private fun SudokuHistoryItemDetails(info: SudokuHistoryItemInfo) {
     val savedGame = info.savedGame
     Column(
-        modifier = Modifier
-            .padding(horizontal = 12.dp)
+        modifier =
+            Modifier
+                .padding(horizontal = 12.dp),
     ) {
         Column {
             Text("${info.difficulty} ${info.type}")
             Text(
-                text = stringResource(
-                    R.string.history_item_time,
-                    savedGame.timer
-                        .toKotlinDuration()
-                        .toFormattedString()
-                )
+                text =
+                    stringResource(
+                        R.string.history_item_time,
+                        savedGame.timer
+                            .toKotlinDuration()
+                            .toFormattedString(),
+                    ),
             )
             Text(stringResource(R.string.history_item_id, savedGame.uid))
         }
@@ -363,12 +374,12 @@ private fun SudokuHistoryItemDetails(info: SudokuHistoryItemInfo) {
         if (savedGame.startedAt != null) {
             val startedAtDate by remember(savedGame) {
                 mutableStateOf(
-                    savedGame.startedAt.format(info.dateTimeFormatter)
+                    savedGame.startedAt.format(info.dateTimeFormatter),
                 )
             }
             val startedAtTime by remember(savedGame) {
                 mutableStateOf(
-                    savedGame.startedAt.format(DateTimeFormatter.ofPattern("HH:mm"))
+                    savedGame.startedAt.format(DateTimeFormatter.ofPattern("HH:mm")),
                 )
             }
             FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -388,17 +399,19 @@ private fun SudokuHistoryItemDetails(info: SudokuHistoryItemInfo) {
 fun SudokuHistoryItem(
     info: SudokuHistoryItemInfo,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = { }
+    onClick: () -> Unit = { },
 ) {
     Box(
-        modifier = modifier
-            .clip(MaterialTheme.shapes.medium)
-            .clickable(onClick = onClick)
+        modifier =
+            modifier
+                .clip(MaterialTheme.shapes.medium)
+                .clickable(onClick = onClick),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
         ) {
             SudokuHistoryItemPreview(info.board)
             SudokuHistoryItemDetails(info)

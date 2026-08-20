@@ -34,7 +34,7 @@ private fun savedGameStatusStringRes(
     mistakes: Int,
     giveUp: Boolean,
     completed: Boolean,
-    canContinue: Boolean
+    canContinue: Boolean,
 ): Int {
     val reachedMistakesLimit = mistakes >= PreferencesConstants.MISTAKES_LIMIT
     return when {
@@ -50,12 +50,13 @@ internal fun SavedGameDetails(
     viewModel: SavedGameViewModel,
     dateTimeFormatter: DateTimeFormatter,
     navigateToFolder: (Long) -> Unit,
-    navigatePlayGame: (Long) -> Unit
+    navigatePlayGame: (Long) -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .padding(horizontal = 12.dp)
-            .fillMaxWidth()
+        modifier =
+            Modifier
+                .padding(horizontal = 12.dp)
+                .fillMaxWidth(),
     ) {
         SavedGameFolderChip(viewModel, navigateToFolder)
 
@@ -69,49 +70,59 @@ internal fun SavedGameDetails(
 }
 
 @Composable
-private fun SavedGameFolderChip(viewModel: SavedGameViewModel, navigateToFolder: (Long) -> Unit) {
+private fun SavedGameFolderChip(
+    viewModel: SavedGameViewModel,
+    navigateToFolder: (Long) -> Unit,
+) {
     val gameFolder by viewModel.gameFolder.collectAsStateWithLifecycle()
     gameFolder?.let {
         AssistChip(
             leadingIcon = {
                 Icon(
                     Icons.Outlined.Folder,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             },
             onClick = { navigateToFolder(it.uid) },
-            label = { Text(it.name) }
+            label = { Text(it.name) },
         )
     }
 }
 
 @Composable
-private fun SavedGameProgressText(viewModel: SavedGameViewModel, textStyle: TextStyle) {
+private fun SavedGameProgressText(
+    viewModel: SavedGameViewModel,
+    textStyle: TextStyle,
+) {
     val progressPercentage by viewModel.gameProgressPercentage.collectAsStateWithLifecycle()
     LaunchedEffect(viewModel.parsedCurrentBoard) { viewModel.countProgressFilled() }
 
     Text(
-        text = stringResource(
-            R.string.saved_game_progress_percentage,
-            progressPercentage
-        ),
-        style = textStyle
+        text =
+            stringResource(
+                R.string.saved_game_progress_percentage,
+                progressPercentage,
+            ),
+        style = textStyle,
     )
 }
 
 @Composable
-private fun SavedGameStartedRow(viewModel: SavedGameViewModel, dateTimeFormatter: DateTimeFormatter) {
+private fun SavedGameStartedRow(
+    viewModel: SavedGameViewModel,
+    dateTimeFormatter: DateTimeFormatter,
+) {
     viewModel.savedGame?.let { savedGame ->
         if (savedGame.startedAt != null) {
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 val startedAtDate by remember(savedGame) {
                     mutableStateOf(
-                        savedGame.startedAt.format(dateTimeFormatter)
+                        savedGame.startedAt.format(dateTimeFormatter),
                     )
                 }
                 val startedAtTime by remember(savedGame) {
                     mutableStateOf(
-                        savedGame.startedAt.format(DateTimeFormatter.ofPattern("HH:mm"))
+                        savedGame.startedAt.format(DateTimeFormatter.ofPattern("HH:mm")),
                     )
                 }
                 Text(startedAtDate)
@@ -124,44 +135,55 @@ private fun SavedGameStartedRow(viewModel: SavedGameViewModel, dateTimeFormatter
 @Composable
 private fun SavedGameStatusText(viewModel: SavedGameViewModel) {
     Text(
-        text = viewModel.savedGame?.let {
-            stringResource(savedGameStatusStringRes(it.mistakes, it.giveUp, it.completed, it.canContinue))
-        } ?: ""
+        text =
+            viewModel.savedGame?.let {
+                stringResource(savedGameStatusStringRes(it.mistakes, it.giveUp, it.completed, it.canContinue))
+            } ?: "",
     )
 }
 
 @Composable
-private fun SavedGameSummaryTexts(viewModel: SavedGameViewModel, textStyle: TextStyle) {
+private fun SavedGameSummaryTexts(
+    viewModel: SavedGameViewModel,
+    textStyle: TextStyle,
+) {
     Text(
-        text = stringResource(
-            R.string.saved_game_difficulty,
-            stringResource(viewModel.boardEntity!!.difficulty.resName)
-        ),
-        style = textStyle
+        text =
+            stringResource(
+                R.string.saved_game_difficulty,
+                stringResource(viewModel.boardEntity!!.difficulty.resName),
+            ),
+        style = textStyle,
     )
     Text(
-        text = stringResource(
-            R.string.saved_game_type,
-            stringResource(viewModel.boardEntity!!.type.resName)
-        ),
-        style = textStyle
+        text =
+            stringResource(
+                R.string.saved_game_type,
+                stringResource(viewModel.boardEntity!!.type.resName),
+            ),
+        style = textStyle,
     )
     Text(
-        text = stringResource(
-            R.string.saved_game_time,
-            viewModel.savedGame!!.timer
-                .toKotlinDuration()
-                .toFormattedString()
-        )
+        text =
+            stringResource(
+                R.string.saved_game_time,
+                viewModel.savedGame!!
+                    .timer
+                    .toKotlinDuration()
+                    .toFormattedString(),
+            ),
     )
 }
 
 @Composable
-private fun ColumnScope.SavedGameContinueButton(viewModel: SavedGameViewModel, navigatePlayGame: (Long) -> Unit) {
+private fun ColumnScope.SavedGameContinueButton(
+    viewModel: SavedGameViewModel,
+    navigatePlayGame: (Long) -> Unit,
+) {
     if (viewModel.savedGame!!.canContinue) {
         FilledTonalButton(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            onClick = { navigatePlayGame(viewModel.savedGame!!.uid) }
+            onClick = { navigatePlayGame(viewModel.savedGame!!.uid) },
         ) {
             Text(stringResource(R.string.action_continue))
         }

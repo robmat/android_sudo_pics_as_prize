@@ -26,7 +26,7 @@ fun TutorialBase(
         }) {
             Icon(
                 painter = painterResource(R.drawable.ic_round_arrow_back_24),
-                contentDescription = null
+                contentDescription = null,
             )
         }
     },
@@ -36,12 +36,12 @@ fun TutorialBase(
         topBar = {
             TopAppBar(
                 title = { Text(title) },
-                navigationIcon = navigationIcon
+                navigationIcon = navigationIcon,
             )
-        }
+        },
     ) { innerPadding ->
         Column(
-            modifier = modifier.padding(innerPadding)
+            modifier = modifier.padding(innerPadding),
         ) {
             content()
         }

@@ -26,46 +26,47 @@ fun HelpCard(
     title: String,
     details: String,
     painter: Painter?,
-    onCloseClicked: () -> Unit
+    onCloseClicked: () -> Unit,
 ) {
     Card(
-        modifier = modifier
+        modifier = modifier,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 14.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 14.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     if (painter != null) {
                         Icon(
                             painter = painter,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                     Text(
                         modifier = Modifier.padding(horizontal = 8.dp),
                         text = title,
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleMedium,
                     )
                 }
                 IconButton(onClick = onCloseClicked) {
                     Icon(
                         painter = painterResource(R.drawable.ic_round_close_24),
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 }
             }
             Text(
                 text = details,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
     }
@@ -73,15 +74,16 @@ fun HelpCard(
 
 @LightDarkPreview
 @Composable
-fun HelpCardPreview() {
+private fun HelpCardPreview() {
     SudokuTheme {
         HelpCard(
             title = "This is the title",
-            details = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tempus arcu " +
-                "vitae elit congue scelerisque. Sed a vestibulum tellus. Suspendisse tristique dui " +
-                "eget nisi dictum tempus",
+            details =
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tempus arcu " +
+                    "vitae elit congue scelerisque. Sed a vestibulum tellus. Suspendisse tristique dui " +
+                    "eget nisi dictum tempus",
             painter = painterResource(R.drawable.ic_outline_verified_24),
-            onCloseClicked = {}
+            onCloseClicked = {},
         )
     }
 }

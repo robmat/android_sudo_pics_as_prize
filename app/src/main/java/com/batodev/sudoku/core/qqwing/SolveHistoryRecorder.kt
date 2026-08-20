@@ -30,7 +30,12 @@ internal class SolveHistoryRecorder {
     /**
      * Record a move, if history recording or logging is enabled.
      */
-    fun recordMove(round: Int, type: LogType, value: Int = 0, position: Int = -1) {
+    fun recordMove(
+        round: Int,
+        type: LogType,
+        value: Int = 0,
+        position: Int = -1,
+    ) {
         if (!logHistory && !recordHistory) return
         val item = LogItem(round, type, value, position)
         if (logHistory) {
@@ -74,7 +79,11 @@ internal class SolveHistoryRecorder {
         sb.append(if (printStyle == PrintStyle.CSV) " -- " else "").append(NL)
     }
 
-    private fun appendHistoryLine(sb: StringBuilder, index: Int, item: LogItem?) {
+    private fun appendHistoryLine(
+        sb: StringBuilder,
+        index: Int,
+        item: LogItem?,
+    ) {
         sb.append((index + 1).toString() + ". ").append(NL)
         item!!.print()
         sb.append(if (printStyle == PrintStyle.CSV) " -- " else "").append(NL)
@@ -90,7 +99,10 @@ internal class SolveHistoryRecorder {
      * Given a vector of LogItems, determine how many log items in the vector
      * are of the specified type.
      */
-    fun getLogCount(v: ArrayList<LogItem?>, type: LogType): Int {
+    fun getLogCount(
+        v: ArrayList<LogItem?>,
+        type: LogType,
+    ): Int {
         var count = 0
         for (i in v.indices) {
             if (v[i]!!.type == type) count++

@@ -87,31 +87,32 @@ class MainActivity : AdSupportedActivity() {
 }
 
 @Composable
-private fun rememberBoardColors(monetSudokuBoard: Boolean): SudokuBoardColorsImpl {
-    return if (monetSudokuBoard) {
+private fun rememberBoardColors(monetSudokuBoard: Boolean): SudokuBoardColorsImpl =
+    if (monetSudokuBoard) {
         previewSudokuBoardColors()
     } else {
         SudokuBoardColorsImpl(
-            cellColors = BoardCellColors(
-                foregroundColor = MaterialTheme.colorScheme.onSurface,
-                notesColor = MaterialTheme.colorScheme.onSurface.copy(alpha = NOTES_COLOR_ALPHA),
-                altForegroundColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ALT_FOREGROUND_COLOR_ALPHA),
-                errorColor = BoardColors.errorColor,
-                highlightColor = MaterialTheme.colorScheme.outline
-            ),
-            lineColors = BoardLineColors(
-                thickLineColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(THICK_LINE_COLOR_ALPHA),
-                thinLineColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(THIN_LINE_COLOR_ALPHA)
-            )
+            cellColors =
+                BoardCellColors(
+                    foregroundColor = MaterialTheme.colorScheme.onSurface,
+                    notesColor = MaterialTheme.colorScheme.onSurface.copy(alpha = NOTES_COLOR_ALPHA),
+                    altForegroundColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ALT_FOREGROUND_COLOR_ALPHA),
+                    errorColor = BoardColors.errorColor,
+                    highlightColor = MaterialTheme.colorScheme.outline,
+                ),
+            lineColors =
+                BoardLineColors(
+                    thickLineColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(THICK_LINE_COLOR_ALPHA),
+                    thinLineColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(THIN_LINE_COLOR_ALPHA),
+                ),
         )
     }
-}
 
 @Composable
 private fun MainActivityNavEffects(
     navController: NavController,
     firstLaunch: Boolean,
-    onBottomBarStateChanged: (Boolean) -> Unit
+    onBottomBarStateChanged: (Boolean) -> Unit,
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
@@ -120,39 +121,43 @@ private fun MainActivityNavEffects(
             when (navBackStackEntry?.destination?.route) {
                 Route.STATISTICS, Route.HOME, Route.MORE -> true
                 else -> false
-            }
+            },
         )
     }
     LaunchedEffect(firstLaunch) {
         if (firstLaunch) {
             navController.navigate(
                 route = Route.WELCOME_SCREEN,
-                navOptions = navOptions {
-                    popUpTo(Route.HOME) {
-                        inclusive = true
-                    }
-                }
+                navOptions =
+                    navOptions {
+                        popUpTo(Route.HOME) {
+                            inclusive = true
+                        }
+                    },
             )
         }
     }
 }
 
 @Composable
-private fun MainActivityScaffold(navController: NavHostController, bottomBarState: Boolean) {
+private fun MainActivityScaffold(
+    navController: NavHostController,
+    bottomBarState: Boolean,
+) {
     val context = LocalContext.current
     Scaffold(
         bottomBar = {
             NavigationBar(
                 navController = navController,
-                bottomBarState = bottomBarState
+                bottomBarState = bottomBarState,
             )
         },
-        contentWindowInsets = WindowInsets(0.dp)
+        contentWindowInsets = WindowInsets(0.dp),
     ) { paddingValues ->
         NavHost(
             navController = navController,
             startDestination = Route.HOME,
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.padding(paddingValues),
         ) {
             buildSudokuNavigationGraph(navController, context)
         }
@@ -170,7 +175,7 @@ private fun MainActivityRoot(mainViewModel: MainActivityViewModel) {
         darkTheme = resolveDarkTheme(darkTheme),
         dynamicColor = dynamicColors,
         amoled = amoledBlack,
-        appTheme = resolveAppTheme(currentTheme)
+        appTheme = resolveAppTheme(currentTheme),
     ) {
         val navController = rememberNavController()
         var bottomBarState by rememberSaveable { mutableStateOf(false) }
@@ -178,11 +183,11 @@ private fun MainActivityRoot(mainViewModel: MainActivityViewModel) {
         MainActivityNavEffects(
             navController = navController,
             firstLaunch = firstLaunch,
-            onBottomBarStateChanged = { bottomBarState = it }
+            onBottomBarStateChanged = { bottomBarState = it },
         )
 
         val monetSudokuBoard by mainViewModel.monetSudokuBoard.collectAsStateWithLifecycle(
-            initialValue = PreferencesConstants.DEFAULT_MONET_SUDOKU_BOARD
+            initialValue = PreferencesConstants.DEFAULT_MONET_SUDOKU_BOARD,
         )
         val boardColors = rememberBoardColors(monetSudokuBoard)
 
@@ -199,19 +204,19 @@ private fun RowScope.GalleryNavItem(selectedScreen: String) {
         icon = {
             Icon(
                 painter = painterResource(R.drawable.ic_round_gallery_24),
-                contentDescription = null
+                contentDescription = null,
             )
         },
         selected = selectedScreen == Route.GALLERY,
         label = {
             Text(
                 text = stringResource(R.string.nav_bar_gallery),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         },
         onClick = {
             ContextCompat.startActivity(context, Intent(context, GalleryActivity::class.java), null)
-        }
+        },
     )
 }
 
@@ -221,41 +226,43 @@ private fun RowScope.MainNavItem(
     selectedScreen: String,
     icon: Painter,
     route: String,
-    labelRes: Int
+    labelRes: Int,
 ) {
     NavigationBarItem(
         icon = {
             Icon(
                 painter = icon,
-                contentDescription = null
+                contentDescription = null,
             )
         },
         selected = selectedScreen == route,
         label = {
             Text(
                 text = stringResource(labelRes),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         },
         onClick = {
             navController.navigate(route) {
                 launchSingleTop = true
             }
-        }
+        },
     )
 }
 
 @Composable
 private fun BottomNavigationBarContent(navController: NavController) {
     var selectedScreen by remember { mutableStateOf(Route.HOME) }
-    val navBarScreens = listOf(
-        Pair(Route.HOME, R.string.nav_bar_home),
-        Pair(Route.MORE, R.string.nav_bar_more),
-    )
-    val navBarIcons = listOf(
-        painterResource(R.drawable.ic_round_home_24),
-        painterResource(R.drawable.ic_round_more_horiz_24)
-    )
+    val navBarScreens =
+        listOf(
+            Pair(Route.HOME, R.string.nav_bar_home),
+            Pair(Route.MORE, R.string.nav_bar_more),
+        )
+    val navBarIcons =
+        listOf(
+            painterResource(R.drawable.ic_round_home_24),
+            painterResource(R.drawable.ic_round_more_horiz_24),
+        )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -273,7 +280,7 @@ private fun BottomNavigationBarContent(navController: NavController) {
                 selectedScreen = selectedScreen,
                 icon = navBarIcons[index],
                 route = item.first,
-                labelRes = item.second
+                labelRes = item.second,
             )
         }
     }
@@ -282,11 +289,11 @@ private fun BottomNavigationBarContent(navController: NavController) {
 @Composable
 fun NavigationBar(
     navController: NavController,
-    bottomBarState: Boolean
+    bottomBarState: Boolean,
 ) {
     AnimatedContent(
         targetState = bottomBarState,
-        label = "this_label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning"
+        label = "this_label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning",
     ) { visible ->
         if (visible) {
             BottomNavigationBarContent(navController)
@@ -296,14 +303,15 @@ fun NavigationBar(
 
 @HiltViewModel
 class MainActivityViewModel
-@Inject constructor(
-    themeSettingsManager: ThemeSettingsManager,
-    appSettingsManager: AppSettingsManager
-) : ViewModel() {
-    val dc = themeSettingsManager.dynamicColors
-    val darkTheme = themeSettingsManager.darkTheme
-    val amoledBlack = themeSettingsManager.amoledBlack
-    val firstLaunch = appSettingsManager.firstLaunch
-    val currentTheme = themeSettingsManager.currentTheme
-    val monetSudokuBoard = themeSettingsManager.monetSudokuBoard
-}
+    @Inject
+    constructor(
+        themeSettingsManager: ThemeSettingsManager,
+        appSettingsManager: AppSettingsManager,
+    ) : ViewModel() {
+        val dc = themeSettingsManager.dynamicColors
+        val darkTheme = themeSettingsManager.darkTheme
+        val amoledBlack = themeSettingsManager.amoledBlack
+        val firstLaunch = appSettingsManager.firstLaunch
+        val currentTheme = themeSettingsManager.currentTheme
+        val monetSudokuBoard = themeSettingsManager.monetSudokuBoard
+    }

@@ -24,40 +24,41 @@ object AdHelper {
                     // The mInterstitialAd reference will be null until
                     // an ad is loaded.
                     Log.i(AdHelper::class.simpleName, "onAdLoaded: $interstitialAd")
-                    interstitialAd.fullScreenContentCallback = object :
-                        FullScreenContentCallback() {
-                        override fun onAdClicked() {
-                            // Called when a click is recorded for an ad.
-                            Log.d(AdHelper::class.simpleName, "Ad was clicked.")
-                        }
+                    interstitialAd.fullScreenContentCallback =
+                        object :
+                            FullScreenContentCallback() {
+                            override fun onAdClicked() {
+                                // Called when a click is recorded for an ad.
+                                Log.d(AdHelper::class.simpleName, "Ad was clicked.")
+                            }
 
-                        override fun onAdDismissedFullScreenContent() {
-                            // Called when ad is dismissed.
-                            // Set the ad reference to null so you don't show the ad a second time.
-                            Log.d(
-                                AdHelper::class.simpleName,
-                                "Ad dismissed fullscreen content."
-                            )
-                        }
+                            override fun onAdDismissedFullScreenContent() {
+                                // Called when ad is dismissed.
+                                // Set the ad reference to null so you don't show the ad a second time.
+                                Log.d(
+                                    AdHelper::class.simpleName,
+                                    "Ad dismissed fullscreen content.",
+                                )
+                            }
 
-                        override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-                            // Called when ad fails to show.
-                            Log.e(
-                                AdHelper::class.simpleName,
-                                "Ad failed to show fullscreen content."
-                            )
-                        }
+                            override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                                // Called when ad fails to show.
+                                Log.e(
+                                    AdHelper::class.simpleName,
+                                    "Ad failed to show fullscreen content.",
+                                )
+                            }
 
-                        override fun onAdImpression() {
-                            // Called when an impression is recorded for an ad.
-                            Log.d(AdHelper::class.simpleName, "Ad recorded an impression.")
-                        }
+                            override fun onAdImpression() {
+                                // Called when an impression is recorded for an ad.
+                                Log.d(AdHelper::class.simpleName, "Ad recorded an impression.")
+                            }
 
-                        override fun onAdShowedFullScreenContent() {
-                            // Called when ad is shown.
-                            Log.d(AdHelper::class.simpleName, "Ad showed fullscreen content.")
+                            override fun onAdShowedFullScreenContent() {
+                                // Called when ad is shown.
+                                Log.d(AdHelper::class.simpleName, "Ad showed fullscreen content.")
+                            }
                         }
-                    }
                     interstitialAd.show(activity)
                 }
 
@@ -65,7 +66,7 @@ object AdHelper {
                     // Handle the error
                     Log.w(AdHelper::class.simpleName, "onAdLoaded: $loadAdError")
                 }
-            }
+            },
         )
     }
 }

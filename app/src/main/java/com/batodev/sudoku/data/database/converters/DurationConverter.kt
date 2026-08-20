@@ -13,9 +13,7 @@ class DurationConverter {
      * @return duration of seconds
      */
     @TypeConverter
-    fun toDuration(value: Long): Duration {
-        return Duration.ofSeconds(value)
-    }
+    fun toDuration(value: Long): Duration = Duration.ofSeconds(value)
 
     /**
      * Converts Duration to seconds
@@ -23,7 +21,5 @@ class DurationConverter {
      * @return duration represented in seconds
      */
     @TypeConverter
-    fun fromDuration(duration: Duration): Long {
-        return duration.seconds
-    }
+    fun fromDuration(duration: Duration): Long = duration.seconds
 }

@@ -40,28 +40,29 @@ import com.batodev.sudoku.ui.theme.SudokuTheme
 @Composable
 fun FirstGameDialog(
     onFinished: () -> Unit,
-    onDismiss: () -> Unit = { }
+    onDismiss: () -> Unit = { },
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Surface(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
             shape = RoundedCornerShape(28.dp),
-            color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
+            color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
                     modifier = Modifier.padding(top = 12.dp),
                     text = stringResource(R.string.first_game_dialog_title),
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
                 )
                 FirstGameScreen()
                 FilledTonalButton(
                     modifier = Modifier.padding(bottom = 12.dp),
-                    onClick = onFinished
+                    onClick = onFinished,
                 ) {
                     Text(stringResource(R.string.first_game_dialog_got_it))
                 }
@@ -75,10 +76,11 @@ private const val FIRST_GAME_TOOLBAR_ITEM_WEIGHT = 0.35f
 @Composable
 fun FirstGameScreen() {
     Column(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(vertical = 12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(vertical = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         val toolbarWeight by remember { mutableFloatStateOf(FIRST_GAME_TOOLBAR_ITEM_WEIGHT) }
         UndoToolRow(toolbarWeight)
@@ -95,12 +97,12 @@ private fun UndoToolRow(toolbarWeight: Float) {
         ToolbarItem(
             modifier = Modifier.weight(toolbarWeight),
             painter = painterResource(R.drawable.ic_round_undo_24),
-            onClick = { }
+            onClick = { },
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             modifier = Modifier.weight(1f),
-            text = stringResource(R.string.toolbar_undo_description)
+            text = stringResource(R.string.toolbar_undo_description),
         )
     }
 }
@@ -111,12 +113,12 @@ private fun HintToolRow(toolbarWeight: Float) {
         ToolbarItem(
             modifier = Modifier.weight(toolbarWeight),
             painter = painterResource(R.drawable.ic_lightbulb_stars_24),
-            onClick = { }
+            onClick = { },
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             modifier = Modifier.weight(1f),
-            text = stringResource(R.string.toolbar_hint_description)
+            text = stringResource(R.string.toolbar_hint_description),
         )
     }
 }
@@ -128,17 +130,18 @@ private fun NotesToolRow(toolbarWeight: Float) {
         var noteToggled by remember { mutableStateOf(false) }
         var renderNotes by remember { mutableStateOf(true) }
         Box(
-            modifier = Modifier.weight(toolbarWeight)
+            modifier = Modifier.weight(toolbarWeight),
         ) {
             NotesMenu(
                 expanded = notesMenu,
                 renderNotes = renderNotes,
-                actions = NotesMenuActions(
-                    onDismiss = { notesMenu = false },
-                    onComputeNotesClick = { },
-                    onClearNotesClick = { },
-                    onRenderNotesClick = { renderNotes = !renderNotes }
-                )
+                actions =
+                    NotesMenuActions(
+                        onDismiss = { notesMenu = false },
+                        onComputeNotesClick = { },
+                        onClearNotesClick = { },
+                        onRenderNotesClick = { renderNotes = !renderNotes },
+                    ),
             )
             ToolbarItem(
                 toggled = noteToggled,
@@ -146,13 +149,13 @@ private fun NotesToolRow(toolbarWeight: Float) {
                 onClick = { noteToggled = !noteToggled },
                 onLongClick = {
                     notesMenu = true
-                }
+                },
             )
         }
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             modifier = Modifier.weight(1f),
-            text = stringResource(R.string.toolbar_notes_description)
+            text = stringResource(R.string.toolbar_notes_description),
         )
     }
 }
@@ -163,12 +166,12 @@ private fun EraseToolRow(toolbarWeight: Float) {
         ToolbarItem(
             modifier = Modifier.weight(toolbarWeight),
             painter = painterResource(R.drawable.ic_eraser_24),
-            onClick = { }
+            onClick = { },
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             modifier = Modifier.weight(1f),
-            text = stringResource(R.string.toolbar_erase_description)
+            text = stringResource(R.string.toolbar_erase_description),
         )
     }
 }
@@ -179,11 +182,12 @@ private fun ToolRow(
     content: @Composable RowScope.() -> Unit,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 6.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         content()
     }
@@ -191,10 +195,10 @@ private fun ToolRow(
 
 @Preview
 @Composable
-fun ScreenPreview() {
+private fun ScreenPreview() {
     SudokuTheme {
         FirstGameDialog(
-            onFinished = { }
+            onFinished = { },
         )
     }
 }

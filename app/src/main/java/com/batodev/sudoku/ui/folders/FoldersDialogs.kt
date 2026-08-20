@@ -55,27 +55,27 @@ import java.time.format.DateTimeFormatter
 /** The title/icon shown at the top of a [NameActionDialog] or [FolderNameEntryDialog]. */
 data class DialogHeader(
     val title: @Composable () -> Unit,
-    val icon: @Composable (() -> Unit)? = null
+    val icon: @Composable (() -> Unit)? = null,
 )
 
 /** The current text and validation state of a [NameActionDialog]'s text field. */
 data class DialogTextFieldState(
     val value: TextFieldValue,
     val onValueChange: (TextFieldValue) -> Unit,
-    val isError: Boolean
+    val isError: Boolean,
 )
 
 /** The confirm/dismiss callbacks for a [NameActionDialog]. */
 data class DialogActions(
     val onConfirm: () -> Unit,
-    val onDismiss: () -> Unit
+    val onDismiss: () -> Unit,
 )
 
 /** The validation-result callbacks for a [FolderNameEntryDialog]. */
 data class FolderNameEntryCallbacks(
     val onValidName: (String) -> Unit,
     val onInvalidName: () -> Unit = {},
-    val onDismiss: () -> Unit
+    val onDismiss: () -> Unit,
 )
 
 private const val MAX_FOLDER_NAME_LENGTH = 128
@@ -91,32 +91,34 @@ private const val MAX_FOLDER_NAME_LENGTH = 128
 fun FolderNameEntryDialog(
     header: DialogHeader,
     initialValue: TextFieldValue,
-    callbacks: FolderNameEntryCallbacks
+    callbacks: FolderNameEntryCallbacks,
 ) {
     var textFieldValue by remember { mutableStateOf(initialValue) }
     var isError by rememberSaveable { mutableStateOf(false) }
 
     NameActionDialog(
         header = header,
-        textFieldState = DialogTextFieldState(
-            value = textFieldValue,
-            onValueChange = {
-                textFieldValue = it
-                if (isError) isError = false
-            },
-            isError = isError
-        ),
-        actions = DialogActions(
-            onConfirm = {
-                if (textFieldValue.text.isNotEmpty() && textFieldValue.text.length < MAX_FOLDER_NAME_LENGTH) {
-                    callbacks.onValidName(textFieldValue.text)
-                } else {
-                    isError = true
-                    callbacks.onInvalidName()
-                }
-            },
-            onDismiss = callbacks.onDismiss
-        )
+        textFieldState =
+            DialogTextFieldState(
+                value = textFieldValue,
+                onValueChange = {
+                    textFieldValue = it
+                    if (isError) isError = false
+                },
+                isError = isError,
+            ),
+        actions =
+            DialogActions(
+                onConfirm = {
+                    if (textFieldValue.text.isNotEmpty() && textFieldValue.text.length < MAX_FOLDER_NAME_LENGTH) {
+                        callbacks.onValidName(textFieldValue.text)
+                    } else {
+                        isError = true
+                        callbacks.onInvalidName()
+                    }
+                },
+                onDismiss = callbacks.onDismiss,
+            ),
     )
 }
 
@@ -126,7 +128,7 @@ fun NameActionDialog(
     header: DialogHeader,
     textFieldState: DialogTextFieldState,
     actions: DialogActions,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val focusRequester = remember { FocusRequester() }
 
@@ -145,24 +147,24 @@ fun NameActionDialog(
                 singleLine = true,
                 value = textFieldState.value,
                 onValueChange = textFieldState.onValueChange,
-                label = { Text(stringResource(R.string.create_folder_name)) }
+                label = { Text(stringResource(R.string.create_folder_name)) },
             )
         },
         onDismissRequest = actions.onDismiss,
         confirmButton = {
             TextButton(
-                onClick = actions.onConfirm
+                onClick = actions.onConfirm,
             ) {
                 Text(stringResource(R.string.dialog_ok))
             }
         },
         dismissButton = {
             TextButton(
-                onClick = actions.onDismiss
+                onClick = actions.onDismiss,
             ) {
                 Text(stringResource(R.string.action_cancel))
             }
-        }
+        },
     )
 }
 
@@ -171,61 +173,75 @@ data class FoldersDialogsState(
     val createFolderDialog: MutableState<Boolean>,
     val renameFolderDialog: MutableState<Boolean>,
     val deleteFolderDialog: MutableState<Boolean>,
-    val helpDialog: MutableState<Boolean>
+    val helpDialog: MutableState<Boolean>,
 )
 
 @Composable
-private fun FoldersCreateDialog(viewModel: FoldersViewModel, createFolderDialog: MutableState<Boolean>) {
+private fun FoldersCreateDialog(
+    viewModel: FoldersViewModel,
+    createFolderDialog: MutableState<Boolean>,
+) {
     FolderNameEntryDialog(
-        header = DialogHeader(
-            title = { Text(stringResource(R.string.create_folder)) },
-            icon = {
-                Icon(Icons.Rounded.CreateNewFolder, contentDescription = null)
-            }
-        ),
+        header =
+            DialogHeader(
+                title = { Text(stringResource(R.string.create_folder)) },
+                icon = {
+                    Icon(Icons.Rounded.CreateNewFolder, contentDescription = null)
+                },
+            ),
         initialValue = TextFieldValue(""),
-        callbacks = FolderNameEntryCallbacks(
-            onValidName = {
-                viewModel.createFolder(it)
-                createFolderDialog.value = false
-            },
-            onDismiss = {
-                createFolderDialog.value = false
-            }
-        )
+        callbacks =
+            FolderNameEntryCallbacks(
+                onValidName = {
+                    viewModel.createFolder(it)
+                    createFolderDialog.value = false
+                },
+                onDismiss = {
+                    createFolderDialog.value = false
+                },
+            ),
     )
 }
 
 @Composable
-private fun FoldersRenameDialog(viewModel: FoldersViewModel, renameFolderDialog: MutableState<Boolean>) {
+private fun FoldersRenameDialog(
+    viewModel: FoldersViewModel,
+    renameFolderDialog: MutableState<Boolean>,
+) {
     FolderNameEntryDialog(
-        header = DialogHeader(
-            title = { Text(stringResource(R.string.edit_name)) },
-            icon = {
-                Icon(Icons.Rounded.Edit, contentDescription = null)
-            }
-        ),
-        initialValue = TextFieldValue(
-            text = viewModel.selectedFolder?.name ?: "",
-            selection = TextRange((viewModel.selectedFolder?.name ?: "").length)
-        ),
-        callbacks = FolderNameEntryCallbacks(
-            onValidName = {
-                viewModel.renameFolder(it)
-                renameFolderDialog.value = false
-            },
-            onInvalidName = {
-                renameFolderDialog.value = false
-            },
-            onDismiss = {
-                renameFolderDialog.value = false
-            }
-        )
+        header =
+            DialogHeader(
+                title = { Text(stringResource(R.string.edit_name)) },
+                icon = {
+                    Icon(Icons.Rounded.Edit, contentDescription = null)
+                },
+            ),
+        initialValue =
+            TextFieldValue(
+                text = viewModel.selectedFolder?.name ?: "",
+                selection = TextRange((viewModel.selectedFolder?.name ?: "").length),
+            ),
+        callbacks =
+            FolderNameEntryCallbacks(
+                onValidName = {
+                    viewModel.renameFolder(it)
+                    renameFolderDialog.value = false
+                },
+                onInvalidName = {
+                    renameFolderDialog.value = false
+                },
+                onDismiss = {
+                    renameFolderDialog.value = false
+                },
+            ),
     )
 }
 
 @Composable
-private fun FoldersDeleteDialog(viewModel: FoldersViewModel, deleteFolderDialog: MutableState<Boolean>) {
+private fun FoldersDeleteDialog(
+    viewModel: FoldersViewModel,
+    deleteFolderDialog: MutableState<Boolean>,
+) {
     AlertDialog(
         title = { Text(stringResource(R.string.delete_folder)) },
         text = {
@@ -250,7 +266,7 @@ private fun FoldersDeleteDialog(viewModel: FoldersViewModel, deleteFolderDialog:
         },
         onDismissRequest = {
             deleteFolderDialog.value = false
-        }
+        },
     )
 }
 
@@ -276,24 +292,31 @@ private fun FoldersHelpDialog(helpDialog: MutableState<Boolean>) {
         },
         onDismissRequest = {
             helpDialog.value = false
-        }
+        },
     )
 }
 
 @Composable
-fun FoldersManagementDialogs(viewModel: FoldersViewModel, dialogsState: FoldersDialogsState) {
+fun FoldersManagementDialogs(
+    viewModel: FoldersViewModel,
+    dialogsState: FoldersDialogsState,
+) {
     when {
-        dialogsState.createFolderDialog.value ->
+        dialogsState.createFolderDialog.value -> {
             FoldersCreateDialog(viewModel, dialogsState.createFolderDialog)
+        }
 
-        dialogsState.renameFolderDialog.value ->
+        dialogsState.renameFolderDialog.value -> {
             FoldersRenameDialog(viewModel, dialogsState.renameFolderDialog)
+        }
 
-        dialogsState.deleteFolderDialog.value ->
+        dialogsState.deleteFolderDialog.value -> {
             FoldersDeleteDialog(viewModel, dialogsState.deleteFolderDialog)
+        }
 
-        dialogsState.helpDialog.value ->
+        dialogsState.helpDialog.value -> {
             FoldersHelpDialog(dialogsState.helpDialog)
+        }
     }
 }
 
@@ -301,21 +324,21 @@ fun FoldersManagementDialogs(viewModel: FoldersViewModel, dialogsState: FoldersD
 data class FolderActionSheetState(
     val folderActionBottomSheet: MutableState<Boolean>,
     val renameFolderDialog: MutableState<Boolean>,
-    val deleteFolderDialog: MutableState<Boolean>
+    val deleteFolderDialog: MutableState<Boolean>,
 )
 
 @Composable
 private fun ColumnScope.FolderActionSheetHeader(folder: Folder) {
     Row(
         modifier = Modifier.align(Alignment.CenterHorizontally),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(Icons.Outlined.Folder, contentDescription = null)
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = stringResource(R.string.folder_name, folder.name),
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
         )
     }
     Spacer(modifier = Modifier.height(12.dp))
@@ -326,50 +349,57 @@ private fun FolderActionSheetItems(
     viewModel: FoldersViewModel,
     coroutineScope: CoroutineScope,
     sheetState: FolderActionSheetState,
-    createDocumentLauncher: ManagedActivityResultLauncher<String, Uri?>
+    createDocumentLauncher: ManagedActivityResultLauncher<String, Uri?>,
 ) {
-    val actions = listOf(
-        Pair(Icons.Rounded.Edit, stringResource(R.string.edit_name)),
-        Pair(Icons.Rounded.Share, stringResource(R.string.export)),
-        Pair(Icons.Rounded.Delete, stringResource(R.string.action_delete)),
-    )
+    val actions =
+        listOf(
+            Pair(Icons.Rounded.Edit, stringResource(R.string.edit_name)),
+            Pair(Icons.Rounded.Share, stringResource(R.string.export)),
+            Pair(Icons.Rounded.Delete, stringResource(R.string.action_delete)),
+        )
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp)
+        modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
     ) {
         actions.forEachIndexed { index, action ->
             Row(
-                modifier = Modifier
-                    .clip(MaterialTheme.shapes.small)
-                    .fillMaxWidth()
-                    .clickable {
-                        when (index) {
-                            0 -> sheetState.renameFolderDialog.value = true
-                            1 -> {
-                                var fileName = ""
-                                viewModel.selectedFolder?.let {
-                                    fileName += it.name + "-"
+                modifier =
+                    Modifier
+                        .clip(MaterialTheme.shapes.small)
+                        .fillMaxWidth()
+                        .clickable {
+                            when (index) {
+                                0 -> {
+                                    sheetState.renameFolderDialog.value = true
                                 }
-                                fileName += LocalDateTime
-                                    .now()
-                                    .format(
-                                        DateTimeFormatter.ofPattern("yyyy-dd-MM-HH-mm")
-                                    ) ?: ""
-                                createDocumentLauncher.launch("$fileName.sdm")
-                            }
 
-                            2 -> sheetState.deleteFolderDialog.value = true
-                        }
-                        coroutineScope.launch {
-                            sheetState.folderActionBottomSheet.value = false
-                        }
-                    },
-                verticalAlignment = Alignment.CenterVertically
+                                1 -> {
+                                    var fileName = ""
+                                    viewModel.selectedFolder?.let {
+                                        fileName += it.name + "-"
+                                    }
+                                    fileName += LocalDateTime
+                                        .now()
+                                        .format(
+                                            DateTimeFormatter.ofPattern("yyyy-dd-MM-HH-mm"),
+                                        ) ?: ""
+                                    createDocumentLauncher.launch("$fileName.sdm")
+                                }
+
+                                2 -> {
+                                    sheetState.deleteFolderDialog.value = true
+                                }
+                            }
+                            coroutineScope.launch {
+                                sheetState.folderActionBottomSheet.value = false
+                            }
+                        },
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
                     modifier = Modifier.padding(12.dp),
                     imageVector = action.first,
-                    contentDescription = null
+                    contentDescription = null,
                 )
                 Text(action.second)
             }
@@ -383,7 +413,7 @@ fun FolderActionBottomSheet(
     viewModel: FoldersViewModel,
     coroutineScope: CoroutineScope,
     sheetState: FolderActionSheetState,
-    createDocumentLauncher: ManagedActivityResultLauncher<String, Uri?>
+    createDocumentLauncher: ManagedActivityResultLauncher<String, Uri?>,
 ) {
     ModalBottomSheet(onDismissRequest = { sheetState.folderActionBottomSheet.value = false }) {
         viewModel.selectedFolder?.let { FolderActionSheetHeader(it) }

@@ -18,66 +18,68 @@ import javax.inject.Inject
 private const val LAST_SAVED_GAMES_COUNT = 10
 
 @HiltViewModel
-class FoldersViewModel @Inject constructor(
-    private val dependencies: FoldersDependencies
-) : ViewModel() {
-    val folders = dependencies.getFoldersUseCase()
+class FoldersViewModel
+    @Inject
+    constructor(
+        private val dependencies: FoldersDependencies,
+    ) : ViewModel() {
+        val folders = dependencies.getFoldersUseCase()
 
-    var selectedFolder: Folder? by mutableStateOf(null)
+        var selectedFolder: Folder? by mutableStateOf(null)
 
-    private val _sudokuListToImport = MutableStateFlow(emptyList<String>())
-    val sudokuListToImport = _sudokuListToImport.asStateFlow()
+        private val _sudokuListToImport = MutableStateFlow(emptyList<String>())
+        val sudokuListToImport = _sudokuListToImport.asStateFlow()
 
-    var puzzlesCountInFolder by mutableStateOf(emptyList<Pair<Long, Int>>())
+        var puzzlesCountInFolder by mutableStateOf(emptyList<Pair<Long, Int>>())
 
-    val lastSavedGames = dependencies.getLastSavedGamesAnyFolderUseCase(gamesCount = LAST_SAVED_GAMES_COUNT)
+        val lastSavedGames = dependencies.getLastSavedGamesAnyFolderUseCase(gamesCount = LAST_SAVED_GAMES_COUNT)
 
-    fun createFolder(name: String) {
-        viewModelScope.launch {
-            dependencies.writeUseCases.insertFolderUseCase(
-                Folder(
-                    uid = 0,
-                    name = name.trim(),
-                    createdAt = ZonedDateTime.now()
-                )
-            )
-        }
-    }
-
-    fun countPuzzlesInFolders(folders: List<Folder>) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val numberPuzzles = mutableListOf<Pair<Long, Int>>()
-            folders.forEach {
-                numberPuzzles.add(
-                    Pair(it.uid, dependencies.countPuzzlesFolderUseCase(it.uid).toInt())
-                )
-            }
-            puzzlesCountInFolder = numberPuzzles
-        }
-    }
-
-    fun renameFolder(newName: String) {
-        selectedFolder?.let {
+        fun createFolder(name: String) {
             viewModelScope.launch {
-                dependencies.writeUseCases.updateFolderUseCase(
-                    it.copy(name = newName.trim())
+                dependencies.writeUseCases.insertFolderUseCase(
+                    Folder(
+                        uid = 0,
+                        name = name.trim(),
+                        createdAt = ZonedDateTime.now(),
+                    ),
                 )
             }
         }
-    }
 
-    fun deleteFolder() {
-        selectedFolder?.let {
-            viewModelScope.launch {
-                dependencies.writeUseCases.deleteFolderUseCase(it)
+        fun countPuzzlesInFolders(folders: List<Folder>) {
+            viewModelScope.launch(Dispatchers.IO) {
+                val numberPuzzles = mutableListOf<Pair<Long, Int>>()
+                folders.forEach {
+                    numberPuzzles.add(
+                        Pair(it.uid, dependencies.countPuzzlesFolderUseCase(it.uid).toInt()),
+                    )
+                }
+                puzzlesCountInFolder = numberPuzzles
             }
         }
-    }
 
-    fun generateFolderExportData(): ByteArray {
-        val gamesInFolder = dependencies.getGamesInFolderUseCase(selectedFolder!!.uid)
+        fun renameFolder(newName: String) {
+            selectedFolder?.let {
+                viewModelScope.launch {
+                    dependencies.writeUseCases.updateFolderUseCase(
+                        it.copy(name = newName.trim()),
+                    )
+                }
+            }
+        }
 
-        val sdmParser = SdmParser()
-        return sdmParser.boardsToSdm(gamesInFolder).toByteArray()
+        fun deleteFolder() {
+            selectedFolder?.let {
+                viewModelScope.launch {
+                    dependencies.writeUseCases.deleteFolderUseCase(it)
+                }
+            }
+        }
+
+        fun generateFolderExportData(): ByteArray {
+            val gamesInFolder = dependencies.getGamesInFolderUseCase(selectedFolder!!.uid)
+
+            val sdmParser = SdmParser()
+            return sdmParser.boardsToSdm(gamesInFolder).toByteArray()
+        }
     }
-}

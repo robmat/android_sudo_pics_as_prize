@@ -23,7 +23,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class DatabaseModule {
-
     @Singleton
     @Provides
     fun provideAppDatabase(app: Application): AppDatabase = AppDatabase.getInstance(context = app)
@@ -39,8 +38,7 @@ class DatabaseModule {
     // records
     @Singleton
     @Provides
-    fun provideRecordRepository(recordDao: RecordDao): RecordRepository =
-        RecordRepositoryImpl(recordDao)
+    fun provideRecordRepository(recordDao: RecordDao): RecordRepository = RecordRepositoryImpl(recordDao)
 
     @Singleton
     @Provides
@@ -58,8 +56,7 @@ class DatabaseModule {
     // saved games
     @Singleton
     @Provides
-    fun provideSavedGameRepository(savedGameDao: SavedGameDao): SavedGameRepository =
-        SavedGameRepositoryImpl(savedGameDao)
+    fun provideSavedGameRepository(savedGameDao: SavedGameDao): SavedGameRepository = SavedGameRepositoryImpl(savedGameDao)
 
     @Singleton
     @Provides

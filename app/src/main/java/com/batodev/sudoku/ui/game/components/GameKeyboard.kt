@@ -49,7 +49,7 @@ private const val HEX_RADIX = 16
  * [NumbersKeyboardRow], both taking the pressed digit. */
 data class KeyboardClickHandlers(
     val onClick: (Int) -> Unit,
-    val onLongClick: (Int) -> Unit = { }
+    val onLongClick: (Int) -> Unit = { },
 )
 
 /** The number-dependent state shared by [DefaultGameKeyboard] and [NumbersKeyboardRow]: how many
@@ -57,7 +57,7 @@ data class KeyboardClickHandlers(
 data class KeyboardState(
     val remainingUses: List<Int>? = null,
     val selected: Int = 0,
-    val handlers: KeyboardClickHandlers
+    val handlers: KeyboardClickHandlers,
 )
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -67,46 +67,50 @@ fun KeyboardItem(
     handlers: KeyboardClickHandlers,
     modifier: Modifier = Modifier,
     remainingUses: Int? = null,
-    selected: Boolean = false
+    selected: Boolean = false,
 ) {
     val mutableInteractionSource by remember { mutableStateOf(MutableInteractionSource()) }
     val color by animateColorAsState(
-        targetValue = if (selected) {
-            MaterialTheme.colorScheme.primary.copy(alpha = SELECTED_ITEM_ALPHA)
-        } else {
-            Color.Transparent
-        }
+        targetValue =
+            if (selected) {
+                MaterialTheme.colorScheme.primary.copy(alpha = SELECTED_ITEM_ALPHA)
+            } else {
+                Color.Transparent
+            },
     )
     val localView = LocalView.current
-    val keyboardFontSize = if (remainingUses != null) {
-        KEYBOARD_NUMBER_FONT_SIZE_SP.sp
-    } else {
-        KEYBOARD_NUMBER_FONT_SIZE_NO_USES_SP.sp
-    }
+    val keyboardFontSize =
+        if (remainingUses != null) {
+            KEYBOARD_NUMBER_FONT_SIZE_SP.sp
+        } else {
+            KEYBOARD_NUMBER_FONT_SIZE_NO_USES_SP.sp
+        }
     Box(
-        modifier = modifier
-            .clip(CircleShape)
-            .background(color)
-            .combinedClickable(
-                interactionSource = mutableInteractionSource,
-                onClick = {
-                    handlers.onClick(number)
-                },
-                onLongClick = {
-                    localView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                    handlers.onLongClick(number)
-                },
-                indication = ripple(
-                    bounded = true,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            ),
-        contentAlignment = Alignment.Center
+        modifier =
+            modifier
+                .clip(CircleShape)
+                .background(color)
+                .combinedClickable(
+                    interactionSource = mutableInteractionSource,
+                    onClick = {
+                        handlers.onClick(number)
+                    },
+                    onLongClick = {
+                        localView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                        handlers.onLongClick(number)
+                    },
+                    indication =
+                        ripple(
+                            bounded = true,
+                            color = MaterialTheme.colorScheme.primary,
+                        ),
+                ),
+        contentAlignment = Alignment.Center,
     ) {
         Column(
             modifier = Modifier.padding(7.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+            verticalArrangement = Arrangement.Top,
         ) {
             Text(
                 text = number.toString(HEX_RADIX).uppercase(),
@@ -116,7 +120,7 @@ fun KeyboardItem(
             if (remainingUses != null) {
                 Text(
                     text = remainingUses.toString(),
-                    fontSize = KEYBOARD_REMAINING_USES_FONT_SIZE_SP.sp
+                    fontSize = KEYBOARD_REMAINING_USES_FONT_SIZE_SP.sp,
                 )
             }
         }
@@ -128,25 +132,24 @@ fun KeyboardItem(
  * pressed digit to [processInputKeyboard] (shared shape of `CreateSudokuViewModel` and
  * `GameViewModel`'s `processInputKeyboard(number, longTap)` method).
  */
-fun keyboardClickHandlers(
-    processInputKeyboard: (number: Int, longTap: Boolean) -> Unit
-): KeyboardClickHandlers = KeyboardClickHandlers(
-    onClick = { number -> processInputKeyboard(number, false) },
-    onLongClick = { number -> processInputKeyboard(number, true) }
-)
+fun keyboardClickHandlers(processInputKeyboard: (number: Int, longTap: Boolean) -> Unit): KeyboardClickHandlers =
+    KeyboardClickHandlers(
+        onClick = { number -> processInputKeyboard(number, false) },
+        onLongClick = { number -> processInputKeyboard(number, true) },
+    )
 
 @Composable
 fun DefaultGameKeyboard(
     size: Int,
     state: KeyboardState,
     modifier: Modifier = Modifier,
-    itemModifier: Modifier = Modifier
+    itemModifier: Modifier = Modifier,
 ) {
     val numbers by remember(size) { mutableStateOf((1..size).toList()) }
     val remainingUses = state.remainingUses
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+        verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         if (size == GameType.Default12x12.size) {
             // double-height keyboard only for 12x12
@@ -155,16 +158,16 @@ fun DefaultGameKeyboard(
                 chunkedNumbers.forEachIndexed { index, chunked ->
                     AnimatedVisibility(
                         visible =
-                        (
-                            remainingUses != null &&
-                                remainingUses.chunked(KEYBOARD_12X12_ROW_SIZE)[index].any { it > 0 }
+                            (
+                                remainingUses != null &&
+                                    remainingUses.chunked(KEYBOARD_12X12_ROW_SIZE)[index].any { it > 0 }
                             ) ||
-                            remainingUses == null
+                                remainingUses == null,
                     ) {
                         NumbersKeyboardRow(
                             numbers = chunked,
                             itemModifier = itemModifier,
-                            state = state
+                            state = state,
                         )
                     }
                 }
@@ -174,7 +177,7 @@ fun DefaultGameKeyboard(
                 numbers = numbers,
                 itemModifier = itemModifier,
                 state = state,
-                modifier = modifier
+                modifier = modifier,
             )
         }
     }
@@ -184,9 +187,9 @@ fun DefaultGameKeyboard(
 @Composable
 private fun NumbersKeyboardRow(
     numbers: List<Int>,
-    itemModifier: Modifier,
+    itemModifier: Modifier = Modifier,
     state: KeyboardState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val remainingUses = state.remainingUses
     KeyboardRow(modifier = modifier) {
@@ -194,29 +197,32 @@ private fun NumbersKeyboardRow(
             val hide =
                 remainingUses != null && (remainingUses.size > number && remainingUses[number - 1] <= 0)
             KeyboardItem(
-                modifier = itemModifier
-                    .weight(1f)
-                    .alpha(if (hide) 0f else 1f)
-                    .testTag("keyboard_$number"),
+                modifier =
+                    itemModifier
+                        .weight(1f)
+                        .alpha(if (hide) 0f else 1f)
+                        .testTag("keyboard_$number"),
                 number = number,
-                handlers = KeyboardClickHandlers(
-                    onClick = {
-                        if (!hide) {
-                            state.handlers.onClick(number)
-                        }
+                handlers =
+                    KeyboardClickHandlers(
+                        onClick = {
+                            if (!hide) {
+                                state.handlers.onClick(number)
+                            }
+                        },
+                        onLongClick = {
+                            if (!hide) {
+                                state.handlers.onLongClick(number)
+                            }
+                        },
+                    ),
+                remainingUses =
+                    if (remainingUses != null && remainingUses.size >= number) {
+                        remainingUses[number - 1]
+                    } else {
+                        null
                     },
-                    onLongClick = {
-                        if (!hide) {
-                            state.handlers.onLongClick(number)
-                        }
-                    }
-                ),
-                remainingUses = if (remainingUses != null && remainingUses.size >= number) {
-                    remainingUses[number - 1]
-                } else {
-                    null
-                },
-                selected = number == state.selected
+                selected = number == state.selected,
             )
         }
     }
@@ -225,15 +231,16 @@ private fun NumbersKeyboardRow(
 @Composable
 private fun KeyboardRow(
     modifier: Modifier = Modifier,
-    content: @Composable RowScope.() -> Unit
+    content: @Composable RowScope.() -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .then(modifier),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .then(modifier),
         horizontalArrangement = Arrangement.spacedBy(2.dp),
         verticalAlignment = Alignment.CenterVertically,
-        content = content
+        content = content,
     )
 }
 
@@ -243,27 +250,27 @@ private fun KeyboardItemPreview() {
     SudokuTheme {
         Surface {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 KeyboardItem(
                     number = 1,
-                    handlers = KeyboardClickHandlers(onClick = { })
+                    handlers = KeyboardClickHandlers(onClick = { }),
                 )
                 KeyboardItem(
                     number = 1,
                     selected = true,
-                    handlers = KeyboardClickHandlers(onClick = { })
+                    handlers = KeyboardClickHandlers(onClick = { }),
                 )
                 KeyboardItem(
                     number = 1,
                     remainingUses = PREVIEW_REMAINING_USES,
-                    handlers = KeyboardClickHandlers(onClick = { })
+                    handlers = KeyboardClickHandlers(onClick = { }),
                 )
                 KeyboardItem(
                     number = 1,
                     remainingUses = PREVIEW_REMAINING_USES,
                     selected = true,
-                    handlers = KeyboardClickHandlers(onClick = { })
+                    handlers = KeyboardClickHandlers(onClick = { }),
                 )
             }
         }
@@ -277,10 +284,11 @@ private fun KeyboardPreview9x9() {
         Surface {
             DefaultGameKeyboard(
                 size = GameType.Default9x9.size,
-                state = KeyboardState(
-                    remainingUses = (1..GameType.Default9x9.size).toList(),
-                    handlers = KeyboardClickHandlers(onClick = { }, onLongClick = { })
-                )
+                state =
+                    KeyboardState(
+                        remainingUses = (1..GameType.Default9x9.size).toList(),
+                        handlers = KeyboardClickHandlers(onClick = { }, onLongClick = { }),
+                    ),
             )
         }
     }
@@ -293,10 +301,11 @@ private fun KeyboardPreview12x12() {
         Surface {
             DefaultGameKeyboard(
                 size = GameType.Default12x12.size,
-                state = KeyboardState(
-                    remainingUses = (1..GameType.Default12x12.size).toList(),
-                    handlers = KeyboardClickHandlers(onClick = { }, onLongClick = { })
-                )
+                state =
+                    KeyboardState(
+                        remainingUses = (1..GameType.Default12x12.size).toList(),
+                        handlers = KeyboardClickHandlers(onClick = { }, onLongClick = { }),
+                    ),
             )
         }
     }

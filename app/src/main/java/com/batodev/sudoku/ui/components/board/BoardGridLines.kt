@@ -31,14 +31,15 @@ private const val CONTAINER_PADDING_DP = 4
 @Composable
 internal fun SudokuBoardContainer(
     modifier: Modifier = Modifier,
-    content: @Composable BoxWithConstraintsScope.() -> Unit
+    content: @Composable BoxWithConstraintsScope.() -> Unit,
 ) {
     BoxWithConstraints(
-        modifier = modifier
-            .fillMaxWidth()
-            .aspectRatio(1f)
-            .padding(CONTAINER_PADDING_DP.dp),
-        content = content
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .padding(CONTAINER_PADDING_DP.dp),
+        content = content,
     )
 }
 
@@ -59,7 +60,7 @@ internal data class GridGeometry(
     val cellSize: Float,
     val maxWidth: Float,
     val horThick: Int,
-    val vertThick: Int
+    val vertThick: Int,
 )
 
 /** The colors and stroke widths used to draw sudoku grid lines. */
@@ -67,7 +68,7 @@ internal data class GridLineStyle(
     val thickLineColor: Color,
     val thinLineColor: Color,
     val thickLineWidth: Float,
-    val thinLineWidth: Float
+    val thinLineWidth: Float,
 )
 
 /**
@@ -80,7 +81,7 @@ internal data class GridLineStyle(
 internal fun DrawScope.drawSudokuGridLines(
     geometry: GridGeometry,
     style: GridLineStyle,
-    boundsCheckVerticalLines: Boolean = false
+    boundsCheckVerticalLines: Boolean = false,
 ) {
     // horizontal line
     for (i in 1 until geometry.size) {
@@ -89,7 +90,7 @@ internal fun DrawScope.drawSudokuGridLines(
             color = if (isThickLine) style.thickLineColor else style.thinLineColor,
             start = Offset(geometry.cellSize * i.toFloat(), 0f),
             end = Offset(geometry.cellSize * i.toFloat(), geometry.maxWidth),
-            strokeWidth = if (isThickLine) style.thickLineWidth else style.thinLineWidth
+            strokeWidth = if (isThickLine) style.thickLineWidth else style.thinLineWidth,
         )
     }
     // vertical line
@@ -100,7 +101,7 @@ internal fun DrawScope.drawSudokuGridLines(
                 color = if (isThickLine) style.thickLineColor else style.thinLineColor,
                 start = Offset(0f, geometry.cellSize * i.toFloat()),
                 end = Offset(geometry.maxWidth, geometry.cellSize * i.toFloat()),
-                strokeWidth = if (isThickLine) style.thickLineWidth else style.thinLineWidth
+                strokeWidth = if (isThickLine) style.thickLineWidth else style.thinLineWidth,
             )
         }
     }
@@ -108,16 +109,19 @@ internal fun DrawScope.drawSudokuGridLines(
 
 /** Builds the [SudokuBoardColorsImpl] used by board preview composables from [BoardColors]. */
 @Composable
-internal fun previewSudokuBoardColors(): SudokuBoardColorsImpl = SudokuBoardColorsImpl(
-    cellColors = BoardCellColors(
-        foregroundColor = BoardColors.foregroundColor,
-        notesColor = BoardColors.notesColor,
-        altForegroundColor = BoardColors.altForegroundColor,
-        errorColor = BoardColors.errorColor,
-        highlightColor = BoardColors.highlightColor
-    ),
-    lineColors = BoardLineColors(
-        thickLineColor = BoardColors.thickLineColor,
-        thinLineColor = BoardColors.thinLineColor
+internal fun previewSudokuBoardColors(): SudokuBoardColorsImpl =
+    SudokuBoardColorsImpl(
+        cellColors =
+            BoardCellColors(
+                foregroundColor = BoardColors.foregroundColor,
+                notesColor = BoardColors.notesColor,
+                altForegroundColor = BoardColors.altForegroundColor,
+                errorColor = BoardColors.errorColor,
+                highlightColor = BoardColors.highlightColor,
+            ),
+        lineColors =
+            BoardLineColors(
+                thickLineColor = BoardColors.thickLineColor,
+                thinLineColor = BoardColors.thinLineColor,
+            ),
     )
-)

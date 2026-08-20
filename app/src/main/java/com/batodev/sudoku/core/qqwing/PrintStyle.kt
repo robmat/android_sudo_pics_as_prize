@@ -21,5 +21,8 @@ package com.batodev.sudoku.core.qqwing
  */
 // @formatter:on
 enum class PrintStyle {
-    ONE_LINE, COMPACT, READABLE, CSV
+    ONE_LINE,
+    COMPACT,
+    READABLE,
+    CSV,
 }

@@ -22,61 +22,77 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-private fun SettingsMistakesDialog(viewModel: SettingsViewModel, highlightMistakes: Int) {
+private fun SettingsMistakesDialog(
+    viewModel: SettingsViewModel,
+    highlightMistakes: Int,
+) {
     SelectionDialog(
         title = stringResource(R.string.pref_mistakes_check),
-        selections = listOf(
-            stringResource(R.string.pref_mistakes_check_off),
-            stringResource(R.string.pref_mistakes_check_violations),
-            stringResource(R.string.pref_mistakes_check_final)
-        ),
+        selections =
+            listOf(
+                stringResource(R.string.pref_mistakes_check_off),
+                stringResource(R.string.pref_mistakes_check_violations),
+                stringResource(R.string.pref_mistakes_check_final),
+            ),
         selected = highlightMistakes,
         onSelect = { index -> viewModel.updateMistakesHighlight(index) },
-        onDismiss = { viewModel.mistakesDialog = false }
+        onDismiss = { viewModel.mistakesDialog = false },
     )
 }
 
 @Composable
-private fun SettingsDarkModeDialog(viewModel: SettingsViewModel, darkTheme: Int) {
+private fun SettingsDarkModeDialog(
+    viewModel: SettingsViewModel,
+    darkTheme: Int,
+) {
     SelectionDialog(
         title = stringResource(R.string.pref_dark_theme),
-        selections = listOf(
-            stringResource(R.string.pref_dark_theme_follow),
-            stringResource(R.string.pref_dark_theme_off),
-            stringResource(R.string.pref_dark_theme_on)
-        ),
+        selections =
+            listOf(
+                stringResource(R.string.pref_dark_theme_follow),
+                stringResource(R.string.pref_dark_theme_off),
+                stringResource(R.string.pref_dark_theme_on),
+            ),
         selected = darkTheme,
         onSelect = { index -> viewModel.updateDarkTheme(index) },
-        onDismiss = { viewModel.darkModeDialog = false }
+        onDismiss = { viewModel.darkModeDialog = false },
     )
 }
 
 @Composable
-private fun SettingsFontSizeDialog(viewModel: SettingsViewModel, fontSize: Int) {
+private fun SettingsFontSizeDialog(
+    viewModel: SettingsViewModel,
+    fontSize: Int,
+) {
     SelectionDialog(
         title = stringResource(R.string.pref_board_font_size),
-        selections = listOf(
-            stringResource(R.string.pref_board_font_size_small),
-            stringResource(R.string.pref_board_font_size_medium),
-            stringResource(R.string.pref_board_font_size_large)
-        ),
+        selections =
+            listOf(
+                stringResource(R.string.pref_board_font_size_small),
+                stringResource(R.string.pref_board_font_size_medium),
+                stringResource(R.string.pref_board_font_size_large),
+            ),
         selected = fontSize,
         onSelect = { index -> viewModel.updateFontSize(index) },
-        onDismiss = { viewModel.fontSizeDialog = false }
+        onDismiss = { viewModel.fontSizeDialog = false },
     )
 }
 
 @Composable
-private fun SettingsInputMethodDialog(viewModel: SettingsViewModel, inputMethod: Int) {
+private fun SettingsInputMethodDialog(
+    viewModel: SettingsViewModel,
+    inputMethod: Int,
+) {
     SelectionDialog(
         title = stringResource(R.string.pref_input),
-        selections = listOf(
-            stringResource(R.string.pref_input_cell_first),
-            stringResource(R.string.pref_input_digit_first)
-        ),
+        selections =
+            listOf(
+                stringResource(R.string.pref_input_cell_first),
+                stringResource(R.string.pref_input_digit_first),
+            ),
         selected = inputMethod,
         onSelect = { index -> viewModel.updateInputMethod(index) },
-        onDismiss = { viewModel.inputMethodDialog = false }
+        onDismiss = { viewModel.inputMethodDialog = false },
     )
 }
 
@@ -85,7 +101,7 @@ private fun SettingsResetStatsDialog(
     viewModel: SettingsViewModel,
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
-    context: Context
+    context: Context,
 ) {
     AlertDialog(
         title = { Text(stringResource(R.string.pref_delete_stats)) },
@@ -96,13 +112,13 @@ private fun SettingsResetStatsDialog(
                 viewModel.resetStatsDialog = false
                 scope.launch {
                     snackbarHostState.showSnackbar(
-                        context.resources.getString(R.string.action_deleted)
+                        context.resources.getString(R.string.action_deleted),
                     )
                 }
             }) {
                 Text(
                     text = stringResource(R.string.action_delete),
-                    color = MaterialTheme.colorScheme.error
+                    color = MaterialTheme.colorScheme.error,
                 )
             }
         },
@@ -111,38 +127,46 @@ private fun SettingsResetStatsDialog(
                 Text(stringResource(R.string.action_cancel))
             }
         },
-        onDismissRequest = { viewModel.resetStatsDialog = false }
+        onDismissRequest = { viewModel.resetStatsDialog = false },
     )
 }
 
 @Composable
-private fun SettingsLanguageDialog(viewModel: SettingsViewModel, context: Context) {
+private fun SettingsLanguageDialog(
+    viewModel: SettingsViewModel,
+    context: Context,
+) {
     SelectionDialog(
         title = stringResource(R.string.pref_app_language),
         entries = getLangs(context),
         selected = getCurrentLocaleTag(),
         onSelect = { localeKey ->
-            val locale = if (localeKey == "") {
-                LocaleListCompat.getEmptyLocaleList()
-            } else {
-                LocaleListCompat.forLanguageTags(localeKey)
-            }
+            val locale =
+                if (localeKey == "") {
+                    LocaleListCompat.getEmptyLocaleList()
+                } else {
+                    LocaleListCompat.forLanguageTags(localeKey)
+                }
             AppCompatDelegate.setApplicationLocales(locale)
             viewModel.languagePickDialog = false
         },
-        onDismiss = { viewModel.languagePickDialog = false }
+        onDismiss = { viewModel.languagePickDialog = false },
     )
 }
 
 @Composable
-private fun SettingsDateFormatDialogSection(viewModel: SettingsViewModel, dateFormat: String) {
+private fun SettingsDateFormatDialogSection(
+    viewModel: SettingsViewModel,
+    dateFormat: String,
+) {
     DateFormatDialog(
-        info = DateFormatDialogInfo(
-            title = stringResource(R.string.pref_date_format),
-            entries = buildDateFormatEntries(),
-            customDateFormatText = buildCustomDateFormatText(dateFormat),
-            selected = dateFormat
-        ),
+        info =
+            DateFormatDialogInfo(
+                title = stringResource(R.string.pref_date_format),
+                entries = buildDateFormatEntries(),
+                customDateFormatText = buildCustomDateFormatText(dateFormat),
+                selected = dateFormat,
+            ),
         onSelect = { format ->
             if (format == "custom") {
                 viewModel.customFormatDialog = true
@@ -151,48 +175,54 @@ private fun SettingsDateFormatDialogSection(viewModel: SettingsViewModel, dateFo
             }
             viewModel.dateFormatDialog = false
         },
-        onDismiss = { viewModel.dateFormatDialog = false }
+        onDismiss = { viewModel.dateFormatDialog = false },
     )
 }
 
 @Composable
-private fun SettingsCustomFormatDialogSection(viewModel: SettingsViewModel, dateFormat: String) {
+private fun SettingsCustomFormatDialogSection(
+    viewModel: SettingsViewModel,
+    dateFormat: String,
+) {
     var customDateFormat by rememberSaveable {
         mutableStateOf(
-            if (DateFormats.contains(dateFormat)) "" else dateFormat
+            if (DateFormats.contains(dateFormat)) "" else dateFormat,
         )
     }
     var invalidCustomDateFormat by rememberSaveable { mutableStateOf(false) }
     var dateFormatPreview by rememberSaveable { mutableStateOf("") }
 
     SetDateFormatPatternDialog(
-        state = CustomDateFormatState(
-            customDateFormat = customDateFormat,
-            invalidCustomDateFormat = invalidCustomDateFormat,
-            datePreview = dateFormatPreview
-        ),
-        callbacks = CustomDateFormatCallbacks(
-            onConfirm = {
-                if (viewModel.checkCustomDateFormat(customDateFormat)) {
-                    viewModel.updateDateFormat(customDateFormat)
-                    invalidCustomDateFormat = false
-                    viewModel.customFormatDialog = false
-                } else {
-                    invalidCustomDateFormat = true
-                }
-            },
-            onDismissRequest = { viewModel.customFormatDialog = false },
-            onTextValueChange = { text ->
-                customDateFormat = text
-                if (invalidCustomDateFormat) invalidCustomDateFormat = false
+        state =
+            CustomDateFormatState(
+                customDateFormat = customDateFormat,
+                invalidCustomDateFormat = invalidCustomDateFormat,
+                datePreview = dateFormatPreview,
+            ),
+        callbacks =
+            CustomDateFormatCallbacks(
+                onConfirm = {
+                    if (viewModel.checkCustomDateFormat(customDateFormat)) {
+                        viewModel.updateDateFormat(customDateFormat)
+                        invalidCustomDateFormat = false
+                        viewModel.customFormatDialog = false
+                    } else {
+                        invalidCustomDateFormat = true
+                    }
+                },
+                onDismissRequest = { viewModel.customFormatDialog = false },
+                onTextValueChange = { text ->
+                    customDateFormat = text
+                    if (invalidCustomDateFormat) invalidCustomDateFormat = false
 
-                dateFormatPreview = if (viewModel.checkCustomDateFormat(customDateFormat)) {
-                    ZonedDateTime.now().format(DateTimeFormatter.ofPattern(customDateFormat))
-                } else {
-                    ""
-                }
-            }
-        )
+                    dateFormatPreview =
+                        if (viewModel.checkCustomDateFormat(customDateFormat)) {
+                            ZonedDateTime.now().format(DateTimeFormatter.ofPattern(customDateFormat))
+                        } else {
+                            ""
+                        }
+                },
+            ),
     )
 }
 
@@ -202,29 +232,36 @@ internal fun SettingsDialogs(
     state: SettingsPreferencesState,
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
-    context: Context
+    context: Context,
 ) {
     when {
-        viewModel.mistakesDialog ->
+        viewModel.mistakesDialog -> {
             SettingsMistakesDialog(viewModel, state.assistance.highlightMistakes)
+        }
 
-        viewModel.darkModeDialog ->
+        viewModel.darkModeDialog -> {
             SettingsDarkModeDialog(viewModel, state.appearance.darkTheme)
+        }
 
-        viewModel.fontSizeDialog ->
+        viewModel.fontSizeDialog -> {
             SettingsFontSizeDialog(viewModel, state.appearance.fontSize)
+        }
 
-        viewModel.inputMethodDialog ->
+        viewModel.inputMethodDialog -> {
             SettingsInputMethodDialog(viewModel, state.gameplay.inputMethod)
+        }
 
-        viewModel.resetStatsDialog ->
+        viewModel.resetStatsDialog -> {
             SettingsResetStatsDialog(viewModel, scope, snackbarHostState, context)
+        }
 
-        viewModel.languagePickDialog ->
+        viewModel.languagePickDialog -> {
             SettingsLanguageDialog(viewModel, context)
+        }
 
-        viewModel.dateFormatDialog ->
+        viewModel.dateFormatDialog -> {
             SettingsDateFormatDialogSection(viewModel, state.appearance.dateFormat)
+        }
     }
 
     if (viewModel.customFormatDialog) {

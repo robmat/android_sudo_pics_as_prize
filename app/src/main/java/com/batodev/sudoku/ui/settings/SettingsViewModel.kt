@@ -20,108 +20,108 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel
-@Inject constructor(
-    internal val settingsDataManager: AppSettingsManager,
-    private val tipCardsDataStore: TipCardsDataStore,
-    private val appDatabase: AppDatabase,
-    private val acraSharedPrefs: AcraSharedPrefs,
-    savedStateHandle: SavedStateHandle
-) : ViewModel() {
     @Inject
-    lateinit var appThemeDataStore: ThemeSettingsManager
+    constructor(
+        internal val settingsDataManager: AppSettingsManager,
+        private val tipCardsDataStore: TipCardsDataStore,
+        private val appDatabase: AppDatabase,
+        private val acraSharedPrefs: AcraSharedPrefs,
+        savedStateHandle: SavedStateHandle,
+    ) : ViewModel() {
+        @Inject
+        lateinit var appThemeDataStore: ThemeSettingsManager
 
-    val launchedFromGame by mutableStateOf(savedStateHandle.get<Boolean>("fromGame"))
-    var resetStatsDialog by mutableStateOf(false)
+        val launchedFromGame by mutableStateOf(savedStateHandle.get<Boolean>("fromGame"))
+        var resetStatsDialog by mutableStateOf(false)
 
-    var darkModeDialog by mutableStateOf(false)
-    var fontSizeDialog by mutableStateOf(false)
-    var inputMethodDialog by mutableStateOf(false)
-    var mistakesDialog by mutableStateOf(false)
-    var languagePickDialog by mutableStateOf(false)
-    var dateFormatDialog by mutableStateOf(false)
-    var customFormatDialog by mutableStateOf(false)
+        var darkModeDialog by mutableStateOf(false)
+        var fontSizeDialog by mutableStateOf(false)
+        var inputMethodDialog by mutableStateOf(false)
+        var mistakesDialog by mutableStateOf(false)
+        var languagePickDialog by mutableStateOf(false)
+        var dateFormatDialog by mutableStateOf(false)
+        var customFormatDialog by mutableStateOf(false)
 
-    var crashReportingEnabled by mutableStateOf(acraSharedPrefs.getAcraEnabled())
+        var crashReportingEnabled by mutableStateOf(acraSharedPrefs.getAcraEnabled())
 
-    val darkTheme by lazy {
-        appThemeDataStore.darkTheme
-    }
-
-    fun updateDarkTheme(value: Int) =
-        viewModelScope.launch(Dispatchers.IO) {
-            appThemeDataStore.setDarkTheme(value)
+        val darkTheme by lazy {
+            appThemeDataStore.darkTheme
         }
 
-    val dynamicColors by lazy {
-        appThemeDataStore.dynamicColors
-    }
+        fun updateDarkTheme(value: Int) =
+            viewModelScope.launch(Dispatchers.IO) {
+                appThemeDataStore.setDarkTheme(value)
+            }
 
-    fun updateDynamicColors(enabled: Boolean) =
-        viewModelScope.launch {
-            appThemeDataStore.setDynamicColors(enabled)
+        val dynamicColors by lazy {
+            appThemeDataStore.dynamicColors
         }
 
-    val amoledBlack by lazy {
-        appThemeDataStore.amoledBlack
-    }
+        fun updateDynamicColors(enabled: Boolean) =
+            viewModelScope.launch {
+                appThemeDataStore.setDynamicColors(enabled)
+            }
 
-    fun updateAmoledBlack(enabled: Boolean) =
-        viewModelScope.launch(Dispatchers.IO) {
-            appThemeDataStore.setAmoledBlack(enabled)
+        val amoledBlack by lazy {
+            appThemeDataStore.amoledBlack
         }
 
-    val mistakesLimit = settingsDataManager.mistakesLimit
-    val timer = settingsDataManager.timerEnabled
-    val canResetTimer = settingsDataManager.resetTimerEnabled
-    val highlightIdentical = settingsDataManager.highlightIdentical
-    val disableHints = settingsDataManager.hintsDisabled
-    val remainingUse = settingsDataManager.remainingUse
-    val autoEraseNotes = settingsDataManager.autoEraseNotes
-    val highlightMistakes = settingsDataManager.highlightMistakes
-    val inputMethod = settingsDataManager.inputMethod
+        fun updateAmoledBlack(enabled: Boolean) =
+            viewModelScope.launch(Dispatchers.IO) {
+                appThemeDataStore.setAmoledBlack(enabled)
+            }
 
-    fun resetTipCards() {
-        viewModelScope.launch {
-            tipCardsDataStore.setStreakCard(true)
-            tipCardsDataStore.setRecordCard(true)
+        val mistakesLimit = settingsDataManager.mistakesLimit
+        val timer = settingsDataManager.timerEnabled
+        val canResetTimer = settingsDataManager.resetTimerEnabled
+        val highlightIdentical = settingsDataManager.highlightIdentical
+        val disableHints = settingsDataManager.hintsDisabled
+        val remainingUse = settingsDataManager.remainingUse
+        val autoEraseNotes = settingsDataManager.autoEraseNotes
+        val highlightMistakes = settingsDataManager.highlightMistakes
+        val inputMethod = settingsDataManager.inputMethod
+
+        fun resetTipCards() {
+            viewModelScope.launch {
+                tipCardsDataStore.setStreakCard(true)
+                tipCardsDataStore.setRecordCard(true)
+            }
         }
-    }
 
-    fun deleteAllTables() {
-        viewModelScope.launch(Dispatchers.IO) {
-            appDatabase.clearAllTables()
+        fun deleteAllTables() {
+            viewModelScope.launch(Dispatchers.IO) {
+                appDatabase.clearAllTables()
+            }
         }
-    }
 
-    val fontSize = settingsDataManager.fontSize
+        val fontSize = settingsDataManager.fontSize
 
-    val currentTheme by lazy {
-        appThemeDataStore.currentTheme
-    }
-
-    fun updateCurrentTheme(theme: AppTheme) {
-        viewModelScope.launch(Dispatchers.IO) {
-            appThemeDataStore.setCurrentTheme(theme)
+        val currentTheme by lazy {
+            appThemeDataStore.currentTheme
         }
-    }
 
-    val keepScreenOn = settingsDataManager.keepScreenOn
-
-    fun updateCrashReportingEnabled(enabled: Boolean) {
-        acraSharedPrefs.setAcraEnabled(enabled)
-        crashReportingEnabled = acraSharedPrefs.getAcraEnabled()
-    }
-
-    val funKeyboardOverNum = settingsDataManager.funKeyboardOverNumbers
-    val dateFormat = settingsDataManager.dateFormat
-    val saveLastSelectedDifficultyType = settingsDataManager.saveSelectedGameDifficultyType
-
-    fun checkCustomDateFormat(pattern: String): Boolean {
-        return try {
-            DateTimeFormatter.ofPattern(pattern)
-            true
-        } catch (_: IllegalArgumentException) {
-            false
+        fun updateCurrentTheme(theme: AppTheme) {
+            viewModelScope.launch(Dispatchers.IO) {
+                appThemeDataStore.setCurrentTheme(theme)
+            }
         }
+
+        val keepScreenOn = settingsDataManager.keepScreenOn
+
+        fun updateCrashReportingEnabled(enabled: Boolean) {
+            acraSharedPrefs.setAcraEnabled(enabled)
+            crashReportingEnabled = acraSharedPrefs.getAcraEnabled()
+        }
+
+        val funKeyboardOverNum = settingsDataManager.funKeyboardOverNumbers
+        val dateFormat = settingsDataManager.dateFormat
+        val saveLastSelectedDifficultyType = settingsDataManager.saveSelectedGameDifficultyType
+
+        fun checkCustomDateFormat(pattern: String): Boolean =
+            try {
+                DateTimeFormatter.ofPattern(pattern)
+                true
+            } catch (_: IllegalArgumentException) {
+                false
+            }
     }
-}

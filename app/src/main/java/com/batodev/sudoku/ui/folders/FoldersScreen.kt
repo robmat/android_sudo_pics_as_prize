@@ -70,7 +70,7 @@ private data class FoldersTopBarActions(
     val navigateBack: () -> Unit,
     val onHelpClick: () -> Unit,
     val onImportClick: () -> Unit,
-    val onCreateFolderClick: () -> Unit
+    val onCreateFolderClick: () -> Unit,
 )
 
 @Composable
@@ -89,7 +89,7 @@ private fun RowScope.FoldersTopBarMenuActions(actions: FoldersTopBarActions) {
             onClick = {
                 actions.onImportClick()
                 closeMenu()
-            }
+            },
         )
         DropdownMenuItem(
             leadingIcon = {
@@ -101,7 +101,7 @@ private fun RowScope.FoldersTopBarMenuActions(actions: FoldersTopBarActions) {
             onClick = {
                 actions.onCreateFolderClick()
                 closeMenu()
-            }
+            },
         )
     }
 }
@@ -116,32 +116,36 @@ private fun FoldersDefaultTopBar(actions: FoldersTopBarActions) {
         navigationIcon = {
             BackIconButton(onClick = actions.navigateBack)
         },
-        actions = { FoldersTopBarMenuActions(actions) }
+        actions = { FoldersTopBarMenuActions(actions) },
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FoldersImportModeTopBar(gamesToImportSize: Int, navigateBack: () -> Unit) {
+private fun FoldersImportModeTopBar(
+    gamesToImportSize: Int,
+    navigateBack: () -> Unit,
+) {
     TopAppBar(
         title = {
             Text(
-                text = pluralStringResource(
-                    R.plurals.number_puzzles_to_import,
-                    gamesToImportSize
-                ),
+                text =
+                    pluralStringResource(
+                        R.plurals.number_puzzles_to_import,
+                        gamesToImportSize,
+                    ),
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
         },
         navigationIcon = {
             IconButton(onClick = navigateBack) {
                 Icon(
                     imageVector = Icons.Rounded.Close,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
-        }
+        },
     )
 }
 
@@ -149,7 +153,7 @@ private fun FoldersImportModeTopBar(gamesToImportSize: Int, navigateBack: () -> 
 private fun FoldersTopBar(
     gamesToImportEmpty: Boolean,
     gamesToImportSize: Int,
-    actions: FoldersTopBarActions
+    actions: FoldersTopBarActions,
 ) {
     if (gamesToImportEmpty) {
         FoldersDefaultTopBar(actions)
@@ -159,35 +163,41 @@ private fun FoldersTopBar(
 }
 
 @Composable
-private fun FoldersLastPlayedSection(lastGames: List<SavedGame>, navigateViewSavedGame: (Long) -> Unit) {
+private fun FoldersLastPlayedSection(
+    lastGames: List<SavedGame>,
+    navigateViewSavedGame: (Long) -> Unit,
+) {
     Column(Modifier.padding(vertical = 6.dp)) {
         Text(
             text = stringResource(R.string.last_played_section_title),
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(start = 12.dp, bottom = 6.dp)
+            modifier = Modifier.padding(start = 12.dp, bottom = 6.dp),
         )
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(start = 12.dp, end = 12.dp)
+            contentPadding = PaddingValues(start = 12.dp, end = 12.dp),
         ) {
             items(lastGames) {
                 ElevatedCard(
-                    modifier = Modifier
-                        .clip(CardDefaults.elevatedShape)
-                        .clickable { navigateViewSavedGame(it.uid) },
+                    modifier =
+                        Modifier
+                            .clip(CardDefaults.elevatedShape)
+                            .clickable { navigateViewSavedGame(it.uid) },
                 ) {
                     Box(
-                        modifier = Modifier
-                            .padding(6.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .size(130.dp)
+                        modifier =
+                            Modifier
+                                .padding(6.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                                .size(130.dp),
                     ) {
                         BoardPreview(
-                            content = BoardPreviewContent(
-                                size = sqrt(it.currentBoard.length.toFloat()).toInt(),
-                                boardString = it.currentBoard,
-                                boardColors = LocalBoardColors.current
-                            )
+                            content =
+                                BoardPreviewContent(
+                                    size = sqrt(it.currentBoard.length.toFloat()).toInt(),
+                                    boardString = it.currentBoard,
+                                    boardColors = LocalBoardColors.current,
+                                ),
                         )
                     }
                 }
@@ -200,7 +210,7 @@ private fun FoldersLastPlayedSection(lastGames: List<SavedGame>, navigateViewSav
 private data class FoldersListActions(
     val navigateExploreFolder: (Int) -> Unit,
     val navigateViewSavedGame: (Long) -> Unit,
-    val onFolderLongClick: (Folder) -> Unit
+    val onFolderLongClick: (Folder) -> Unit,
 )
 
 @Composable
@@ -208,7 +218,7 @@ private fun FoldersFolderList(
     folders: List<Folder>,
     lastGames: List<SavedGame>,
     viewModel: FoldersViewModel,
-    actions: FoldersListActions
+    actions: FoldersListActions,
 ) {
     LaunchedEffect(folders) {
         viewModel.countPuzzlesInFolders(folders)
@@ -223,7 +233,8 @@ private fun FoldersFolderList(
             val puzzlesCount by remember(viewModel.puzzlesCountInFolder) {
                 mutableIntStateOf(
                     viewModel.puzzlesCountInFolder
-                        .firstOrNull { it.first == item.uid }?.second ?: 0
+                        .firstOrNull { it.first == item.uid }
+                        ?.second ?: 0,
                 )
             }
             FolderItem(
@@ -234,7 +245,7 @@ private fun FoldersFolderList(
                 },
                 onLongClick = {
                     actions.onFolderLongClick(item)
-                }
+                },
             )
             HorizontalDivider()
         }
@@ -247,16 +258,17 @@ private fun FoldersScreenOverlays(
     launchers: FolderLaunchers,
     flags: FoldersDialogFlags,
     coroutineScope: CoroutineScope,
-    navigateImportSudokuFile: (String) -> Unit
+    navigateImportSudokuFile: (String) -> Unit,
 ) {
     FoldersManagementDialogs(
         viewModel = viewModel,
-        dialogsState = FoldersDialogsState(
-            createFolderDialog = flags.createFolderDialog,
-            renameFolderDialog = flags.renameFolderDialog,
-            deleteFolderDialog = flags.deleteFolderDialog,
-            helpDialog = flags.helpDialog
-        )
+        dialogsState =
+            FoldersDialogsState(
+                createFolderDialog = flags.createFolderDialog,
+                renameFolderDialog = flags.renameFolderDialog,
+                deleteFolderDialog = flags.deleteFolderDialog,
+                helpDialog = flags.helpDialog,
+            ),
     )
 
     LaunchedEffect(launchers.contentUri.value) {
@@ -269,12 +281,13 @@ private fun FoldersScreenOverlays(
         FolderActionBottomSheet(
             viewModel = viewModel,
             coroutineScope = coroutineScope,
-            sheetState = FolderActionSheetState(
-                folderActionBottomSheet = flags.folderActionBottomSheet,
-                renameFolderDialog = flags.renameFolderDialog,
-                deleteFolderDialog = flags.deleteFolderDialog
-            ),
-            createDocumentLauncher = launchers.createDocumentLauncher
+            sheetState =
+                FolderActionSheetState(
+                    folderActionBottomSheet = flags.folderActionBottomSheet,
+                    renameFolderDialog = flags.renameFolderDialog,
+                    deleteFolderDialog = flags.deleteFolderDialog,
+                ),
+            createDocumentLauncher = launchers.createDocumentLauncher,
         )
     }
 }
@@ -286,7 +299,7 @@ fun FoldersScreen(
     navigateBack: () -> Unit,
     navigateExploreFolder: (Int) -> Unit,
     navigateImportSudokuFile: (String) -> Unit,
-    navigateViewSavedGame: (Long) -> Unit
+    navigateViewSavedGame: (Long) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -301,20 +314,22 @@ fun FoldersScreen(
             FoldersTopBar(
                 gamesToImportEmpty = gamesToImport.isEmpty(),
                 gamesToImportSize = gamesToImport.size,
-                actions = FoldersTopBarActions(
-                    navigateBack = navigateBack,
-                    onHelpClick = { flags.helpDialog.value = true },
-                    onImportClick = { launchers.openDocumentLauncher.launch(arrayOf("*/*")) },
-                    onCreateFolderClick = { flags.createFolderDialog.value = true }
-                )
+                actions =
+                    FoldersTopBarActions(
+                        navigateBack = navigateBack,
+                        onHelpClick = { flags.helpDialog.value = true },
+                        onImportClick = { launchers.openDocumentLauncher.launch(arrayOf("*/*")) },
+                        onCreateFolderClick = { flags.createFolderDialog.value = true },
+                    ),
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
         Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxWidth()
+            modifier =
+                Modifier
+                    .padding(paddingValues)
+                    .fillMaxWidth(),
         ) {
             val folders by viewModel.folders.collectAsStateWithLifecycle(initialValue = emptyList())
             val lastGames by viewModel.lastSavedGames.collectAsStateWithLifecycle(initialValue = emptyList())
@@ -324,14 +339,15 @@ fun FoldersScreen(
                     folders = folders,
                     lastGames = lastGames,
                     viewModel = viewModel,
-                    actions = FoldersListActions(
-                        navigateExploreFolder = navigateExploreFolder,
-                        navigateViewSavedGame = navigateViewSavedGame,
-                        onFolderLongClick = {
-                            viewModel.selectedFolder = it
-                            coroutineScope.launch { flags.folderActionBottomSheet.value = true }
-                        }
-                    )
+                    actions =
+                        FoldersListActions(
+                            navigateExploreFolder = navigateExploreFolder,
+                            navigateViewSavedGame = navigateViewSavedGame,
+                            onFolderLongClick = {
+                                viewModel.selectedFolder = it
+                                coroutineScope.launch { flags.folderActionBottomSheet.value = true }
+                            },
+                        ),
                 )
             }
         }
@@ -350,35 +366,38 @@ fun FolderItem(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .then(modifier)
-            .combinedClickable(
-                onClick = onClick,
-                onLongClick = onLongClick
-            )
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .then(modifier)
+                .combinedClickable(
+                    onClick = onClick,
+                    onLongClick = onLongClick,
+                ),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(
-                modifier = Modifier.fillMaxHeight()
+                modifier = Modifier.fillMaxHeight(),
             ) {
                 Text(
                     text = name,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
                 )
                 Text(
-                    text = pluralStringResource(
-                        R.plurals.puzzles_in_folder,
-                        puzzlesCount,
-                        puzzlesCount
-                    ),
-                    color = LocalContentColor.current.copy(alpha = 0.75f)
+                    text =
+                        pluralStringResource(
+                            R.plurals.puzzles_in_folder,
+                            puzzlesCount,
+                            puzzlesCount,
+                        ),
+                    color = LocalContentColor.current.copy(alpha = 0.75f),
                 )
             }
         }

@@ -14,11 +14,11 @@ import com.batodev.sudoku.core.qqwing.GameDifficulty
 fun DifficultyDropdownMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
-    onClick: (GameDifficulty) -> Unit
+    onClick: (GameDifficulty) -> Unit,
 ) {
     RoundedDropdownMenu(
         expanded = expanded,
-        onDismissRequest = onDismissRequest
+        onDismissRequest = onDismissRequest,
     ) {
         listOf(
             GameDifficulty.Easy,
@@ -34,7 +34,7 @@ fun DifficultyDropdownMenu(
                 onClick = {
                     onClick(it)
                     onDismissRequest()
-                }
+                },
             )
         }
     }

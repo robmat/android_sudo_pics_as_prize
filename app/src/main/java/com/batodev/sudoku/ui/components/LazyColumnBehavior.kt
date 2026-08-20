@@ -14,5 +14,5 @@ data class LazyColumnBehavior(
     val verticalArrangement: Arrangement.Vertical =
         if (!reverseLayout) Arrangement.Top else Arrangement.Bottom,
     val horizontalAlignment: Alignment.Horizontal = Alignment.Start,
-    val userScrollEnabled: Boolean = true
+    val userScrollEnabled: Boolean = true,
 )

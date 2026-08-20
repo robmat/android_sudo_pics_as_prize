@@ -17,25 +17,27 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
  * into the effective dark-theme flag, falling back to the system setting.
  */
 @Composable
-fun resolveDarkTheme(darkThemeSetting: Int): Boolean = when (darkThemeSetting) {
-    1 -> false
-    2 -> true
-    else -> isSystemInDarkTheme()
-}
+fun resolveDarkTheme(darkThemeSetting: Int): Boolean =
+    when (darkThemeSetting) {
+        1 -> false
+        2 -> true
+        else -> isSystemInDarkTheme()
+    }
 
 /**
  * Resolves the persisted "selected theme" preference key into the corresponding [AppTheme],
  * defaulting to [AppTheme.Green] when unknown.
  */
-fun resolveAppTheme(currentThemeKey: String): AppTheme = when (currentThemeKey) {
-    PreferencesConstants.GREEN_THEME_KEY -> AppTheme.Green
-    PreferencesConstants.BLUE_THEME_KEY -> AppTheme.Blue
-    PreferencesConstants.PEACH_THEME_KEY -> AppTheme.Peach
-    PreferencesConstants.YELLOW_THEME_KEY -> AppTheme.Yellow
-    PreferencesConstants.LAVENDER_THEME_KEY -> AppTheme.Lavender
-    PreferencesConstants.BLACK_AND_WHITE_THEME_KEY -> AppTheme.BlackAndWhite
-    else -> AppTheme.Green
-}
+fun resolveAppTheme(currentThemeKey: String): AppTheme =
+    when (currentThemeKey) {
+        PreferencesConstants.GREEN_THEME_KEY -> AppTheme.Green
+        PreferencesConstants.BLUE_THEME_KEY -> AppTheme.Blue
+        PreferencesConstants.PEACH_THEME_KEY -> AppTheme.Peach
+        PreferencesConstants.YELLOW_THEME_KEY -> AppTheme.Yellow
+        PreferencesConstants.LAVENDER_THEME_KEY -> AppTheme.Lavender
+        PreferencesConstants.BLACK_AND_WHITE_THEME_KEY -> AppTheme.BlackAndWhite
+        else -> AppTheme.Green
+    }
 
 @Composable
 fun SudokuTheme(
@@ -48,25 +50,41 @@ fun SudokuTheme(
 ) {
     val appColorScheme = AppColorScheme()
     val currentTheme = appColorScheme.getTheme(appTheme, darkTheme)
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
+    val colorScheme =
+        when {
+            dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                val context = LocalContext.current
 
-            when {
-                darkTheme && amoled -> dynamicDarkColorScheme(context).copy(
-                    background = Color.Black,
-                    surface = Color.Black
-                )
+                when {
+                    darkTheme && amoled -> {
+                        dynamicDarkColorScheme(context).copy(
+                            background = Color.Black,
+                            surface = Color.Black,
+                        )
+                    }
 
-                darkTheme && !amoled -> dynamicDarkColorScheme(context)
-                else -> dynamicLightColorScheme(context)
+                    darkTheme && !amoled -> {
+                        dynamicDarkColorScheme(context)
+                    }
+
+                    else -> {
+                        dynamicLightColorScheme(context)
+                    }
+                }
+            }
+
+            darkTheme && amoled -> {
+                currentTheme.copy(background = Color.Black, surface = Color.Black)
+            }
+
+            darkTheme -> {
+                currentTheme
+            }
+
+            else -> {
+                currentTheme
             }
         }
-
-        darkTheme && amoled -> currentTheme.copy(background = Color.Black, surface = Color.Black)
-        darkTheme -> currentTheme
-        else -> currentTheme
-    }
     val systemUiController = rememberSystemUiController()
 
     MaterialTheme(
@@ -76,11 +94,11 @@ fun SudokuTheme(
             SideEffect {
                 systemUiController.setSystemBarsColor(
                     color = Color.Transparent,
-                    darkIcons = !darkTheme
+                    darkIcons = !darkTheme,
                 )
             }
 
             content()
-        }
+        },
     )
 }

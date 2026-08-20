@@ -30,14 +30,14 @@ fun SelectionDialog(
     selections: List<String>,
     selected: Int = 0,
     onSelect: (Int) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     AlertDialog(
         title = {
             Column(Modifier.fillMaxWidth()) {
                 Text(
                     text = title,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
             }
         },
@@ -50,7 +50,7 @@ fun SelectionDialog(
                         onClick = {
                             onSelect(index)
                             onDismiss()
-                        }
+                        },
                     )
                 }
             }
@@ -60,7 +60,7 @@ fun SelectionDialog(
             TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.action_cancel))
             }
-        }
+        },
     )
 }
 
@@ -70,7 +70,7 @@ fun SelectionDialog(
     entries: Map<String, String>,
     selected: String,
     onSelect: (String) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     EntriesListDialog(title = title, onDismiss = onDismiss) {
         entryRadioItems(entries, selected, onSelect)
@@ -82,14 +82,14 @@ data class DateFormatDialogInfo(
     val title: String,
     val entries: Map<String, String>,
     val customDateFormatText: String,
-    val selected: String
+    val selected: String,
 )
 
 @Composable
 fun DateFormatDialog(
     info: DateFormatDialogInfo,
     onSelect: (String) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     EntriesListDialog(title = info.title, onDismiss = onDismiss) {
         entryRadioItems(info.entries, info.selected, onSelect)
@@ -97,7 +97,7 @@ fun DateFormatDialog(
             RadioListRow(
                 selected = !info.entries.containsKey(info.selected),
                 text = info.customDateFormatText,
-                onClick = { onSelect("custom") }
+                onClick = { onSelect("custom") },
             )
         }
     }
@@ -107,13 +107,13 @@ fun DateFormatDialog(
 private fun LazyListScope.entryRadioItems(
     entries: Map<String, String>,
     selected: String,
-    onSelect: (String) -> Unit
+    onSelect: (String) -> Unit,
 ) {
     items(entries.toList()) { item ->
         RadioListRow(
             selected = selected == item.first,
             text = item.second,
-            onClick = { onSelect(item.first) }
+            onClick = { onSelect(item.first) },
         )
     }
 }
@@ -127,14 +127,14 @@ private fun LazyListScope.entryRadioItems(
 private fun EntriesListDialog(
     title: String,
     onDismiss: () -> Unit,
-    content: LazyListScope.() -> Unit
+    content: LazyListScope.() -> Unit,
 ) {
     AlertDialog(
         title = {
             Column(Modifier.fillMaxWidth()) {
                 Text(
                     text = title,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
             }
         },
@@ -146,7 +146,7 @@ private fun EntriesListDialog(
             TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.action_cancel))
             }
-        }
+        },
     )
 }
 
@@ -155,22 +155,23 @@ private fun EntriesListDialog(
 private fun RadioListRow(
     selected: Boolean,
     text: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.small)
-            .clickable(onClick = onClick),
-        verticalAlignment = CenterVertically
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.small)
+                .clickable(onClick = onClick),
+        verticalAlignment = CenterVertically,
     ) {
         RadioButton(
             selected = selected,
-            onClick = onClick
+            onClick = onClick,
         )
         Text(
             text = text,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
         )
     }
 }
@@ -179,27 +180,27 @@ private fun RadioListRow(
 data class CustomDateFormatState(
     val customDateFormat: String,
     val invalidCustomDateFormat: Boolean,
-    val datePreview: String = ""
+    val datePreview: String = "",
 )
 
 /** The callbacks used by [SetDateFormatPatternDialog]. */
 data class CustomDateFormatCallbacks(
     val onConfirm: () -> Unit,
     val onDismissRequest: () -> Unit,
-    val onTextValueChange: (String) -> Unit
+    val onTextValueChange: (String) -> Unit,
 )
 
 @Composable
 fun SetDateFormatPatternDialog(
     state: CustomDateFormatState,
-    callbacks: CustomDateFormatCallbacks
+    callbacks: CustomDateFormatCallbacks,
 ) {
     AlertDialog(
         title = {
             Column(Modifier.fillMaxWidth()) {
                 Text(
                     text = stringResource(R.string.pref_date_format_custom),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
             }
         },
@@ -207,11 +208,11 @@ fun SetDateFormatPatternDialog(
             Column {
                 Text(
                     text = stringResource(R.string.pref_date_format_custom_summ),
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.padding(bottom = 8.dp),
                 )
                 Text(
                     text = state.datePreview,
-                    modifier = Modifier.padding(bottom = 6.dp)
+                    modifier = Modifier.padding(bottom = 6.dp),
                 )
                 OutlinedTextField(
                     value = state.customDateFormat,
@@ -221,16 +222,17 @@ fun SetDateFormatPatternDialog(
                     label = {
                         Text(stringResource(R.string.pref_date_format_custom_textfield_label))
                     },
-                    keyboardActions = KeyboardActions(
-                        onDone = { callbacks.onConfirm() }
-                    )
+                    keyboardActions =
+                        KeyboardActions(
+                            onDone = { callbacks.onConfirm() },
+                        ),
                 )
             }
         },
         onDismissRequest = callbacks.onDismissRequest,
         confirmButton = {
             TextButton(
-                onClick = { callbacks.onConfirm() }
+                onClick = { callbacks.onConfirm() },
             ) {
                 Text(stringResource(R.string.action_save))
             }
@@ -239,6 +241,6 @@ fun SetDateFormatPatternDialog(
             TextButton(onClick = callbacks.onDismissRequest) {
                 Text(stringResource(R.string.action_cancel))
             }
-        }
+        },
     )
 }

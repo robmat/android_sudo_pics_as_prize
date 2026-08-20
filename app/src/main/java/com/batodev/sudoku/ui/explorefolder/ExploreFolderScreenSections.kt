@@ -69,7 +69,7 @@ internal fun ExploreFolderTopBar(
     folder: Folder?,
     games: Map<SudokuBoard, SavedGame?>,
     navigateBack: () -> Unit,
-    dialogState: ExploreFolderDialogState
+    dialogState: ExploreFolderDialogState,
 ) {
     AnimatedContent(viewModel.inSelectionMode) { inSelectionMode ->
         if (inSelectionMode) {
@@ -78,7 +78,7 @@ internal fun ExploreFolderTopBar(
                 onCloseClick = { viewModel.inSelectionMode = false },
                 onClickMoveSelected = { dialogState.moveSelectedDialog.value = true },
                 onClickDeleteSelected = { dialogState.deleteBoardDialog.value = true },
-                onClickSelectAll = { viewModel.addAllToSelection(games.map { it.key }) }
+                onClickSelectAll = { viewModel.addAllToSelection(games.map { it.key }) },
             )
         } else {
             DefaultTopAppBar(
@@ -86,30 +86,33 @@ internal fun ExploreFolderTopBar(
                     folder?.let {
                         Text(
                             text = it.name,
-                            modifier = Modifier.basicMarquee()
+                            modifier = Modifier.basicMarquee(),
                         )
                     }
                 },
                 navigateBack = navigateBack,
                 onImportMenuClick = {
                     dialogState.addSudokuBottomSheet.value = true
-                }
+                },
             )
         }
     }
 }
 
 @Composable
-internal fun ExploreFolderFab(lazyListState: LazyListState, coroutineScope: CoroutineScope) {
+internal fun ExploreFolderFab(
+    lazyListState: LazyListState,
+    coroutineScope: CoroutineScope,
+) {
     AnimatedVisibility(
         visible = lazyListState.isScrollingUp() && !lazyListState.isScrolledToStart(),
         enter = fadeIn() + scaleIn(),
-        exit = fadeOut() + scaleOut()
+        exit = fadeOut() + scaleOut(),
     ) {
         FloatingActionButton(
             onClick = {
                 coroutineScope.launch { lazyListState.animateScrollToItem(0) }
-            }
+            },
         ) {
             Icon(Icons.Rounded.KeyboardArrowUp, contentDescription = null)
         }
@@ -123,7 +126,7 @@ internal fun ExploreFolderBody(
     listState: ExploreFolderListState,
     paddingValues: PaddingValues,
     navigation: ExploreFolderNavigation,
-    dialogState: ExploreFolderDialogState
+    dialogState: ExploreFolderDialogState,
 ) {
     val folder = listState.folder
     Column(Modifier.padding(paddingValues)) {
@@ -140,7 +143,7 @@ internal fun ExploreFolderBody(
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(stringResource(R.string.add_to_folder))
                     }
-                }
+                },
             )
         }
     }
@@ -152,7 +155,7 @@ private fun ExploreFolderGamesList(
     viewModel: ExploreFolderViewModel,
     listState: ExploreFolderListState,
     navigation: ExploreFolderNavigation,
-    dialogState: ExploreFolderDialogState
+    dialogState: ExploreFolderDialogState,
 ) {
     val folder = requireNotNull(listState.folder)
     var expandedGameUid by rememberSaveable { mutableLongStateOf(-1L) }
@@ -163,47 +166,50 @@ private fun ExploreFolderGamesList(
 
     ScrollbarLazyColumn(
         state = listState.lazyListState,
-        behavior = LazyColumnBehavior(verticalArrangement = Arrangement.spacedBy(8.dp))
+        behavior = LazyColumnBehavior(verticalArrangement = Arrangement.spacedBy(8.dp)),
     ) {
         items(
             items = listState.games.toList(),
-            key = { it.first.uid }
+            key = { it.first.uid },
         ) { game ->
             GameInFolderWidget(
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .animateItem(),
-                info = GameInFolderInfo(
-                    board = game.second?.currentBoard ?: game.first.initialBoard,
-                    difficulty = stringResource(game.first.difficulty.resName),
-                    type = stringResource(game.first.type.resName),
-                    gameId = game.first.uid,
-                    savedGame = game.second
-                ),
+                modifier =
+                    Modifier
+                        .padding(horizontal = 12.dp)
+                        .animateItem(),
+                info =
+                    GameInFolderInfo(
+                        board = game.second?.currentBoard ?: game.first.initialBoard,
+                        difficulty = stringResource(game.first.difficulty.resName),
+                        type = stringResource(game.first.type.resName),
+                        gameId = game.first.uid,
+                        savedGame = game.second,
+                    ),
                 expanded = expandedGameUid == game.first.uid,
                 selected = viewModel.selectedBoardsList.contains(game.first),
-                actions = GameInFolderActions(
-                    onClick = {
-                        if (!viewModel.inSelectionMode) {
-                            expandedGameUid =
-                                if (expandedGameUid != game.first.uid) game.first.uid else -1L
-                        } else {
+                actions =
+                    GameInFolderActions(
+                        onClick = {
+                            if (!viewModel.inSelectionMode) {
+                                expandedGameUid =
+                                    if (expandedGameUid != game.first.uid) game.first.uid else -1L
+                            } else {
+                                viewModel.addToSelection(game.first)
+                            }
+                        },
+                        onLongClick = {
+                            viewModel.inSelectionMode = true
                             viewModel.addToSelection(game.first)
-                        }
-                    },
-                    onLongClick = {
-                        viewModel.inSelectionMode = true
-                        viewModel.addToSelection(game.first)
-                    },
-                    onPlayClick = { viewModel.prepareSudokuToPlay(game.first) },
-                    onEditClick = {
-                        navigation.navigateEditGame(Pair(game.first.uid, folder.uid))
-                    },
-                    onDeleteClick = {
-                        dialogState.deleteBoardDialogBoard.value = game.first
-                        dialogState.deleteBoardDialog.value = true
-                    }
-                )
+                        },
+                        onPlayClick = { viewModel.prepareSudokuToPlay(game.first) },
+                        onEditClick = {
+                            navigation.navigateEditGame(Pair(game.first.uid, folder.uid))
+                        },
+                        onDeleteClick = {
+                            dialogState.deleteBoardDialogBoard.value = game.first
+                            dialogState.deleteBoardDialog.value = true
+                        },
+                    ),
             )
         }
     }
@@ -213,7 +219,7 @@ private fun ExploreFolderGamesList(
 internal fun ExploreFolderEffects(
     viewModel: ExploreFolderViewModel,
     folder: Folder?,
-    navigatePlayGame: (Triple<Long, Boolean, Long>) -> Unit
+    navigatePlayGame: (Triple<Long, Boolean, Long>) -> Unit,
 ) {
     LaunchedEffect(viewModel.readyToPlay, viewModel.gameUidToPlay) {
         if (viewModel.readyToPlay) {
@@ -238,7 +244,10 @@ internal fun ExploreFolderEffects(
 }
 
 @Composable
-internal fun ExploreFolderDeleteDialog(viewModel: ExploreFolderViewModel, dialogState: ExploreFolderDialogState) {
+internal fun ExploreFolderDeleteDialog(
+    viewModel: ExploreFolderViewModel,
+    dialogState: ExploreFolderDialogState,
+) {
     if (!dialogState.deleteBoardDialog.value) return
     val deleteBoardDialogBoard = dialogState.deleteBoardDialogBoard
     AlertDialog(
@@ -246,11 +255,12 @@ internal fun ExploreFolderDeleteDialog(viewModel: ExploreFolderViewModel, dialog
         title = { Text(stringResource(R.string.dialog_delete_selected)) },
         text = {
             Text(
-                text = pluralStringResource(
-                    id = R.plurals.delete_selected_in_folder,
-                    count = if (deleteBoardDialogBoard.value != null) 1 else viewModel.selectedBoardsList.size,
-                    if (deleteBoardDialogBoard.value != null) 1 else viewModel.selectedBoardsList.size
-                )
+                text =
+                    pluralStringResource(
+                        id = R.plurals.delete_selected_in_folder,
+                        count = if (deleteBoardDialogBoard.value != null) 1 else viewModel.selectedBoardsList.size,
+                        if (deleteBoardDialogBoard.value != null) 1 else viewModel.selectedBoardsList.size,
+                    ),
             )
         },
         onDismissRequest = { dialogState.deleteBoardDialog.value = false },
@@ -273,7 +283,7 @@ internal fun ExploreFolderDeleteDialog(viewModel: ExploreFolderViewModel, dialog
             }) {
                 Text(stringResource(R.string.action_delete))
             }
-        }
+        },
     )
 }
 
@@ -283,30 +293,32 @@ internal fun ExploreFolderAddSheet(
     dialogState: ExploreFolderDialogState,
     folder: Folder?,
     navigateCreateSudoku: (Long) -> Unit,
-    openDocumentLauncher: ManagedActivityResultLauncher<Array<String>, android.net.Uri?>
+    openDocumentLauncher: ManagedActivityResultLauncher<Array<String>, android.net.Uri?>,
 ) {
     if (!dialogState.addSudokuBottomSheet.value) return
     ModalBottomSheet(onDismissRequest = { dialogState.addSudokuBottomSheet.value = false }) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
         ) {
             Text(
                 text = stringResource(R.string.add_to_folder),
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier.align(Alignment.CenterHorizontally),
             )
             Spacer(modifier = Modifier.height(12.dp))
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                val options = listOf(
-                    AddSheetOption(stringResource(R.string.add_to_folder_create_new), Icons.Outlined.Create) {
-                        folder?.let { navigateCreateSudoku(it.uid) }
-                    },
-                    AddSheetOption(stringResource(R.string.add_to_folder_from_file), Icons.Outlined.NoteAdd) {
-                        openDocumentLauncher.launch(arrayOf("*/*"))
-                    }
-                )
+                val options =
+                    listOf(
+                        AddSheetOption(stringResource(R.string.add_to_folder_create_new), Icons.Outlined.Create) {
+                            folder?.let { navigateCreateSudoku(it.uid) }
+                        },
+                        AddSheetOption(stringResource(R.string.add_to_folder_from_file), Icons.Outlined.NoteAdd) {
+                            openDocumentLauncher.launch(arrayOf("*/*"))
+                        },
+                    )
                 options.forEach { option ->
                     ExploreFolderAddSheetItem(option) { dialogState.addSudokuBottomSheet.value = false }
                 }
@@ -315,28 +327,36 @@ internal fun ExploreFolderAddSheet(
     }
 }
 
-private data class AddSheetOption(val label: String, val icon: ImageVector, val onSelect: () -> Unit)
+private data class AddSheetOption(
+    val label: String,
+    val icon: ImageVector,
+    val onSelect: () -> Unit,
+)
 
 @Composable
-private fun ExploreFolderAddSheetItem(option: AddSheetOption, onSelected: () -> Unit) {
+private fun ExploreFolderAddSheetItem(
+    option: AddSheetOption,
+    onSelected: () -> Unit,
+) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.small)
-            .clickable {
-                option.onSelect()
-                onSelected()
-            },
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.small)
+                .clickable {
+                    option.onSelect()
+                    onSelected()
+                },
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             imageVector = option.icon,
             contentDescription = null,
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier.padding(12.dp),
         )
         Text(
             text = option.label,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
         )
     }
 }

@@ -23,26 +23,30 @@ import kotlinx.coroutines.launch
 private fun OtherSaveLastDiffTypeSwitch(viewModel: SettingsViewModel) {
     val saveLastSelectedDifficultyType by viewModel.saveLastSelectedDifficultyType
         .collectAsStateWithLifecycle(
-            initialValue = PreferencesConstants.DEFAULT_SAVE_LAST_SELECTED_DIFF_TYPE
+            initialValue = PreferencesConstants.DEFAULT_SAVE_LAST_SELECTED_DIFF_TYPE,
         )
     PreferenceRowSwitch(
-        info = PreferenceRowInfo(
-            title = stringResource(R.string.pref_save_last_diff_and_type),
-            subtitle = stringResource(R.string.pref_save_last_diff_and_type_subtitle)
-        ),
+        info =
+            PreferenceRowInfo(
+                title = stringResource(R.string.pref_save_last_diff_and_type),
+                subtitle = stringResource(R.string.pref_save_last_diff_and_type_subtitle),
+            ),
         checked = saveLastSelectedDifficultyType,
         onClick = {
             viewModel.updateSaveLastSelectedDifficultyType(!saveLastSelectedDifficultyType)
-        }
+        },
     )
 }
 
 @Composable
-private fun OtherKeepScreenOnSwitch(keepScreenOn: Boolean, onClick: () -> Unit) {
+private fun OtherKeepScreenOnSwitch(
+    keepScreenOn: Boolean,
+    onClick: () -> Unit,
+) {
     PreferenceRowSwitch(
         info = PreferenceRowInfo(title = stringResource(R.string.pref_keep_screen_on)),
         checked = keepScreenOn,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
@@ -51,20 +55,21 @@ private fun OtherResetTipCardsRow(
     viewModel: SettingsViewModel,
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
-    context: Context
+    context: Context,
 ) {
     PreferenceRow(
         info = PreferenceRowInfo(title = stringResource(R.string.pref_reset_tipcards)),
-        interactions = PreferenceRowInteractions(
-            onClick = {
-                viewModel.resetTipCards()
-                scope.launch {
-                    snackbarHostState.showSnackbar(
-                        context.resources.getString(R.string.pref_tipcards_reset)
-                    )
-                }
-            }
-        )
+        interactions =
+            PreferenceRowInteractions(
+                onClick = {
+                    viewModel.resetTipCards()
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            context.resources.getString(R.string.pref_tipcards_reset),
+                        )
+                    }
+                },
+            ),
     )
 }
 
@@ -73,11 +78,12 @@ private fun OtherDeleteStatsRow(viewModel: SettingsViewModel) {
     if (viewModel.launchedFromGame == null || viewModel.launchedFromGame == false) {
         PreferenceRow(
             info = PreferenceRowInfo(title = stringResource(R.string.pref_delete_stats)),
-            interactions = PreferenceRowInteractions(
-                onClick = {
-                    viewModel.resetStatsDialog = true
-                }
-            )
+            interactions =
+                PreferenceRowInteractions(
+                    onClick = {
+                        viewModel.resetStatsDialog = true
+                    },
+                ),
         )
     }
 }
@@ -85,14 +91,15 @@ private fun OtherDeleteStatsRow(viewModel: SettingsViewModel) {
 @Composable
 private fun OtherCrashReportingSwitch(viewModel: SettingsViewModel) {
     PreferenceRowSwitch(
-        info = PreferenceRowInfo(
-            title = stringResource(R.string.pref_crash_reporting),
-            subtitle = stringResource(R.string.pref_crash_reporting_subtitle)
-        ),
+        info =
+            PreferenceRowInfo(
+                title = stringResource(R.string.pref_crash_reporting),
+                subtitle = stringResource(R.string.pref_crash_reporting_subtitle),
+            ),
         checked = viewModel.crashReportingEnabled,
         onClick = {
             viewModel.updateCrashReportingEnabled(!viewModel.crashReportingEnabled)
-        }
+        },
     )
 }
 
@@ -101,7 +108,7 @@ internal fun LazyListScope.settingsOtherItems(
     state: SettingsPreferencesState,
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
-    context: Context
+    context: Context,
 ) {
     item {
         HorizontalDivider(modifier = Modifier.fillMaxWidth())

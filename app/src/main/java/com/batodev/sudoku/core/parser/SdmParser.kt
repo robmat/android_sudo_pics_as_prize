@@ -16,10 +16,12 @@ class SdmParser : FileImportParser {
         private const val STANDARD_BOARD_LENGTH = 81
     }
 
-    private fun isValidLine(line: String): Boolean =
-        line.length == STANDARD_BOARD_LENGTH && line.all { char -> char.isDigit() }
+    private fun isValidLine(line: String): Boolean = line.length == STANDARD_BOARD_LENGTH && line.all { char -> char.isDigit() }
 
-    private fun processLine(line: String, toImport: MutableList<String>) {
+    private fun processLine(
+        line: String,
+        toImport: MutableList<String>,
+    ) {
         val trimmed = line.trim()
         if (isValidLine(trimmed)) {
             toImport.add(trimmed.replace(".", "0"))

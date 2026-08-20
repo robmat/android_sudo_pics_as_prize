@@ -37,179 +37,188 @@ import kotlin.time.Duration
  * class itself stays focused on state declaration.
  */
 @HiltViewModel
-class GameViewModel @Inject constructor(
-    internal val dependencies: GameDependencies,
-    internal val appSettingsManager: AppSettingsManager,
-    themeSettingsManager: ThemeSettingsManager,
-    private val savedStateHandle: SavedStateHandle,
-    internal val application: Application,
-) : ViewModel() {
-    companion object {
-        internal const val TIMER_UPDATE_RATE_MS = 50L
-        internal const val RADIX = 13
-        internal const val NANOS_PER_MILLI = 1e6
-    }
+class GameViewModel
+    @Inject
+    constructor(
+        internal val dependencies: GameDependencies,
+        internal val appSettingsManager: AppSettingsManager,
+        themeSettingsManager: ThemeSettingsManager,
+        private val savedStateHandle: SavedStateHandle,
+        internal val application: Application,
+    ) : ViewModel() {
+        companion object {
+            internal const val TIMER_UPDATE_RATE_MS = 50L
+            internal const val RADIX = 13
+            internal const val NANOS_PER_MILLI = 1e6
+        }
 
-    init {
-        val sudokuParser = SudokuParser()
-        val continueSaved = savedStateHandle.get<Boolean>("saved")
+        init {
+            val sudokuParser = SudokuParser()
+            val continueSaved = savedStateHandle.get<Boolean>("saved")
 
-        viewModelScope.launch(Dispatchers.IO) {
-            boardEntity = dependencies.getBoardUseCase(savedStateHandle["uid"] ?: 1L)
-            val savedGame = dependencies.savedGameRepository.get(boardEntity.uid)
+            viewModelScope.launch(Dispatchers.IO) {
+                boardEntity = dependencies.getBoardUseCase(savedStateHandle["uid"] ?: 1L)
+                val savedGame = dependencies.savedGameRepository.get(boardEntity.uid)
 
-            withContext(Dispatchers.Main) {
-                gameType = boardEntity.type
-                gameDifficulty = boardEntity.difficulty
-            }
-
-            withContext(Dispatchers.Default) {
-                initialBoard = sudokuParser.parseBoard(
-                    boardEntity.initialBoard,
-                    boardEntity.type
-                ).toList()
-                initialBoard.forEach { cells ->
-                    cells.forEach { cell ->
-                        cell.locked = cell.value != 0
-                    }
+                withContext(Dispatchers.Main) {
+                    gameType = boardEntity.type
+                    gameDifficulty = boardEntity.difficulty
                 }
 
-                if (boardEntity.solvedBoard.isNotBlank() && !boardEntity.solvedBoard.contains("0")) {
-                    solvedBoard = sudokuParser.parseBoard(
-                        boardEntity.solvedBoard,
-                        boardEntity.type
-                    )
-                    for (i in solvedBoard.indices) {
-                        for (j in solvedBoard.indices) {
-                            solvedBoard[i][j].locked = initialBoard[i][j].locked
+                withContext(Dispatchers.Default) {
+                    initialBoard =
+                        sudokuParser
+                            .parseBoard(
+                                boardEntity.initialBoard,
+                                boardEntity.type,
+                            ).toList()
+                    initialBoard.forEach { cells ->
+                        cells.forEach { cell ->
+                            cell.locked = cell.value != 0
                         }
                     }
-                } else {
-                    withContext(Dispatchers.Main) {
-                        solveBoard()
+
+                    if (boardEntity.solvedBoard.isNotBlank() && !boardEntity.solvedBoard.contains("0")) {
+                        solvedBoard =
+                            sudokuParser.parseBoard(
+                                boardEntity.solvedBoard,
+                                boardEntity.type,
+                            )
+                        for (i in solvedBoard.indices) {
+                            for (j in solvedBoard.indices) {
+                                solvedBoard[i][j].locked = initialBoard[i][j].locked
+                            }
+                        }
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            solveBoard()
+                        }
                     }
                 }
-            }
 
-            withContext(Dispatchers.Main) {
-                if (savedGame != null && continueSaved!!) {
-                    restoreSavedGame(savedGame)
-                } else {
-                    gameBoard = initialBoard
+                withContext(Dispatchers.Main) {
+                    if (savedGame != null && continueSaved!!) {
+                        restoreSavedGame(savedGame)
+                    } else {
+                        gameBoard = initialBoard
+                    }
+                    size = gameBoard.size
+                    undoRedoManager = UndoRedoManager(GameState(gameBoard, notes))
+                    remainingUsesList = countRemainingUses(gameBoard)
                 }
-                size = gameBoard.size
-                undoRedoManager = UndoRedoManager(GameState(gameBoard, notes))
-                remainingUsesList = countRemainingUses(gameBoard)
+                saveGame()
             }
-            saveGame()
         }
-    }
 
-    var giveUp by mutableStateOf(false)
+        var giveUp by mutableStateOf(false)
 
-    val fontSize = appSettingsManager.fontSize
-    val keepScreenOn = appSettingsManager.keepScreenOn
+        val fontSize = appSettingsManager.fontSize
+        val keepScreenOn = appSettingsManager.keepScreenOn
 
-    var remainingUsesList = emptyList<Int>()
-    val firstGame = appSettingsManager.firstGame
-    internal lateinit var boardEntity: SudokuBoard
-    var size by mutableIntStateOf(GameType.Default9x9.size)
-    var gameType by mutableStateOf(GameType.Unspecified)
-    var gameDifficulty by mutableStateOf(GameDifficulty.Unspecified)
+        var remainingUsesList = emptyList<Int>()
+        val firstGame = appSettingsManager.firstGame
+        internal lateinit var boardEntity: SudokuBoard
+        var size by mutableIntStateOf(GameType.Default9x9.size)
+        var gameType by mutableStateOf(GameType.Unspecified)
+        var gameDifficulty by mutableStateOf(GameDifficulty.Unspecified)
 
-    // dialogs, menus
-    var restartDialog by mutableStateOf(false)
-    var showMenu by mutableStateOf(false)
-    var showNotesMenu by mutableStateOf(false)
-    var showUndoRedoMenu by mutableStateOf(false)
+        // dialogs, menus
+        var restartDialog by mutableStateOf(false)
+        var showMenu by mutableStateOf(false)
+        var showNotesMenu by mutableStateOf(false)
+        var showUndoRedoMenu by mutableStateOf(false)
 
-    // count remaining uses
-    var remainingUse = appSettingsManager.remainingUse
+        // count remaining uses
+        var remainingUse = appSettingsManager.remainingUse
 
-    // timer
-    var timerEnabled = appSettingsManager.timerEnabled
+        // timer
+        var timerEnabled = appSettingsManager.timerEnabled
 
-    // identical numbers highlight
-    val identicalHighlight = appSettingsManager.highlightIdentical
+        // identical numbers highlight
+        val identicalHighlight = appSettingsManager.highlightIdentical
 
-    // mistakes checking method
-    var mistakesMethod = appSettingsManager.highlightMistakes.stateIn(
-        viewModelScope,
-        SharingStarted.Eagerly,
-        PreferencesConstants.DEFAULT_HIGHLIGHT_MISTAKES
-    )
+        // mistakes checking method
+        var mistakesMethod =
+            appSettingsManager.highlightMistakes.stateIn(
+                viewModelScope,
+                SharingStarted.Eagerly,
+                PreferencesConstants.DEFAULT_HIGHLIGHT_MISTAKES,
+            )
 
-    var positionLines = appSettingsManager.positionLines
-    val crossHighlight = themeSettingsManager.boardCrossHighlight
-    val funKeyboardOverNum = appSettingsManager.funKeyboardOverNumbers
+        var positionLines = appSettingsManager.positionLines
+        val crossHighlight = themeSettingsManager.boardCrossHighlight
+        val funKeyboardOverNum = appSettingsManager.funKeyboardOverNumbers
 
-    var mistakesLimit = appSettingsManager.mistakesLimit.stateIn(
-        viewModelScope,
-        SharingStarted.Eagerly,
-        PreferencesConstants.DEFAULT_MISTAKES_LIMIT
-    )
+        var mistakesLimit =
+            appSettingsManager.mistakesLimit.stateIn(
+                viewModelScope,
+                SharingStarted.Eagerly,
+                PreferencesConstants.DEFAULT_MISTAKES_LIMIT,
+            )
 
-    internal var autoEraseNotesEnabled = appSettingsManager.autoEraseNotes.stateIn(
-        viewModelScope,
-        SharingStarted.Eagerly,
-        PreferencesConstants.DEFAULT_AUTO_ERASE_NOTES
-    )
+        internal var autoEraseNotesEnabled =
+            appSettingsManager.autoEraseNotes.stateIn(
+                viewModelScope,
+                SharingStarted.Eagerly,
+                PreferencesConstants.DEFAULT_AUTO_ERASE_NOTES,
+            )
 
-    var resetTimerOnRestart = appSettingsManager.resetTimerEnabled
+        var resetTimerOnRestart = appSettingsManager.resetTimerEnabled
 
-    var disableHints = appSettingsManager.hintsDisabled
+        var disableHints = appSettingsManager.hintsDisabled
 
-    var endGame by mutableStateOf(false)
-    var giveUpDialog by mutableStateOf(false)
+        var endGame by mutableStateOf(false)
+        var giveUpDialog by mutableStateOf(false)
 
-    // mistakes
-    // used for mistakes limit
-    var mistakesCount by mutableIntStateOf(0)
+        // mistakes
+        // used for mistakes limit
+        var mistakesCount by mutableIntStateOf(0)
 
-    // notes
-    var notesToggled by mutableStateOf(false)
-    var notes by mutableStateOf(emptyList<Note>())
+        // notes
+        var notesToggled by mutableStateOf(false)
+        var notes by mutableStateOf(emptyList<Note>())
 
-    internal lateinit var initialBoard: List<List<Cell>>
-    internal val isInitialBoardInitialized: Boolean
-        get() = this::initialBoard.isInitialized
-    var gameBoard by mutableStateOf(
-        List(GameType.Default9x9.size) { row -> List(GameType.Default9x9.size) { col -> Cell(row, col, 0) } }
-    )
-    var solvedBoard = emptyList<List<Cell>>()
-
-    var currCell by mutableStateOf(Cell(-1, -1, 0))
-    internal var undoRedoManager = UndoRedoManager(GameState(gameBoard, notes))
-    internal var sudokuUtils = SudokuUtils()
-    var gameCompleted by mutableStateOf(false)
-
-    // Selected number for digit first method
-    var digitFirstNumber by mutableIntStateOf(0)
-    internal val inputMethod = appSettingsManager.inputMethod
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = PreferencesConstants.DEFAULT_INPUT_METHOD
+        internal lateinit var initialBoard: List<List<Cell>>
+        internal val isInitialBoardInitialized: Boolean
+            get() = this::initialBoard.isInitialized
+        var gameBoard by mutableStateOf(
+            List(GameType.Default9x9.size) { row -> List(GameType.Default9x9.size) { col -> Cell(row, col, 0) } },
         )
+        var solvedBoard = emptyList<List<Cell>>()
 
-    // temporarily use digit first method when true
-    internal var overrideInputMethodDF by mutableStateOf(false)
+        var currCell by mutableStateOf(Cell(-1, -1, 0))
+        internal var undoRedoManager = UndoRedoManager(GameState(gameBoard, notes))
+        internal var sudokuUtils = SudokuUtils()
+        var gameCompleted by mutableStateOf(false)
 
-    // show/hide solution (when give up)
-    var showSolution by mutableStateOf(false)
+        // Selected number for digit first method
+        var digitFirstNumber by mutableIntStateOf(0)
+        internal val inputMethod =
+            appSettingsManager.inputMethod
+                .stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.Eagerly,
+                    initialValue = PreferencesConstants.DEFAULT_INPUT_METHOD,
+                )
 
-    // when true, tapping on any cell will clear it
-    var eraseButtonToggled by mutableStateOf(false)
+        // temporarily use digit first method when true
+        internal var overrideInputMethodDF by mutableStateOf(false)
 
-    // used only in the game-completed section. Not saved anywhere
-    var hintsUsed = 0
-    var mistakesMade = 0
-    var notesTaken = 0
+        // show/hide solution (when give up)
+        var showSolution by mutableStateOf(false)
 
-    val allRecords by lazy { dependencies.getAllRecordsUseCase(gameDifficulty, gameType) }
+        // when true, tapping on any cell will clear it
+        var eraseButtonToggled by mutableStateOf(false)
 
-    var timeText by mutableStateOf("00:00")
-    internal var duration = Duration.ZERO
-    internal lateinit var timer: Timer
-    var gamePlaying by mutableStateOf(false)
-}
+        // used only in the game-completed section. Not saved anywhere
+        var hintsUsed = 0
+        var mistakesMade = 0
+        var notesTaken = 0
+
+        val allRecords by lazy { dependencies.getAllRecordsUseCase(gameDifficulty, gameType) }
+
+        var timeText by mutableStateOf("00:00")
+        internal var duration = Duration.ZERO
+        internal lateinit var timer: Timer
+        var gamePlaying by mutableStateOf(false)
+    }

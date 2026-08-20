@@ -18,8 +18,8 @@ class GameDifficultyConverter {
     }
 
     @TypeConverter
-    fun fromDifficulty(gameDifficulty: GameDifficulty): Int {
-        return when (gameDifficulty) {
+    fun fromDifficulty(gameDifficulty: GameDifficulty): Int =
+        when (gameDifficulty) {
             GameDifficulty.Unspecified -> UNSPECIFIED_ORDINAL
             GameDifficulty.Simple -> SIMPLE_ORDINAL
             GameDifficulty.Easy -> EASY_ORDINAL
@@ -28,11 +28,10 @@ class GameDifficultyConverter {
             GameDifficulty.Challenge -> CHALLENGE_ORDINAL
             GameDifficulty.Custom -> CUSTOM_ORDINAL
         }
-    }
 
     @TypeConverter
-    fun toDifficulty(value: Int): GameDifficulty {
-        return when (value) {
+    fun toDifficulty(value: Int): GameDifficulty =
+        when (value) {
             UNSPECIFIED_ORDINAL -> GameDifficulty.Unspecified
             SIMPLE_ORDINAL -> GameDifficulty.Simple
             EASY_ORDINAL -> GameDifficulty.Easy
@@ -42,5 +41,4 @@ class GameDifficultyConverter {
             CUSTOM_ORDINAL -> GameDifficulty.Custom
             else -> GameDifficulty.Unspecified
         }
-    }
 }

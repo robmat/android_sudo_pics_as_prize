@@ -21,11 +21,12 @@ fun ScrollbarLazyColumn(
     content: LazyListScope.() -> Unit,
 ) {
     LazyColumn(
-        modifier = modifier
-            .drawVerticalScrollbar(
-                state = state,
-                reverseScrolling = behavior.reverseLayout
-            ),
+        modifier =
+            modifier
+                .drawVerticalScrollbar(
+                    state = state,
+                    reverseScrolling = behavior.reverseLayout,
+                ),
         state = state,
         contentPadding = behavior.contentPadding,
         reverseLayout = behavior.reverseLayout,

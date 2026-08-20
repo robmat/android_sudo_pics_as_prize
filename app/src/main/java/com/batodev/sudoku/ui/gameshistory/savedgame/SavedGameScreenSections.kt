@@ -63,7 +63,10 @@ private const val BOARD_SCALE_ANIMATION_DURATION_MS = 300
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun SavedGameTopBar(viewModel: SavedGameViewModel, navigateBack: () -> Unit) {
+internal fun SavedGameTopBar(
+    viewModel: SavedGameViewModel,
+    navigateBack: () -> Unit,
+) {
     TopAppBar(
         title = { Text(stringResource(R.string.game_id, viewModel.boardUid ?: -1)) },
         navigationIcon = {
@@ -78,10 +81,10 @@ internal fun SavedGameTopBar(viewModel: SavedGameViewModel, navigateBack: () -> 
                     onClick = {
                         viewModel.exportDialog = true
                         closeMenu()
-                    }
+                    },
                 )
             }
-        }
+        },
     )
 }
 
@@ -91,12 +94,13 @@ internal fun SavedGameContent(
     innerPadding: PaddingValues,
     dateTimeFormatter: DateTimeFormatter,
     navigateToFolder: (Long) -> Unit,
-    navigatePlayGame: (Long) -> Unit
+    navigatePlayGame: (Long) -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .padding(innerPadding)
-            .fillMaxWidth()
+        modifier =
+            Modifier
+                .padding(innerPadding)
+                .fillMaxWidth(),
     ) {
         SavedGameBoardPager(viewModel)
         SavedGameDetails(viewModel, dateTimeFormatter, navigateToFolder, navigatePlayGame)
@@ -106,14 +110,14 @@ internal fun SavedGameContent(
 @Composable
 private fun SavedGameBoardPager(viewModel: SavedGameViewModel) {
     val crossHighlight by viewModel.crossHighlight.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_BOARD_CROSS_HIGHLIGHT
+        initialValue = PreferencesConstants.DEFAULT_BOARD_CROSS_HIGHLIGHT,
     )
     val fontSizeFactor by viewModel.fontSize.collectAsState(
-        initial = PreferencesConstants.DEFAULT_FONT_SIZE_FACTOR
+        initial = PreferencesConstants.DEFAULT_FONT_SIZE_FACTOR,
     )
     val fontSizeValue by remember(fontSizeFactor) {
         mutableStateOf(
-            viewModel.getFontSize(factor = fontSizeFactor)
+            viewModel.getFontSize(factor = fontSizeFactor),
         )
     }
 
@@ -124,10 +128,11 @@ private fun SavedGameBoardPager(viewModel: SavedGameViewModel) {
     LaunchedEffect(Unit) {
         boardScale.animateTo(
             targetValue = 1f,
-            animationSpec = tween(
-                durationMillis = BOARD_SCALE_ANIMATION_DURATION_MS,
-                easing = LinearOutSlowInEasing
-            )
+            animationSpec =
+                tween(
+                    durationMillis = BOARD_SCALE_ANIMATION_DURATION_MS,
+                    easing = LinearOutSlowInEasing,
+                ),
         )
     }
     Column {
@@ -138,22 +143,24 @@ private fun SavedGameBoardPager(viewModel: SavedGameViewModel) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SavedGamePagerTabs(pagerState: PagerState) {
-    val pages = listOf(
-        stringResource(R.string.saved_game_current),
-        stringResource(R.string.saved_game_initial)
-    )
+    val pages =
+        listOf(
+            stringResource(R.string.saved_game_current),
+            stringResource(R.string.saved_game_initial),
+        )
     TabRow(
         selectedTabIndex = pagerState.currentPage,
         divider = { },
         indicator = { tabPositions ->
             Box(
-                modifier = Modifier
-                    .pagerTabIndicatorOffsetM3(pagerState, tabPositions)
-                    .padding(horizontal = 16.dp)
-                    .clip(RoundedCornerShape(topStart = 3.dp, topEnd = 3.dp))
-                    .background(color = MaterialTheme.colorScheme.primary)
-                    .height(3.dp)
-                    .fillMaxWidth()
+                modifier =
+                    Modifier
+                        .pagerTabIndicatorOffsetM3(pagerState, tabPositions)
+                        .padding(horizontal = 16.dp)
+                        .clip(RoundedCornerShape(topStart = 3.dp, topEnd = 3.dp))
+                        .background(color = MaterialTheme.colorScheme.primary)
+                        .height(3.dp)
+                        .fillMaxWidth(),
             )
         },
     ) {
@@ -166,7 +173,7 @@ private fun SavedGamePagerTabs(pagerState: PagerState) {
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(index, 0f)
                     }
-                }
+                },
             )
         }
     }
@@ -178,32 +185,36 @@ private fun SavedGameBoardsPager(
     viewModel: SavedGameViewModel,
     crossHighlight: Boolean,
     fontSizeValue: TextUnit,
-    boardScale: Float
+    boardScale: Float,
 ) {
-    val boardModifier = Modifier
-        .padding(10.dp)
-        .scale(boardScale)
+    val boardModifier =
+        Modifier
+            .padding(10.dp)
+            .scale(boardScale)
     val boardInteraction = BoardInteraction(selectedCell = Cell(-1, -1), onClick = { })
-    val boardStyle = BoardStyle(
-        boardColors = LocalBoardColors.current,
-        textSizes = BoardTextSizes(mainTextSize = fontSizeValue),
-        displayOptions = BoardDisplayOptions(crossHighlight = crossHighlight)
-    )
+    val boardStyle =
+        BoardStyle(
+            boardColors = LocalBoardColors.current,
+            textSizes = BoardTextSizes(mainTextSize = fontSizeValue),
+            displayOptions = BoardDisplayOptions(crossHighlight = crossHighlight),
+        )
     HorizontalPager(
         state = pagerState,
-        modifier = Modifier
-            .wrapContentHeight()
-            .padding(top = 8.dp)
+        modifier =
+            Modifier
+                .wrapContentHeight()
+                .padding(top = 8.dp),
     ) { page ->
-        val boardData = when (page) {
-            0 -> BoardData(board = viewModel.parsedCurrentBoard, notes = viewModel.notes)
-            else -> BoardData(board = viewModel.parsedInitialBoard)
-        }
+        val boardData =
+            when (page) {
+                0 -> BoardData(board = viewModel.parsedCurrentBoard, notes = viewModel.notes)
+                else -> BoardData(board = viewModel.parsedInitialBoard)
+            }
         Board(
             data = boardData,
             modifier = boardModifier,
             interaction = boardInteraction,
-            style = boardStyle
+            style = boardStyle,
         )
     }
 }
@@ -216,26 +227,28 @@ internal fun SavedGameExportDialogHost(viewModel: SavedGameViewModel) {
     viewModel.boardEntity?.let {
         ExportDialog(
             onDismiss = { viewModel.exportDialog = false },
-            boardString = it.initialBoard
-                .replace('0', '.')
-                .uppercase(),
+            boardString =
+                it.initialBoard
+                    .replace('0', '.')
+                    .uppercase(),
             onClickCopy = {
                 clipboardManager.setText(
                     AnnotatedString(
                         it.initialBoard
                             .replace('0', '.')
-                            .uppercase()
-                    )
+                            .uppercase(),
+                    ),
                 )
                 // Android 13 and higher have its own notification when copying
                 if (SDK_INT < 33) {
-                    Toast.makeText(
-                        context,
-                        R.string.export_string_state_copied,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast
+                        .makeText(
+                            context,
+                            R.string.export_string_state_copied,
+                            Toast.LENGTH_SHORT,
+                        ).show()
                 }
-            }
+            },
         )
     }
 }

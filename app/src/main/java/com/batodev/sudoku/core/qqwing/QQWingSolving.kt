@@ -14,11 +14,12 @@ internal fun QQWing.solve(round: Int): Boolean {
 private fun QQWing.advanceWithSingleMoves(round: Int): Boolean? {
     var result: Boolean? = null
     while (result == null && singleSolveMove(round)) {
-        result = when {
-            isSolved() -> true
-            isImpossible() -> false
-            else -> null
-        }
+        result =
+            when {
+                isSolved() -> true
+                isImpossible() -> false
+                else -> null
+            }
     }
     return result
 }
@@ -29,13 +30,14 @@ private fun QQWing.solveByGuessing(round: Int): Boolean {
     var guessNumber = 0
     var solved = false
     while (!solved && guess(nextGuessRound, guessNumber)) {
-        solved = if (isImpossible() || !solve(nextRound)) {
-            rollbackRound(nextRound)
-            rollbackRound(nextGuessRound)
-            false
-        } else {
-            true
-        }
+        solved =
+            if (isImpossible() || !solve(nextRound)) {
+                rollbackRound(nextRound)
+                rollbackRound(nextGuessRound)
+                false
+            } else {
+                true
+            }
         guessNumber++
     }
     return solved
@@ -44,9 +46,7 @@ private fun QQWing.solveByGuessing(round: Int): Boolean {
 /**
  * return true if the puzzle has a solution and only a single solution
  */
-internal fun QQWing.hasUniqueSolution(): Boolean {
-    return countSolutionsLimited() == 1
-}
+internal fun QQWing.hasUniqueSolution(): Boolean = countSolutionsLimited() == 1
 
 internal fun QQWing.rollbackRound(round: Int) {
     historyRecorder.recordMove(round, LogType.ROLLBACK)

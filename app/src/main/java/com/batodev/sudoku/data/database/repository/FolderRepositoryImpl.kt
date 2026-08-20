@@ -7,7 +7,7 @@ import com.batodev.sudoku.domain.repository.FolderRepository
 import kotlinx.coroutines.flow.Flow
 
 class FolderRepositoryImpl(
-    private val folderDao: FolderDao
+    private val folderDao: FolderDao,
 ) : FolderRepository {
     override fun getAll(): Flow<List<Folder>> = folderDao.get()
 
@@ -15,8 +15,7 @@ class FolderRepositoryImpl(
 
     override fun countPuzzlesFolder(uid: Long): Long = folderDao.countPuzzlesFolder(uid)
 
-    override fun getLastSavedGamesAnyFolder(gamesCount: Int): Flow<List<SavedGame>> =
-        folderDao.getLastSavedGamesAnyFolder(gamesCount)
+    override fun getLastSavedGamesAnyFolder(gamesCount: Int): Flow<List<SavedGame>> = folderDao.getLastSavedGamesAnyFolder(gamesCount)
 
     override suspend fun insert(folder: Folder): Long = folderDao.insert(folder)
 

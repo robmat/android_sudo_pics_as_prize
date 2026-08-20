@@ -42,20 +42,24 @@ import com.batodev.sudoku.ui.settings.components.AppThemePreviewItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SettingsTopBar(navigateBack: () -> Unit, scrollBehavior: CollapsingTopAppBarScrollBehavior) {
+private fun SettingsTopBar(
+    navigateBack: () -> Unit,
+    scrollBehavior: CollapsingTopAppBarScrollBehavior,
+) {
     CollapsingTopAppBar(
-        content = CollapsingTopAppBarContent(
-            collapsingTitle = CollapsingTitle.medium(titleText = stringResource(R.string.settings_title)),
-            navigationIcon = {
-                IconButton(onClick = navigateBack) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_round_arrow_back_24),
-                        contentDescription = null
-                    )
-                }
-            }
-        ),
-        config = CollapsingTopAppBarConfig(scrollBehavior = scrollBehavior)
+        content =
+            CollapsingTopAppBarContent(
+                collapsingTitle = CollapsingTitle.medium(titleText = stringResource(R.string.settings_title)),
+                navigationIcon = {
+                    IconButton(onClick = navigateBack) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_round_arrow_back_24),
+                            contentDescription = null,
+                        )
+                    }
+                },
+            ),
+        config = CollapsingTopAppBarConfig(scrollBehavior = scrollBehavior),
     )
 }
 
@@ -65,26 +69,26 @@ internal data class SettingsAppearancePrefs(
     val dateFormat: String,
     val dynamicColors: Boolean,
     val amoledBlack: Boolean,
-    val currentTheme: String
+    val currentTheme: String,
 )
 
 @Composable
 private fun rememberSettingsAppearancePrefs(viewModel: SettingsViewModel): SettingsAppearancePrefs {
     val darkTheme by viewModel.darkTheme.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_DARK_THEME
+        initialValue = PreferencesConstants.DEFAULT_DARK_THEME,
     )
     val fontSize by viewModel.fontSize.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_FONT_SIZE_FACTOR
+        initialValue = PreferencesConstants.DEFAULT_FONT_SIZE_FACTOR,
     )
     val dateFormat by viewModel.dateFormat.collectAsStateWithLifecycle(initialValue = "")
     val dynamicColors by viewModel.dynamicColors.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_DYNAMIC_COLORS
+        initialValue = PreferencesConstants.DEFAULT_DYNAMIC_COLORS,
     )
     val amoledBlackState by viewModel.amoledBlack.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_AMOLED_BLACK
+        initialValue = PreferencesConstants.DEFAULT_AMOLED_BLACK,
     )
     val currentTheme by viewModel.currentTheme.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_SELECTED_THEME
+        initialValue = PreferencesConstants.DEFAULT_SELECTED_THEME,
     )
     return SettingsAppearancePrefs(darkTheme, fontSize, dateFormat, dynamicColors, amoledBlackState, currentTheme)
 }
@@ -94,25 +98,25 @@ internal data class SettingsGameplayPrefs(
     val mistakesLimit: Boolean,
     val hintDisabled: Boolean,
     val timerEnabled: Boolean,
-    val resetTimer: Boolean
+    val resetTimer: Boolean,
 )
 
 @Composable
 private fun rememberSettingsGameplayPrefs(viewModel: SettingsViewModel): SettingsGameplayPrefs {
     val inputMethod by viewModel.inputMethod.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_INPUT_METHOD
+        initialValue = PreferencesConstants.DEFAULT_INPUT_METHOD,
     )
     val mistakesLimit by viewModel.mistakesLimit.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_MISTAKES_LIMIT
+        initialValue = PreferencesConstants.DEFAULT_MISTAKES_LIMIT,
     )
     val hintDisabled by viewModel.disableHints.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_HINTS_DISABLED
+        initialValue = PreferencesConstants.DEFAULT_HINTS_DISABLED,
     )
     val timerEnabled by viewModel.timer.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_SHOW_TIMER
+        initialValue = PreferencesConstants.DEFAULT_SHOW_TIMER,
     )
     val resetTimer by viewModel.canResetTimer.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_GAME_RESET_TIMER
+        initialValue = PreferencesConstants.DEFAULT_GAME_RESET_TIMER,
     )
     return SettingsGameplayPrefs(inputMethod, mistakesLimit, hintDisabled, timerEnabled, resetTimer)
 }
@@ -121,22 +125,22 @@ internal data class SettingsAssistancePrefs(
     val highlightMistakes: Int,
     val highlightIdentical: Boolean,
     val remainingUse: Boolean,
-    val autoEraseNotes: Boolean
+    val autoEraseNotes: Boolean,
 )
 
 @Composable
 private fun rememberSettingsAssistancePrefs(viewModel: SettingsViewModel): SettingsAssistancePrefs {
     val highlightMistakes by viewModel.highlightMistakes.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_HIGHLIGHT_MISTAKES
+        initialValue = PreferencesConstants.DEFAULT_HIGHLIGHT_MISTAKES,
     )
     val highlightIdentical by viewModel.highlightIdentical.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_HIGHLIGHT_IDENTICAL
+        initialValue = PreferencesConstants.DEFAULT_HIGHLIGHT_IDENTICAL,
     )
     val remainingUse by viewModel.remainingUse.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_REMAINING_USES
+        initialValue = PreferencesConstants.DEFAULT_REMAINING_USES,
     )
     val autoEraseNotes by viewModel.autoEraseNotes.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_AUTO_ERASE_NOTES
+        initialValue = PreferencesConstants.DEFAULT_AUTO_ERASE_NOTES,
     )
     return SettingsAssistancePrefs(highlightMistakes, highlightIdentical, remainingUse, autoEraseNotes)
 }
@@ -144,7 +148,7 @@ private fun rememberSettingsAssistancePrefs(viewModel: SettingsViewModel): Setti
 @Composable
 private fun rememberKeepScreenOnPref(viewModel: SettingsViewModel): Boolean {
     val keepScreenOn by viewModel.keepScreenOn.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_KEEP_SCREEN_ON
+        initialValue = PreferencesConstants.DEFAULT_KEEP_SCREEN_ON,
     )
     return keepScreenOn
 }
@@ -153,7 +157,7 @@ internal data class SettingsPreferencesState(
     val appearance: SettingsAppearancePrefs,
     val gameplay: SettingsGameplayPrefs,
     val assistance: SettingsAssistancePrefs,
-    val keepScreenOn: Boolean
+    val keepScreenOn: Boolean,
 )
 
 @Composable
@@ -170,24 +174,26 @@ private fun rememberSettingsPreferencesState(viewModel: SettingsViewModel): Sett
 fun SettingsScreen(
     navigateBack: () -> Unit,
     viewModel: SettingsViewModel,
-    navigateBoardSettings: () -> Unit
+    navigateBoardSettings: () -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val scrollBehavior = rememberTopAppBarScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
-        modifier = Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier =
+            Modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = { SettingsTopBar(navigateBack, scrollBehavior) }
+        topBar = { SettingsTopBar(navigateBack, scrollBehavior) },
     ) { paddingValues ->
         val state = rememberSettingsPreferencesState(viewModel)
 
         ScrollbarLazyColumn(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxWidth()
+            modifier =
+                Modifier
+                    .padding(paddingValues)
+                    .fillMaxWidth(),
         ) {
             settingsAppearanceItems(state, viewModel, navigateBoardSettings, context)
             settingsGameplayItems(state, viewModel)
@@ -202,12 +208,13 @@ fun SettingsScreen(
 @Composable
 fun SettingsCategory(
     modifier: Modifier = Modifier,
-    title: String
+    title: String,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, bottom = 16.dp, top = 16.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, bottom = 16.dp, top = 16.dp),
     ) {
         Text(
             text = title,
@@ -222,11 +229,14 @@ data class AppThemeItemInfo(
     val colorScheme: ColorScheme,
     val amoledBlack: Boolean,
     val darkTheme: Int,
-    val selected: Boolean
+    val selected: Boolean,
 )
 
 @Composable
-private fun isForcedBlackBackground(amoledBlack: Boolean, darkTheme: Int): Boolean {
+private fun isForcedBlackBackground(
+    amoledBlack: Boolean,
+    darkTheme: Int,
+): Boolean {
     if (!amoledBlack) return false
     return darkTheme == 2 || (darkTheme == 0 && isSystemInDarkTheme())
 }
@@ -237,28 +247,32 @@ fun AppThemeItem(
     onClick: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .width(115.dp)
-            .padding(start = 8.dp, end = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .width(115.dp)
+                .padding(start = 8.dp, end = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         AppThemePreviewItem(
-            info = AppThemePreviewInfo(
-                selected = info.selected,
-                colorScheme = info.colorScheme.copy(
-                    background = if (isForcedBlackBackground(info.amoledBlack, info.darkTheme)) {
-                        Color.Black
-                    } else {
-                        info.colorScheme.background
-                    }
+            info =
+                AppThemePreviewInfo(
+                    selected = info.selected,
+                    colorScheme =
+                        info.colorScheme.copy(
+                            background =
+                                if (isForcedBlackBackground(info.amoledBlack, info.darkTheme)) {
+                                    Color.Black
+                                } else {
+                                    info.colorScheme.background
+                                },
+                        ),
+                    shapes = MaterialTheme.shapes,
                 ),
-                shapes = MaterialTheme.shapes
-            ),
-            onClick = onClick
+            onClick = onClick,
         )
         Text(
             text = info.title,
-            style = MaterialTheme.typography.labelSmall
+            style = MaterialTheme.typography.labelSmall,
         )
     }
 }

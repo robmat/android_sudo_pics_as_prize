@@ -3,7 +3,9 @@ package com.batodev.sudoku.core.utils
 import com.batodev.sudoku.core.Cell
 import com.batodev.sudoku.core.Note
 
-class UndoRedoManager(private val initialState: GameState) {
+class UndoRedoManager(
+    private val initialState: GameState,
+) {
     private var states: MutableList<GameState> = mutableListOf(initialState)
     private var currentState = 0
 
@@ -26,32 +28,32 @@ class UndoRedoManager(private val initialState: GameState) {
         currentState = states.size - 1
     }
 
-    fun undo(): GameState {
-        return if (canUndo()) {
+    fun undo(): GameState =
+        if (canUndo()) {
             currentState -= 1
             states[currentState]
         } else {
             initialState
         }
-    }
 
-    fun redo(): GameState? {
-        return if (canRedo()) {
+    fun redo(): GameState? =
+        if (canRedo()) {
             currentState += 1
             states[currentState]
         } else {
             null
         }
-    }
 
     fun canRedo() = currentState < states.size - 1
+
     fun canUndo() = currentState > 0 && states.isNotEmpty()
 
     fun count() = states.count()
+
     fun clear() = states.clear()
 }
 
 data class GameState(
     val board: List<List<Cell>>,
-    val notes: List<Note>
+    val notes: List<Note>,
 )

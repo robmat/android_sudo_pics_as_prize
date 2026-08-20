@@ -95,7 +95,7 @@ class GalleryActivity : AdSupportedActivity() {
                 darkTheme = resolveDarkTheme(darkTheme),
                 dynamicColor = dynamicColors,
                 amoled = amoledBlack,
-                appTheme = resolveAppTheme(currentTheme)
+                appTheme = resolveAppTheme(currentTheme),
             ) {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     ImageViewerScreen(this)
@@ -113,7 +113,7 @@ fun ImageViewerScreen(galleryActivity: GalleryActivity) {
         composable("imageList") { ImageListScreen(navController, galleryActivity) }
         composable(
             "imageDetail/{index}",
-            arguments = listOf(navArgument("index") { type = NavType.StringType })
+            arguments = listOf(navArgument("index") { type = NavType.StringType }),
         ) { backStackEntry ->
             val index = backStackEntry.arguments?.getString("index") ?: 0
             ImageDetailScreen(index as String, navController)
@@ -123,7 +123,10 @@ fun ImageViewerScreen(galleryActivity: GalleryActivity) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ImageListScreen(navController: NavController, galleryActivity: GalleryActivity) {
+fun ImageListScreen(
+    navController: NavController,
+    galleryActivity: GalleryActivity,
+) {
     val context = LocalContext.current
     Box(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
@@ -132,7 +135,7 @@ fun ImageListScreen(navController: NavController, galleryActivity: GalleryActivi
                 IconButton(onClick = { galleryActivity.finish() }) {
                     Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
                 }
-            }
+            },
         )
         Spacer(modifier = Modifier.height(16.dp))
         LazyColumn(modifier = Modifier.padding(0.dp, 60.dp, 0.dp, 0.dp)) {
@@ -146,36 +149,50 @@ fun ImageListScreen(navController: NavController, galleryActivity: GalleryActivi
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun ImageListItem(imageResId: String, navController: NavController) {
+fun ImageListItem(
+    imageResId: String,
+    navController: NavController,
+) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .clickable { navController.navigate("imageDetail/$imageResId") }
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .clickable { navController.navigate("imageDetail/$imageResId") },
     ) {
         GlideImage(
             model = "file:///android_asset/$PRIZE_IMAGES/$imageResId",
             contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(500.dp)
-                .clip(shape = MaterialTheme.shapes.medium),
-            contentScale = ContentScale.Crop
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(500.dp)
+                    .clip(shape = MaterialTheme.shapes.medium),
+            contentScale = ContentScale.Crop,
         )
     }
 }
 
-private fun previousImageUri(uncoveredPics: List<String>, currentFileName: String): String {
+private fun previousImageUri(
+    uncoveredPics: List<String>,
+    currentFileName: String,
+): String {
     val index = uncoveredPics.indexOf(currentFileName)
     return "file:///android_asset/$PRIZE_IMAGES/${uncoveredPics[(index - 1).coerceAtLeast(0)]}"
 }
 
-private fun nextImageUri(uncoveredPics: List<String>, currentFileName: String): String {
+private fun nextImageUri(
+    uncoveredPics: List<String>,
+    currentFileName: String,
+): String {
     val index = uncoveredPics.indexOf(currentFileName)
     return "file:///android_asset/$PRIZE_IMAGES/${uncoveredPics[(index + 1).coerceAtMost(uncoveredPics.size - 1)]}"
 }
 
-private fun shareImage(context: android.content.Context, currentPicture: String) {
+private fun shareImage(
+    context: android.content.Context,
+    currentPicture: String,
+) {
     val inputStream: InputStream =
         context.assets.open("$PRIZE_IMAGES/${Uri.parse(currentPicture).lastPathSegment}")
 
@@ -204,11 +221,11 @@ private fun shareImage(context: android.content.Context, currentPicture: String)
 @Composable
 private fun ImageDetailNavigationRow(
     context: android.content.Context,
-    currentPicture: androidx.compose.runtime.MutableState<String>
+    currentPicture: androidx.compose.runtime.MutableState<String>,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
     ) {
         val currentPictureFileName =
             currentPicture.value.substring(currentPicture.value.lastIndexOf("/") + 1)
@@ -235,15 +252,20 @@ private fun ImageDetailNavigationRow(
 
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun ImageDetailScreen(resId: String, navController: NavController) {
+fun ImageDetailScreen(
+    resId: String,
+    navController: NavController,
+) {
     val context = LocalContext.current
-    val currentPicture = remember {
-        mutableStateOf("file:///android_asset/$PRIZE_IMAGES/$resId")
-    }
+    val currentPicture =
+        remember {
+            mutableStateOf("file:///android_asset/$PRIZE_IMAGES/$resId")
+        }
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface),
     ) {
         TopAppBar(
             title = { Text(text = stringResource(id = R.string.uncovered_images)) },
@@ -251,7 +273,7 @@ fun ImageDetailScreen(resId: String, navController: NavController) {
                 IconButton(onClick = { navController.popBackStack() }) {
                     Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
                 }
-            }
+            },
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -259,11 +281,12 @@ fun ImageDetailScreen(resId: String, navController: NavController) {
         GlideImage(
             model = currentPicture.value,
             contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f)
-                .zoomable(),
-            contentScale = ContentScale.FillHeight
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .weight(1f)
+                    .zoomable(),
+            contentScale = ContentScale.FillHeight,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -274,11 +297,12 @@ fun ImageDetailScreen(resId: String, navController: NavController) {
 
 @HiltViewModel
 class GalleryActivityViewModel
-@Inject constructor(
-    themeSettingsManager: ThemeSettingsManager
-) : ViewModel() {
-    val dc = themeSettingsManager.dynamicColors
-    val darkTheme = themeSettingsManager.darkTheme
-    val amoledBlack = themeSettingsManager.amoledBlack
-    val currentTheme = themeSettingsManager.currentTheme
-}
+    @Inject
+    constructor(
+        themeSettingsManager: ThemeSettingsManager,
+    ) : ViewModel() {
+        val dc = themeSettingsManager.dynamicColors
+        val darkTheme = themeSettingsManager.darkTheme
+        val amoledBlack = themeSettingsManager.amoledBlack
+        val currentTheme = themeSettingsManager.currentTheme
+    }

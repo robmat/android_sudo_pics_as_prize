@@ -4,8 +4,9 @@ package com.batodev.sudoku.core.qqwing
  * Solving techniques that look for a cell/row/column/section that has only
  * a single remaining possibility ("singles" and "hidden singles").
  */
-internal class SingleValueTechniques(private val board: QQWing) {
-
+internal class SingleValueTechniques(
+    private val board: QQWing,
+) {
     /**
      * Mark exactly one cell that has a single possibility, if such a cell
      * exists. This method will look for a cell that has only one possibility.
@@ -94,7 +95,10 @@ internal class SingleValueTechniques(private val board: QQWing) {
         return count to lastValue
     }
 
-    private fun countRowValueOccurrences(row: Int, valIndex: Int): Pair<Int, Int> {
+    private fun countRowValueOccurrences(
+        row: Int,
+        valIndex: Int,
+    ): Pair<Int, Int> {
         var count = 0
         var lastPosition = 0
         for (col in 0 until QQWing.ROW_COL_SEC_SIZE) {
@@ -108,7 +112,10 @@ internal class SingleValueTechniques(private val board: QQWing) {
         return count to lastPosition
     }
 
-    private fun countColumnValueOccurrences(col: Int, valIndex: Int): Pair<Int, Int> {
+    private fun countColumnValueOccurrences(
+        col: Int,
+        valIndex: Int,
+    ): Pair<Int, Int> {
         var count = 0
         var lastPosition = 0
         for (row in 0 until QQWing.ROW_COL_SEC_SIZE) {
@@ -122,7 +129,10 @@ internal class SingleValueTechniques(private val board: QQWing) {
         return count to lastPosition
     }
 
-    private fun countSectionValueOccurrences(secPos: Int, valIndex: Int): Pair<Int, Int> {
+    private fun countSectionValueOccurrences(
+        secPos: Int,
+        valIndex: Int,
+    ): Pair<Int, Int> {
         var count = 0
         var lastPosition = 0
         for (i in 0 until QQWing.GRID_SIZE_COL) {
@@ -138,7 +148,12 @@ internal class SingleValueTechniques(private val board: QQWing) {
         return count to lastPosition
     }
 
-    private fun markSingleValue(round: Int, type: LogType, valIndex: Int, position: Int) {
+    private fun markSingleValue(
+        round: Int,
+        type: LogType,
+        valIndex: Int,
+        position: Int,
+    ) {
         val value = valIndex + 1
         board.mark(position, round, value)
         board.historyRecorder.recordMove(round, type, value, position)

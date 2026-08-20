@@ -42,25 +42,26 @@ import javax.inject.Inject
 @Composable
 fun WelcomeScreen(
     navigateToGame: () -> Unit,
-    viewModel: WelcomeViewModel
+    viewModel: WelcomeViewModel,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .systemBarsPadding(),
-        verticalArrangement = Arrangement.SpaceBetween
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .systemBarsPadding(),
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 text = stringResource(R.string.onboard_title),
                 style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
             FirstPage(
                 selectedCellChanged = { viewModel.selectedCell = it },
@@ -69,7 +70,7 @@ fun WelcomeScreen(
                 onFinishedClick = {
                     viewModel.setFirstLaunch()
                     navigateToGame()
-                }
+                },
             )
         }
     }
@@ -80,33 +81,35 @@ fun FirstPage(
     selectedCellChanged: (Cell) -> Unit,
     selectedCell: Cell,
     board: List<List<Cell>>,
-    onFinishedClick: () -> Unit
+    onFinishedClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(stringResource(R.string.intro_what_is_sudoku))
             Text(stringResource(R.string.intro_rules))
             Board(
                 data = BoardData(board = board, size = 9),
-                interaction = BoardInteraction(
-                    selectedCell = selectedCell,
-                    onClick = { cell -> selectedCellChanged(cell) }
-                ),
-                style = BoardStyle(boardColors = LocalBoardColors.current)
+                interaction =
+                    BoardInteraction(
+                        selectedCell = selectedCell,
+                        onClick = { cell -> selectedCellChanged(cell) },
+                    ),
+                style = BoardStyle(boardColors = LocalBoardColors.current),
             )
             Text(stringResource(R.string.onboard_recommendation_prefs))
             FilledTonalButton(
                 onClick = onFinishedClick,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier.align(Alignment.CenterHorizontally),
             ) {
                 Text(stringResource(R.string.action_start))
             }
@@ -116,21 +119,23 @@ fun FirstPage(
 
 @HiltViewModel
 class WelcomeViewModel
-@Inject constructor(
-    private val settingsDataManager: AppSettingsManager
-) : ViewModel() {
-    var selectedCell by mutableStateOf(Cell(-1, -1, 0))
+    @Inject
+    constructor(
+        private val settingsDataManager: AppSettingsManager,
+    ) : ViewModel() {
+        var selectedCell by mutableStateOf(Cell(-1, -1, 0))
 
-    private val sudokuParser = SudokuParser()
-    val previewBoard = sudokuParser.parseBoard(
-        board = "..1...9...2..17.545...24..328.....9...52...47.74.9...1...........9..5.....3.4....",
-        gameType = GameType.Default9x9,
-        emptySeparator = '.'
-    )
+        private val sudokuParser = SudokuParser()
+        val previewBoard =
+            sudokuParser.parseBoard(
+                board = "..1...9...2..17.545...24..328.....9...52...47.74.9...1...........9..5.....3.4....",
+                gameType = GameType.Default9x9,
+                emptySeparator = '.',
+            )
 
-    fun setFirstLaunch(value: Boolean = false) {
-        viewModelScope.launch(Dispatchers.IO) {
-            settingsDataManager.setFirstLaunch(value)
+        fun setFirstLaunch(value: Boolean = false) {
+            viewModelScope.launch(Dispatchers.IO) {
+                settingsDataManager.setFirstLaunch(value)
+            }
         }
     }
-}

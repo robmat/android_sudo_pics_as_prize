@@ -26,16 +26,17 @@ class CollapsingTopAppBarScrollState(
     initialContentOffset: Float,
 ) {
     companion object {
-        val Saver: Saver<CollapsingTopAppBarScrollState, *> = listSaver(
-            save = { listOf(it.heightOffsetLimit, it.heightOffset, it.contentOffset) },
-            restore = {
-                CollapsingTopAppBarScrollState(
-                    initialHeightOffsetLimit = it[0],
-                    initialHeightOffset = it[1],
-                    initialContentOffset = it[2]
-                )
-            }
-        )
+        val Saver: Saver<CollapsingTopAppBarScrollState, *> =
+            listSaver(
+                save = { listOf(it.heightOffsetLimit, it.heightOffset, it.contentOffset) },
+                restore = {
+                    CollapsingTopAppBarScrollState(
+                        initialHeightOffsetLimit = it[0],
+                        initialHeightOffset = it[1],
+                        initialContentOffset = it[2],
+                    )
+                },
+            )
     }
 
     /**
@@ -55,10 +56,11 @@ class CollapsingTopAppBarScrollState(
     var heightOffset: Float
         get() = _heightOffset.floatValue
         set(newOffset) {
-            _heightOffset.floatValue = newOffset.coerceIn(
-                minimumValue = heightOffsetLimit,
-                maximumValue = 0f
-            )
+            _heightOffset.floatValue =
+                newOffset.coerceIn(
+                    minimumValue = heightOffsetLimit,
+                    maximumValue = 0f,
+                )
         }
 
     /**
@@ -77,11 +79,12 @@ class CollapsingTopAppBarScrollState(
      * as [heightOffset] / [heightOffsetLimit]).
      */
     val collapsedFraction: Float
-        get() = if (heightOffsetLimit != 0f) {
-            heightOffset / heightOffsetLimit
-        } else {
-            0f
-        }
+        get() =
+            if (heightOffsetLimit != 0f) {
+                heightOffset / heightOffsetLimit
+            } else {
+                0f
+            }
 
     private var _heightOffset = mutableFloatStateOf(initialHeightOffset)
 }
@@ -90,11 +93,11 @@ class CollapsingTopAppBarScrollState(
 internal fun rememberTopAppBarScrollState(
     initialHeightOffsetLimit: Float = -Float.MAX_VALUE,
     initialHeightOffset: Float = 0f,
-    initialContentOffset: Float = 0f
+    initialContentOffset: Float = 0f,
 ) = rememberSaveable(saver = CollapsingTopAppBarScrollState.Saver) {
     CollapsingTopAppBarScrollState(
         initialHeightOffsetLimit,
         initialHeightOffset,
-        initialContentOffset
+        initialContentOffset,
     )
 }

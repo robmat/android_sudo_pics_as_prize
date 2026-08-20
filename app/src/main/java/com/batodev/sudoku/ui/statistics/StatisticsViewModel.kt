@@ -23,101 +23,104 @@ private const val PERCENTAGE_MULTIPLIER = 100f
 
 @HiltViewModel
 class StatisticsViewModel
-@Inject constructor(
-    private val recordRepository: RecordRepository,
-    private val tipCardsDataStore: TipCardsDataStore,
-    savedGameRepository: SavedGameRepository,
-    appSettingsManager: AppSettingsManager
-) : ViewModel() {
-    var showDeleteDialog by mutableStateOf(false)
-    var selectedDifficulty by mutableStateOf(GameDifficulty.Unspecified)
-    var selectedType by mutableStateOf(GameType.Unspecified)
+    @Inject
+    constructor(
+        private val recordRepository: RecordRepository,
+        private val tipCardsDataStore: TipCardsDataStore,
+        savedGameRepository: SavedGameRepository,
+        appSettingsManager: AppSettingsManager,
+    ) : ViewModel() {
+        var showDeleteDialog by mutableStateOf(false)
+        var selectedDifficulty by mutableStateOf(GameDifficulty.Unspecified)
+        var selectedType by mutableStateOf(GameType.Unspecified)
 
-    val recordTipCard = tipCardsDataStore.recordCard
-    val streakTipCard = tipCardsDataStore.streakCard
+        val recordTipCard = tipCardsDataStore.recordCard
+        val streakTipCard = tipCardsDataStore.streakCard
 
-    var recordList: Flow<List<Record>> = recordRepository.getAllSortByTime()
-    val savedGamesList: Flow<List<SavedGame>> = savedGameRepository.getAll()
+        var recordList: Flow<List<Record>> = recordRepository.getAllSortByTime()
+        val savedGamesList: Flow<List<SavedGame>> = savedGameRepository.getAll()
 
-    val dateFormat = appSettingsManager.dateFormat
+        val dateFormat = appSettingsManager.dateFormat
 
-    fun deleteRecord(recordEntity: Record) {
-        viewModelScope.launch {
-            recordRepository.delete(recordEntity)
-        }
-    }
-
-    fun setDifficulty(difficulty: GameDifficulty) {
-        selectedDifficulty = difficulty
-
-        if (difficulty != GameDifficulty.Unspecified && selectedType == GameType.Unspecified) {
-            selectedType = GameType.Default9x9
-        } else if (difficulty == GameDifficulty.Unspecified) {
-            selectedType = GameType.Unspecified
-        }
-
-        loadRecords(selectedType == GameType.Unspecified && selectedDifficulty == GameDifficulty.Unspecified)
-    }
-
-    fun setType(type: GameType) {
-        selectedType = type
-
-        if (selectedType == GameType.Unspecified) {
-            selectedDifficulty = GameDifficulty.Unspecified
-        } else if (selectedType != GameType.Unspecified && selectedDifficulty == GameDifficulty.Unspecified) {
-            selectedDifficulty = GameDifficulty.Easy
-        }
-
-        loadRecords(selectedType == GameType.Unspecified && selectedDifficulty == GameDifficulty.Unspecified)
-    }
-
-    private fun loadRecords(all: Boolean) {
-        recordList = if (all) {
-            recordRepository.getAllSortByTime()
-        } else {
-            recordRepository.getAll(selectedDifficulty, selectedType)
-        }
-    }
-
-    fun setRecordTipCard(enabled: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
-            tipCardsDataStore.setRecordCard(enabled)
-        }
-    }
-
-    fun setStreakTipCard(enabled: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
-            tipCardsDataStore.setStreakCard(enabled)
-        }
-    }
-
-    fun getCurrentStreak(games: List<SavedGame>): Int {
-        var currentStreak = 0
-        games.forEach { game ->
-            if (game.completed) {
-                currentStreak = if (!game.giveUp && !game.canContinue) currentStreak + 1 else 0
+        fun deleteRecord(recordEntity: Record) {
+            viewModelScope.launch {
+                recordRepository.delete(recordEntity)
             }
         }
-        return currentStreak
-    }
 
-    fun getMaxStreak(games: List<SavedGame>): Int {
-        var maxStreak = 0
-        var currentStreak = 0
-        games.forEach { game ->
-            if (game.completed && !game.canContinue) {
-                currentStreak = if (!game.giveUp) currentStreak + 1 else 0
-                if (currentStreak > maxStreak) {
-                    maxStreak = currentStreak
+        fun setDifficulty(difficulty: GameDifficulty) {
+            selectedDifficulty = difficulty
+
+            if (difficulty != GameDifficulty.Unspecified && selectedType == GameType.Unspecified) {
+                selectedType = GameType.Default9x9
+            } else if (difficulty == GameDifficulty.Unspecified) {
+                selectedType = GameType.Unspecified
+            }
+
+            loadRecords(selectedType == GameType.Unspecified && selectedDifficulty == GameDifficulty.Unspecified)
+        }
+
+        fun setType(type: GameType) {
+            selectedType = type
+
+            if (selectedType == GameType.Unspecified) {
+                selectedDifficulty = GameDifficulty.Unspecified
+            } else if (selectedType != GameType.Unspecified && selectedDifficulty == GameDifficulty.Unspecified) {
+                selectedDifficulty = GameDifficulty.Easy
+            }
+
+            loadRecords(selectedType == GameType.Unspecified && selectedDifficulty == GameDifficulty.Unspecified)
+        }
+
+        private fun loadRecords(all: Boolean) {
+            recordList =
+                if (all) {
+                    recordRepository.getAllSortByTime()
+                } else {
+                    recordRepository.getAll(selectedDifficulty, selectedType)
+                }
+        }
+
+        fun setRecordTipCard(enabled: Boolean) {
+            viewModelScope.launch(Dispatchers.IO) {
+                tipCardsDataStore.setRecordCard(enabled)
+            }
+        }
+
+        fun setStreakTipCard(enabled: Boolean) {
+            viewModelScope.launch(Dispatchers.IO) {
+                tipCardsDataStore.setStreakCard(enabled)
+            }
+        }
+
+        fun getCurrentStreak(games: List<SavedGame>): Int {
+            var currentStreak = 0
+            games.forEach { game ->
+                if (game.completed) {
+                    currentStreak = if (!game.giveUp && !game.canContinue) currentStreak + 1 else 0
                 }
             }
+            return currentStreak
         }
-        return maxStreak
-    }
 
-    fun getWinRate(savedGames: List<SavedGame>): Float {
-        return savedGames
-            .count { it.completed && !it.giveUp && !it.canContinue } * PERCENTAGE_MULTIPLIER / savedGames.count()
-            .toFloat()
+        fun getMaxStreak(games: List<SavedGame>): Int {
+            var maxStreak = 0
+            var currentStreak = 0
+            games.forEach { game ->
+                if (game.completed && !game.canContinue) {
+                    currentStreak = if (!game.giveUp) currentStreak + 1 else 0
+                    if (currentStreak > maxStreak) {
+                        maxStreak = currentStreak
+                    }
+                }
+            }
+            return maxStreak
+        }
+
+        fun getWinRate(savedGames: List<SavedGame>): Float =
+            savedGames
+                .count { it.completed && !it.giveUp && !it.canContinue } * PERCENTAGE_MULTIPLIER /
+                savedGames
+                    .count()
+                    .toFloat()
     }
-}

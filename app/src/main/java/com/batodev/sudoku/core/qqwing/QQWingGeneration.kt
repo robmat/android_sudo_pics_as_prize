@@ -1,8 +1,6 @@
 package com.batodev.sudoku.core.qqwing
 
-internal fun QQWing.generatePuzzle(): Boolean {
-    return generatePuzzleSymmetry(Symmetry.NONE)
-}
+internal fun QQWing.generatePuzzle(): Boolean = generatePuzzleSymmetry(Symmetry.NONE)
 
 internal fun QQWing.generatePuzzleSymmetry(symmetry: Symmetry): Boolean {
     val effectiveSymmetry = if (symmetry == Symmetry.RANDOM) QQWingRandom.randomSymmetry else symmetry
@@ -62,7 +60,10 @@ internal fun QQWing.generatePuzzleSymmetry(symmetry: Symmetry): Boolean {
     return true
 }
 
-private fun QQWing.removeCellIfNotNeeded(position: Int, symmetry: Symmetry) {
+private fun QQWing.removeCellIfNotNeeded(
+    position: Int,
+    symmetry: Symmetry,
+) {
     // try backing out the value and
     // counting solutions to the puzzle
     val (sym1, sym2, sym3) = computeSymmetricPositions(symmetry, position)
@@ -88,25 +89,44 @@ private fun QQWing.clearIfPresent(position: Int): Int {
     return saved
 }
 
-private fun QQWing.restoreIfPresent(position: Int, savedValue: Int) {
+private fun QQWing.restoreIfPresent(
+    position: Int,
+    savedValue: Int,
+) {
     if (position >= 0 && savedValue != 0) puzzle[position] = savedValue
 }
 
-private fun computeSymmetricPositions(symmetry: Symmetry, position: Int): Triple<Int, Int, Int> {
+private fun computeSymmetricPositions(
+    symmetry: Symmetry,
+    position: Int,
+): Triple<Int, Int, Int> {
     val size = QQWing.ROW_COL_SEC_SIZE
     val row = cellToRowInternal(position)
     val column = cellToColumnInternal(position)
     return when (symmetry) {
-        Symmetry.ROTATE90 -> Triple(
-            rowColumnToCellInternal(size - 1 - row, size - 1 - column),
-            rowColumnToCellInternal(size - 1 - column, row),
-            rowColumnToCellInternal(column, size - 1 - row)
-        )
+        Symmetry.ROTATE90 -> {
+            Triple(
+                rowColumnToCellInternal(size - 1 - row, size - 1 - column),
+                rowColumnToCellInternal(size - 1 - column, row),
+                rowColumnToCellInternal(column, size - 1 - row),
+            )
+        }
 
-        Symmetry.ROTATE180 -> Triple(rowColumnToCellInternal(size - 1 - row, size - 1 - column), -1, -1)
-        Symmetry.MIRROR -> Triple(rowColumnToCellInternal(row, size - 1 - column), -1, -1)
-        Symmetry.FLIP -> Triple(rowColumnToCellInternal(size - 1 - row, column), -1, -1)
-        else -> Triple(-1, -1, -1)
+        Symmetry.ROTATE180 -> {
+            Triple(rowColumnToCellInternal(size - 1 - row, size - 1 - column), -1, -1)
+        }
+
+        Symmetry.MIRROR -> {
+            Triple(rowColumnToCellInternal(row, size - 1 - column), -1, -1)
+        }
+
+        Symmetry.FLIP -> {
+            Triple(rowColumnToCellInternal(size - 1 - row, column), -1, -1)
+        }
+
+        else -> {
+            Triple(-1, -1, -1)
+        }
     }
 }
 

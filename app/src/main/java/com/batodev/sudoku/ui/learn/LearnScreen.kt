@@ -37,9 +37,7 @@ import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
 @Composable
-fun LearnScreen(
-    navigateBack: () -> Unit
-) {
+fun LearnScreen(navigateBack: () -> Unit) {
     val helpNavController = rememberNavController()
     NavHost(navController = helpNavController, startDestination = "help") {
         composable("help") { LearnScreenContent(navigateBack, helpNavController) }
@@ -53,7 +51,10 @@ fun LearnScreen(
 
 @Composable
 @OptIn(ExperimentalPagerApi::class)
-private fun LearnTabRow(pages: List<String>, pagerState: PagerState) {
+private fun LearnTabRow(
+    pages: List<String>,
+    pagerState: PagerState,
+) {
     val coroutineScope = rememberCoroutineScope()
     TabRow(selectedTabIndex = pagerState.currentPage) {
         pages.forEachIndexed { index, title ->
@@ -64,7 +65,7 @@ private fun LearnTabRow(pages: List<String>, pagerState: PagerState) {
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(index, 0f)
                     }
-                }
+                },
             )
         }
     }
@@ -74,7 +75,7 @@ private fun LearnTabRow(pages: List<String>, pagerState: PagerState) {
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
 fun LearnScreenContent(
     navigateBack: () -> Unit,
-    helpNavController: NavController
+    helpNavController: NavController,
 ) {
     Scaffold(
         topBar = {
@@ -84,30 +85,33 @@ fun LearnScreenContent(
                     IconButton(onClick = navigateBack) {
                         Icon(
                             painter = painterResource(R.drawable.ic_round_arrow_back_24),
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
-                }
+                },
             )
-        }
+        },
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
         ) {
             val pagerState = rememberPagerState()
-            val pages = listOf(
-                stringResource(R.string.learn_tab_sudoku),
-                stringResource(R.string.learn_tab_app)
-            )
+            val pages =
+                listOf(
+                    stringResource(R.string.learn_tab_sudoku),
+                    stringResource(R.string.learn_tab_app),
+                )
             LearnTabRow(pages, pagerState)
             HorizontalPager(
-                modifier = Modifier
-                    .fillMaxHeight(),
+                modifier =
+                    Modifier
+                        .fillMaxHeight(),
                 count = pages.size,
                 state = pagerState,
-                verticalAlignment = Alignment.Top
+                verticalAlignment = Alignment.Top,
             ) { page ->
                 when (page) {
                     0 -> LearnSudokuScreen(helpNavController)

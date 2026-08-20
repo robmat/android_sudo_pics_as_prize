@@ -8,7 +8,10 @@ import com.batodev.sudoku.core.Cell
  * [number] becomes selected. Returns the new `digitFirstNumber` together with the placeholder
  * [Cell] used to render it as the "current cell" while no board cell is actually selected.
  */
-fun toggleDigitFirstNumber(currentDigitFirstNumber: Int, number: Int): Pair<Int, Cell> {
+fun toggleDigitFirstNumber(
+    currentDigitFirstNumber: Int,
+    number: Int,
+): Pair<Int, Cell> {
     val next = if (currentDigitFirstNumber == number) 0 else number
     return next to Cell(-1, -1, next)
 }
@@ -21,7 +24,7 @@ fun toggleDigitFirstNumber(currentDigitFirstNumber: Int, number: Int): Pair<Int,
 data class DigitFirstCallbacks(
     val setOverrideInputMethodDF: () -> Unit,
     val setDigitFirstNumber: (Int) -> Unit,
-    val setCurrCell: (Cell) -> Unit
+    val setCurrCell: (Cell) -> Unit,
 )
 
 /**
@@ -41,7 +44,7 @@ fun handleDigitFirstBranches(
     inputMethod: Int,
     digitFirstNumber: Int,
     number: Int,
-    callbacks: DigitFirstCallbacks
+    callbacks: DigitFirstCallbacks,
 ) {
     if (!longTap) {
         if (inputMethod == 1) {
@@ -68,12 +71,17 @@ fun handleDigitFirstBranches(
  * should return the board as-is immediately (true for a clear, since there's nothing left to
  * validate).
  */
-fun applyClearedCellBookkeeping(currCell: Cell, changedCell: Cell, value: Int): Pair<Cell, Boolean> {
-    val updatedCurrCell = if (currCell.row == changedCell.row && currCell.col == changedCell.col) {
-        currCell.copy(value = changedCell.value)
-    } else {
-        currCell
-    }
+fun applyClearedCellBookkeeping(
+    currCell: Cell,
+    changedCell: Cell,
+    value: Int,
+): Pair<Cell, Boolean> {
+    val updatedCurrCell =
+        if (currCell.row == changedCell.row && currCell.col == changedCell.col) {
+            currCell.copy(value = changedCell.value)
+        } else {
+            currCell
+        }
     if (value == 0) {
         changedCell.error = false
         updatedCurrCell.error = false

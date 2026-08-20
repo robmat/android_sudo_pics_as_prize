@@ -49,12 +49,12 @@ android {
         }
 
         ksp {
-            arg("room.schemaLocation", "${projectDir}/schemas")
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
         buildConfigField(
             "String",
             "AD_HELPER_AD_ID",
-            "\"" + localProperties.getProperty("adhelper.ad.id") + "\""
+            "\"" + localProperties.getProperty("adhelper.ad.id") + "\"",
         )
 
         manifestPlaceholders.put("MANIFEST_AD_ID", localProperties.getProperty("manifest.ad.id"))
@@ -162,9 +162,9 @@ dependencies {
     // depend on unchanged).
     implementation(libs.mikepenz.aboutlibraries.compose.m3) { version { strictly("13.2.1") } }
 
-    implementation (libs.bumptech.glide.compose)
-    implementation (libs.play.services.ads) { version { strictly("24.2.0") } }
-    implementation (libs.mennovogel.zoom.compose) { version { strictly("1.1") } }
+    implementation(libs.bumptech.glide.compose)
+    implementation(libs.play.services.ads) { version { strictly("24.2.0") } }
+    implementation(libs.mennovogel.zoom.compose) { version { strictly("1.1") } }
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

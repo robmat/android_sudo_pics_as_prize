@@ -8,5 +8,5 @@ import com.batodev.sudoku.data.database.model.SudokuBoard
 internal data class ExploreFolderListState(
     val folder: Folder?,
     val games: Map<SudokuBoard, SavedGame?>,
-    val lazyListState: LazyListState
+    val lazyListState: LazyListState,
 )

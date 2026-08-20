@@ -11,29 +11,27 @@ import com.batodev.sudoku.R
 import com.batodev.sudoku.ui.learn.components.LearnRowItem
 
 @Composable
-fun LearnSudokuScreen(
-    helpNavController: NavController
-) {
+fun LearnSudokuScreen(helpNavController: NavController) {
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         LazyColumn {
             item {
                 LearnRowItem(
                     title = stringResource(R.string.learn_sudoku_rules),
-                    onClick = { helpNavController.navigate("sudoku_rules") }
+                    onClick = { helpNavController.navigate("sudoku_rules") },
                 )
                 LearnRowItem(
                     title = stringResource(R.string.learn_basic_title),
-                    onClick = { helpNavController.navigate("sudoku_basic") }
+                    onClick = { helpNavController.navigate("sudoku_basic") },
                 )
                 LearnRowItem(
                     title = stringResource(R.string.naked_pairs_title),
-                    onClick = { helpNavController.navigate("sudoku_naked_pairs") }
+                    onClick = { helpNavController.navigate("sudoku_naked_pairs") },
                 )
                 LearnRowItem(
                     title = stringResource(R.string.learn_hidden_pairs_title),
-                    onClick = { helpNavController.navigate("sudoku_hidden_pairs") }
+                    onClick = { helpNavController.navigate("sudoku_hidden_pairs") },
                 )
             }
         }

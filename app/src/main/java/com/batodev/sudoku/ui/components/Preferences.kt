@@ -34,13 +34,13 @@ import com.batodev.sudoku.ui.util.LightDarkPreview
 data class PreferenceRowInfo(
     val title: String,
     val subtitle: String? = null,
-    val painter: Painter? = null
+    val painter: Painter? = null,
 )
 
 /** The tap/long-press handlers for a [PreferenceRow]. */
 data class PreferenceRowInteractions(
     val onClick: () -> Unit = { },
-    val onLongClick: (() -> Unit)? = null
+    val onLongClick: (() -> Unit)? = null,
 )
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -50,32 +50,35 @@ fun PreferenceRow(
     modifier: Modifier = Modifier,
     interactions: PreferenceRowInteractions = PreferenceRowInteractions(),
     action: @Composable (() -> Unit)? = null,
-    shape: Shape? = MaterialTheme.shapes.medium
+    shape: Shape? = MaterialTheme.shapes.medium,
 ) {
     val height = if (info.subtitle != null) 72.dp else 56.dp
 
     val titleStyle = MaterialTheme.typography.bodyLarge
-    val subtitleTextStyle = MaterialTheme.typography.bodyMedium.copy(
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
-    )
+    val subtitleTextStyle =
+        MaterialTheme.typography.bodyMedium.copy(
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
+        )
 
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = height)
-            .then(if (shape != null) Modifier.clip(shape) else Modifier)
-            .combinedClickable(
-                onLongClick = interactions.onLongClick,
-                onClick = interactions.onClick
-            ),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .heightIn(min = height)
+                .then(if (shape != null) Modifier.clip(shape) else Modifier)
+                .combinedClickable(
+                    onLongClick = interactions.onLongClick,
+                    onClick = interactions.onClick,
+                ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (info.painter != null) {
             Icon(
                 painter = info.painter,
-                modifier = Modifier
-                    .padding(start = 12.dp, end = 14.dp)
-                    .size(24.dp),
+                modifier =
+                    Modifier
+                        .padding(start = 12.dp, end = 14.dp)
+                        .size(24.dp),
                 tint = MaterialTheme.colorScheme.secondary,
                 contentDescription = null,
             )
@@ -116,17 +119,18 @@ fun PreferenceRowSwitch(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = { },
 ) {
-    val icon: (@Composable () -> Unit)? = if (checked) {
-        {
-            Icon(
-                imageVector = Icons.Filled.Check,
-                contentDescription = null,
-                modifier = Modifier.size(SwitchDefaults.IconSize),
-            )
+    val icon: (@Composable () -> Unit)? =
+        if (checked) {
+            {
+                Icon(
+                    imageVector = Icons.Filled.Check,
+                    contentDescription = null,
+                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                )
+            }
+        } else {
+            null
         }
-    } else {
-        null
-    }
 
     PreferenceRow(
         modifier = modifier,
@@ -136,7 +140,7 @@ fun PreferenceRowSwitch(
             Switch(
                 thumbContent = icon,
                 checked = checked,
-                onCheckedChange = { onClick() }
+                onCheckedChange = { onClick() },
             )
         },
     )
@@ -149,17 +153,19 @@ private fun PreferenceRowPreview() {
         Surface {
             Column {
                 PreferenceRow(
-                    info = PreferenceRowInfo(
-                        title = "Preference row title",
-                        subtitle = "Preference summary"
-                    )
+                    info =
+                        PreferenceRowInfo(
+                            title = "Preference row title",
+                            subtitle = "Preference summary",
+                        ),
                 )
                 PreferenceRow(
-                    info = PreferenceRowInfo(
-                        title = "Preference row with icon",
-                        subtitle = "Preference with icon",
-                        painter = painterResource(R.drawable.ic_settings_24)
-                    )
+                    info =
+                        PreferenceRowInfo(
+                            title = "Preference row with icon",
+                            subtitle = "Preference with icon",
+                            painter = painterResource(R.drawable.ic_settings_24),
+                        ),
                 )
             }
         }
@@ -173,38 +179,42 @@ private fun PreferenceRowSwitchPreview() {
         Surface {
             Column {
                 PreferenceRowSwitch(
-                    info = PreferenceRowInfo(
-                        title = "Preference row with switch",
-                        subtitle = "Preference summary"
-                    ),
+                    info =
+                        PreferenceRowInfo(
+                            title = "Preference row with switch",
+                            subtitle = "Preference summary",
+                        ),
                     onClick = { },
-                    checked = false
+                    checked = false,
                 )
                 PreferenceRowSwitch(
-                    info = PreferenceRowInfo(
-                        title = "Preference row with switch and icon",
-                        subtitle = "Preference summary",
-                        painter = painterResource(R.drawable.ic_settings_24)
-                    ),
+                    info =
+                        PreferenceRowInfo(
+                            title = "Preference row with switch and icon",
+                            subtitle = "Preference summary",
+                            painter = painterResource(R.drawable.ic_settings_24),
+                        ),
                     onClick = { },
-                    checked = false
+                    checked = false,
                 )
                 PreferenceRowSwitch(
-                    info = PreferenceRowInfo(
-                        title = "Preference row with switch",
-                        subtitle = "Preference summary"
-                    ),
+                    info =
+                        PreferenceRowInfo(
+                            title = "Preference row with switch",
+                            subtitle = "Preference summary",
+                        ),
                     onClick = { },
-                    checked = true
+                    checked = true,
                 )
                 PreferenceRowSwitch(
-                    info = PreferenceRowInfo(
-                        title = "Preference row with switch and icon",
-                        subtitle = "Preference summary",
-                        painter = painterResource(R.drawable.ic_settings_24)
-                    ),
+                    info =
+                        PreferenceRowInfo(
+                            title = "Preference row with switch and icon",
+                            subtitle = "Preference summary",
+                            painter = painterResource(R.drawable.ic_settings_24),
+                        ),
                     onClick = { },
-                    checked = true
+                    checked = true,
                 )
             }
         }

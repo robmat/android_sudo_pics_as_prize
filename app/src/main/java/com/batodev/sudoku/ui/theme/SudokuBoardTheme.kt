@@ -19,23 +19,27 @@ private const val THIN_LINE_ALPHA = 0.25f
 object BoardColors {
     val foregroundColor: Color
         @Composable
-        get() = MaterialTheme.colorScheme.onSurface.blend(
-            MaterialTheme.colorScheme.primary,
-            fraction = FOREGROUND_BLEND_FRACTION
-        )
+        get() =
+            MaterialTheme.colorScheme.onSurface.blend(
+                MaterialTheme.colorScheme.primary,
+                fraction = FOREGROUND_BLEND_FRACTION,
+            )
 
     val notesColor: Color
         @Composable
-        get() = MaterialTheme.colorScheme.onSurfaceVariant.blend(
-            MaterialTheme.colorScheme.secondary,
-            NOTES_BLEND_FRACTION
-        )
+        get() =
+            MaterialTheme.colorScheme.onSurfaceVariant.blend(
+                MaterialTheme.colorScheme.secondary,
+                NOTES_BLEND_FRACTION,
+            )
     val altForegroundColor: Color
         @Composable
-        get() = MaterialTheme.colorScheme.onSurfaceVariant.blend(
-            MaterialTheme.colorScheme.secondary,
-            ALT_FOREGROUND_BLEND_FRACTION
-        ).copy(alpha = ALT_FOREGROUND_ALPHA)
+        get() =
+            MaterialTheme.colorScheme.onSurfaceVariant
+                .blend(
+                    MaterialTheme.colorScheme.secondary,
+                    ALT_FOREGROUND_BLEND_FRACTION,
+                ).copy(alpha = ALT_FOREGROUND_ALPHA)
 
     val errorColor: Color
         @Composable
@@ -70,18 +74,18 @@ data class BoardCellColors(
     val notesColor: Color = Color.White,
     val altForegroundColor: Color = Color.White,
     val errorColor: Color = Color.White,
-    val highlightColor: Color = Color.White
+    val highlightColor: Color = Color.White,
 )
 
 /** The colors used to draw the sudoku grid lines. */
 data class BoardLineColors(
     val thickLineColor: Color = Color.White,
-    val thinLineColor: Color = Color.White
+    val thinLineColor: Color = Color.White,
 )
 
 class SudokuBoardColorsImpl(
     cellColors: BoardCellColors = BoardCellColors(),
-    lineColors: BoardLineColors = BoardLineColors()
+    lineColors: BoardLineColors = BoardLineColors(),
 ) : SudokuBoardColors {
     override val foregroundColor: Color = cellColors.foregroundColor
     override val notesColor: Color = cellColors.notesColor

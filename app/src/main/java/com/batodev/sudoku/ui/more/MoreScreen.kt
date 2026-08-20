@@ -29,65 +29,73 @@ fun MoreScreen(
     navigateLearn: () -> Unit,
     navigateAbout: () -> Unit,
     navigateImport: () -> Unit,
-    navigateStatistics: () -> Unit
+    navigateStatistics: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .statusBarsPadding(),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 text = stringResource(R.string.app_name),
-                style = MaterialTheme.typography.headlineLarge
+                style = MaterialTheme.typography.headlineLarge,
             )
         }
 
         HorizontalDivider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp),
         )
 
         PreferenceRow(
-            info = PreferenceRowInfo(
-                title = stringResource(R.string.statistics),
-                painter = painterResource(R.drawable.ic_round_info_24)
-            ),
-            interactions = PreferenceRowInteractions(onClick = navigateStatistics)
+            info =
+                PreferenceRowInfo(
+                    title = stringResource(R.string.statistics),
+                    painter = painterResource(R.drawable.ic_round_info_24),
+                ),
+            interactions = PreferenceRowInteractions(onClick = navigateStatistics),
         )
         PreferenceRow(
-            info = PreferenceRowInfo(
-                title = stringResource(R.string.settings_title),
-                painter = painterResource(R.drawable.ic_settings_24)
-            ),
-            interactions = PreferenceRowInteractions(onClick = navigateSettings)
+            info =
+                PreferenceRowInfo(
+                    title = stringResource(R.string.settings_title),
+                    painter = painterResource(R.drawable.ic_settings_24),
+                ),
+            interactions = PreferenceRowInteractions(onClick = navigateSettings),
         )
         PreferenceRow(
-            info = PreferenceRowInfo(
-                title = stringResource(R.string.title_folders),
-                painter = rememberVectorPainter(Icons.Outlined.Folder)
-            ),
-            interactions = PreferenceRowInteractions(onClick = navigateImport)
+            info =
+                PreferenceRowInfo(
+                    title = stringResource(R.string.title_folders),
+                    painter = rememberVectorPainter(Icons.Outlined.Folder),
+                ),
+            interactions = PreferenceRowInteractions(onClick = navigateImport),
         )
         PreferenceRow(
-            info = PreferenceRowInfo(
-                title = stringResource(R.string.learn_screen_title),
-                painter = painterResource(R.drawable.ic_outline_help_outline_24)
-            ),
-            interactions = PreferenceRowInteractions(onClick = navigateLearn)
+            info =
+                PreferenceRowInfo(
+                    title = stringResource(R.string.learn_screen_title),
+                    painter = painterResource(R.drawable.ic_outline_help_outline_24),
+                ),
+            interactions = PreferenceRowInteractions(onClick = navigateLearn),
         )
         PreferenceRow(
-            info = PreferenceRowInfo(
-                title = stringResource(R.string.about_title),
-                painter = painterResource(R.drawable.ic_outline_info_24)
-            ),
-            interactions = PreferenceRowInteractions(onClick = navigateAbout)
+            info =
+                PreferenceRowInfo(
+                    title = stringResource(R.string.about_title),
+                    painter = painterResource(R.drawable.ic_outline_info_24),
+                ),
+            interactions = PreferenceRowInteractions(onClick = navigateAbout),
         )
     }
 }

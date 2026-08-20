@@ -23,20 +23,21 @@ import com.batodev.sudoku.ui.util.findActivity
 internal fun NavGraphBuilder.gameDestination(navController: NavController) {
     animatedComposable(
         route = Route.GAME,
-        arguments = listOf(
-            navArgument(name = "uid") { type = NavType.LongType },
-            navArgument(name = "saved") {
-                type = NavType.BoolType
-                defaultValue = false
-            }
-        )
+        arguments =
+            listOf(
+                navArgument(name = "uid") { type = NavType.LongType },
+                navArgument(name = "saved") {
+                    type = NavType.BoolType
+                    defaultValue = false
+                },
+            ),
     ) {
         GameScreen(
             navigateBack = { navController.popBackStack() },
             navigateSettings = {
                 navController.navigate("settings/?fromGame=true")
             },
-            hiltViewModel()
+            hiltViewModel(),
         )
     }
 }
@@ -44,13 +45,13 @@ internal fun NavGraphBuilder.gameDestination(navController: NavController) {
 internal fun NavGraphBuilder.savedGameDestination(navController: NavController) {
     animatedComposable(
         route = Route.SAVED_GAME,
-        arguments = listOf(navArgument("uid") { type = NavType.LongType })
+        arguments = listOf(navArgument("uid") { type = NavType.LongType }),
     ) {
         SavedGameScreen(
             navigateBack = { navController.popBackStack() },
             navigatePlayGame = { uid ->
                 navController.navigate(
-                    "game/$uid/${true}"
+                    "game/$uid/${true}",
                 ) {
                     popUpTo(Route.HISTORY)
                 }
@@ -60,7 +61,7 @@ internal fun NavGraphBuilder.savedGameDestination(navController: NavController) 
                     popUpTo("history")
                 }
             },
-            hiltViewModel()
+            hiltViewModel(),
         )
     }
 }
@@ -78,18 +79,22 @@ internal fun NavGraphBuilder.foldersDestination(navController: NavController) {
             },
             navigateViewSavedGame = { uid ->
                 navController.navigate("saved_game/$uid")
-            }
+            },
         )
     }
 }
 
-internal fun NavGraphBuilder.importFromFileDestination(navController: NavController, context: Context) {
+internal fun NavGraphBuilder.importFromFileDestination(
+    navController: NavController,
+    context: Context,
+) {
     animatedComposable(
         route = "import_sudoku_file?{uri}?{folder_uid}",
-        arguments = listOf(
-            navArgument("uri") { type = NavType.StringType },
-            navArgument("folder_uid") { type = NavType.LongType }
-        )
+        arguments =
+            listOf(
+                navArgument("uri") { type = NavType.StringType },
+                navArgument("folder_uid") { type = NavType.LongType },
+            ),
     ) {
         ImportFromFileScreen(
             viewModel = hiltViewModel(),
@@ -98,7 +103,7 @@ internal fun NavGraphBuilder.importFromFileDestination(navController: NavControl
                 activity?.intent?.data = null
 
                 navController.navigateUp()
-            }
+            },
         )
     }
 }
@@ -106,51 +111,56 @@ internal fun NavGraphBuilder.importFromFileDestination(navController: NavControl
 internal fun NavGraphBuilder.exploreFolderDestination(navController: NavController) {
     animatedComposable(
         route = "explorefolder/{uid}",
-        arguments = listOf(navArgument("uid") { type = NavType.LongType })
+        arguments = listOf(navArgument("uid") { type = NavType.LongType }),
     ) {
         ExploreFolderScreen(
             viewModel = hiltViewModel(),
-            navigation = ExploreFolderNavigation(
-                navigateBack = { navController.popBackStack() },
-                navigatePlayGame = { args ->
-                    navController.navigate(
-                        "game/${args.first}/${args.second}"
-                    ) {
-                        popUpTo("explorefolder/${args.third}")
-                    }
-                },
-                navigateImportFromFile = { args ->
-                    // First - uri. Second = folder uid
-                    navController.navigate("import_sudoku_file?${args.first}?${args.second}")
-                },
-                navigateEditGame = { args ->
-                    navController.navigate("createeditsudoku/${args.first}/${args.second}")
-                },
-                navigateCreateSudoku = { folderUid ->
-                    navController.navigate("createeditsudoku/-1/$folderUid")
-                }
-            )
+            navigation =
+                ExploreFolderNavigation(
+                    navigateBack = { navController.popBackStack() },
+                    navigatePlayGame = { args ->
+                        navController.navigate(
+                            "game/${args.first}/${args.second}",
+                        ) {
+                            popUpTo("explorefolder/${args.third}")
+                        }
+                    },
+                    navigateImportFromFile = { args ->
+                        // First - uri. Second = folder uid
+                        navController.navigate("import_sudoku_file?${args.first}?${args.second}")
+                    },
+                    navigateEditGame = { args ->
+                        navController.navigate("createeditsudoku/${args.first}/${args.second}")
+                    },
+                    navigateCreateSudoku = { folderUid ->
+                        navController.navigate("createeditsudoku/-1/$folderUid")
+                    },
+                ),
         )
     }
 }
 
-internal fun NavGraphBuilder.importDeepLinkDestination(navController: NavController, context: Context) {
+internal fun NavGraphBuilder.importDeepLinkDestination(
+    navController: NavController,
+    context: Context,
+) {
     animatedComposable(
         route = "import_sudoku_file_deeplink",
-        deepLinks = listOf(
-            navDeepLink {
-                uriPattern = "content://"
-                mimeType = "*/*"
-                action = Intent.ACTION_VIEW
-            }
-        )
+        deepLinks =
+            listOf(
+                navDeepLink {
+                    uriPattern = "content://"
+                    mimeType = "*/*"
+                    action = Intent.ACTION_VIEW
+                },
+            ),
     ) {
         val activity = context.findActivity()
         if (activity != null) {
             val intentData = activity.intent.data
             if (intentData != null) {
                 navController.navigate(
-                    "import_sudoku_file?${Uri.encode(intentData.toString())}?-1"
+                    "import_sudoku_file?${Uri.encode(intentData.toString())}?-1",
                 )
             }
             LaunchedEffect(intentData) {

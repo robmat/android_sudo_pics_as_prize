@@ -8,6 +8,7 @@ import java.io.IOException
 
 // File type from OpenSudoku app (https://gitlab.com/opensudoku/opensudoku)
 // https://gitlab.com/opensudoku/opensudoku/-/blob/develop/app/src/main/java/org/moire/opensudoku/gui/importing/OpenSudokuImportTask.java
+
 /**
  * .opensudoku - format from the OpenSudoku app. Uses XML schema
  */
@@ -18,13 +19,18 @@ class OpenSudokuParser : FileImportParser {
         private const val STANDARD_BOARD_LENGTH = 81
     }
 
-    private fun parseVersionedImport(parser: XmlPullParser, rootTag: String): Pair<Boolean, List<String>>? {
+    private fun parseVersionedImport(
+        parser: XmlPullParser,
+        rootTag: String,
+    ): Pair<Boolean, List<String>>? {
         if (rootTag != "opensudoku") return null
         val version = parser.getAttributeValue(null, "version")
         return when (version) {
             // no version provided, assume that it's version 1
             null -> importV1(parser)
+
             "2" -> importV2(parser)
+
             else -> null
         }
     }
@@ -32,7 +38,7 @@ class OpenSudokuParser : FileImportParser {
     private fun processTag(
         parser: XmlPullParser,
         eventType: Int,
-        result: Pair<Boolean, List<String>>
+        result: Pair<Boolean, List<String>>,
     ): Pair<Boolean, List<String>> {
         if (eventType != XmlPullParser.START_TAG) return result
         return parseVersionedImport(parser, parser.name) ?: result
@@ -66,7 +72,10 @@ class OpenSudokuParser : FileImportParser {
      */
     override fun toBoards(content: String): Pair<Boolean, List<String>> = readOpenSudokuXml(content)
 
-    private fun processGameTagV1(parser: XmlPullParser, boards: MutableList<String>) {
+    private fun processGameTagV1(
+        parser: XmlPullParser,
+        boards: MutableList<String>,
+    ) {
         val boardString = parser.getAttributeValue(null, "data")
         if (boardString.length == STANDARD_BOARD_LENGTH && boardString.all { char -> char.isDigit() }) {
             boards.add(boardString)
@@ -87,7 +96,10 @@ class OpenSudokuParser : FileImportParser {
         return Pair(true, boards)
     }
 
-    private fun processGameTagV2(parser: XmlPullParser, boards: MutableList<String>) {
+    private fun processGameTagV2(
+        parser: XmlPullParser,
+        boards: MutableList<String>,
+    ) {
         // Not used now, but maybe will be used in future
         // val created = parseLong(parser.getAttributeValue(null, "created"), System.currentTimeMillis());
         // val lastPlayed = parseLong(parser.getAttributeValue(null, "last_played"), 0);

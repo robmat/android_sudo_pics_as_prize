@@ -16,82 +16,102 @@ import com.batodev.sudoku.ui.components.PreferenceRowInteractions
 import com.batodev.sudoku.ui.components.PreferenceRowSwitch
 
 @Composable
-private fun GameplayInputMethodRow(inputMethod: Int, onClick: () -> Unit) {
+private fun GameplayInputMethodRow(
+    inputMethod: Int,
+    onClick: () -> Unit,
+) {
     PreferenceRow(
-        info = PreferenceRowInfo(
-            title = stringResource(R.string.pref_input),
-            subtitle = when (inputMethod) {
-                0 -> stringResource(R.string.pref_input_cell_first)
-                1 -> stringResource(R.string.pref_input_digit_first)
-                else -> ""
-            }
-        ),
-        interactions = PreferenceRowInteractions(onClick = onClick)
+        info =
+            PreferenceRowInfo(
+                title = stringResource(R.string.pref_input),
+                subtitle =
+                    when (inputMethod) {
+                        0 -> stringResource(R.string.pref_input_cell_first)
+                        1 -> stringResource(R.string.pref_input_digit_first)
+                        else -> ""
+                    },
+            ),
+        interactions = PreferenceRowInteractions(onClick = onClick),
     )
 }
 
 @Composable
-private fun GameplayMistakesLimitSwitch(mistakesLimit: Boolean, onClick: () -> Unit) {
+private fun GameplayMistakesLimitSwitch(
+    mistakesLimit: Boolean,
+    onClick: () -> Unit,
+) {
     PreferenceRowSwitch(
-        info = PreferenceRowInfo(
-            title = stringResource(R.string.pref_mistakes_limit),
-            subtitle = stringResource(R.string.pref_mistakes_limit_summ)
-        ),
+        info =
+            PreferenceRowInfo(
+                title = stringResource(R.string.pref_mistakes_limit),
+                subtitle = stringResource(R.string.pref_mistakes_limit_summ),
+            ),
         checked = mistakesLimit,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
 @Composable
-private fun GameplayHintsDisabledSwitch(hintDisabled: Boolean, onClick: () -> Unit) {
+private fun GameplayHintsDisabledSwitch(
+    hintDisabled: Boolean,
+    onClick: () -> Unit,
+) {
     PreferenceRowSwitch(
-        info = PreferenceRowInfo(
-            title = stringResource(R.string.pref_disable_hints),
-            subtitle = stringResource(R.string.pref_disable_hints_summ)
-        ),
+        info =
+            PreferenceRowInfo(
+                title = stringResource(R.string.pref_disable_hints),
+                subtitle = stringResource(R.string.pref_disable_hints_summ),
+            ),
         checked = hintDisabled,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
 @Composable
-private fun GameplayShowTimerSwitch(timerEnabled: Boolean, onClick: () -> Unit) {
+private fun GameplayShowTimerSwitch(
+    timerEnabled: Boolean,
+    onClick: () -> Unit,
+) {
     PreferenceRowSwitch(
         info = PreferenceRowInfo(title = stringResource(R.string.pref_show_timer)),
         checked = timerEnabled,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
 @Composable
-private fun GameplayResetTimerSwitch(resetTimer: Boolean, onClick: () -> Unit) {
+private fun GameplayResetTimerSwitch(
+    resetTimer: Boolean,
+    onClick: () -> Unit,
+) {
     PreferenceRowSwitch(
         info = PreferenceRowInfo(title = stringResource(R.string.pref_reset_timer)),
         checked = resetTimer,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
 @Composable
 private fun GameplayFunKeyboardSwitch(viewModel: SettingsViewModel) {
     val funKeyboardOverNum by viewModel.funKeyboardOverNum.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_FUN_KEYBOARD_OVER_NUM
+        initialValue = PreferencesConstants.DEFAULT_FUN_KEYBOARD_OVER_NUM,
     )
     PreferenceRowSwitch(
-        info = PreferenceRowInfo(
-            title = stringResource(R.string.pref_fun_keyboard_over_num),
-            subtitle = stringResource(R.string.pref_fun_keyboard_over_num_subtitle)
-        ),
+        info =
+            PreferenceRowInfo(
+                title = stringResource(R.string.pref_fun_keyboard_over_num),
+                subtitle = stringResource(R.string.pref_fun_keyboard_over_num_subtitle),
+            ),
         checked = funKeyboardOverNum,
         onClick = {
             viewModel.updateFunKeyboardOverNum(!funKeyboardOverNum)
-        }
+        },
     )
 }
 
 internal fun LazyListScope.settingsGameplayItems(
     state: SettingsPreferencesState,
-    viewModel: SettingsViewModel
+    viewModel: SettingsViewModel,
 ) {
     item {
         HorizontalDivider(modifier = Modifier.fillMaxWidth())

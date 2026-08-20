@@ -20,6 +20,7 @@ package com.batodev.sudoku.core.qqwing
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 // @formatter:on
+
 /**
  * While solving the puzzle, log steps taken in a log item. This is useful for
  * later printing out the solve history or gathering statistics about how hard
@@ -35,6 +36,7 @@ class LogItem {
     /**
      * Get the type of this log item.
      */
+
     /**
      * The type of log message that will determine the message printed.
      */
@@ -48,6 +50,7 @@ class LogItem {
     /**
      * Get the position (0-80) on the board or -1 if no position
      */
+
     /**
      * position on the board at which the value (if any) was set.
      */
@@ -62,7 +65,12 @@ class LogItem {
         init(r, t, v, p)
     }
 
-    private fun init(r: Int, t: LogType, v: Int, p: Int) {
+    private fun init(
+        r: Int,
+        t: LogType,
+        v: Int,
+        p: Int,
+    ) {
         round = r
         type = t
         value = v
@@ -88,9 +96,7 @@ class LogItem {
     /**
      * Get the value, or -1 if no value
      */
-    fun getValue(): Int {
-        return if (value <= 0) -1 else value
-    }
+    fun getValue(): Int = if (value <= 0) -1 else value
 
     /**
      * Print the current log item. The message used is determined by the type of
@@ -105,7 +111,11 @@ class LogItem {
             if (value > 0 || position > -1) {
                 sb.append(" (")
                 if (position > -1) {
-                    sb.append("Row: ").append(row).append(" - Column: ").append(column)
+                    sb
+                        .append("Row: ")
+                        .append(row)
+                        .append(" - Column: ")
+                        .append(column)
                 }
                 if (value > 0) {
                     if (position > -1) sb.append(" - ")
@@ -116,7 +126,5 @@ class LogItem {
             return sb.toString()
         }
 
-    override fun toString(): String {
-        return description
-    }
+    override fun toString(): String = description
 }

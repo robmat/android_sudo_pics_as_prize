@@ -26,16 +26,18 @@ private const val PREVIEW_ITEM_COUNT = 50
 internal fun ScrollbarPreview() {
     val state = rememberScrollState()
     Column(
-        modifier = Modifier
-            .drawVerticalScrollbar(state)
-            .verticalScroll(state),
+        modifier =
+            Modifier
+                .drawVerticalScrollbar(state)
+                .verticalScroll(state),
     ) {
         repeat(PREVIEW_ITEM_COUNT) {
             Text(
                 text = "Item ${it + 1}",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
             )
         }
     }
@@ -47,14 +49,15 @@ internal fun LazyListScrollbarPreview() {
     val state = rememberLazyListState()
     LazyColumn(
         modifier = Modifier.drawVerticalScrollbar(state),
-        state = state
+        state = state,
     ) {
         items(PREVIEW_ITEM_COUNT) {
             Text(
                 text = "Item ${it + 1}",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
             )
         }
     }
@@ -65,15 +68,17 @@ internal fun LazyListScrollbarPreview() {
 internal fun HorizontalScrollbarPreview() {
     val state = rememberScrollState()
     Row(
-        modifier = Modifier
-            .drawHorizontalScrollbar(state)
-            .horizontalScroll(state)
+        modifier =
+            Modifier
+                .drawHorizontalScrollbar(state)
+                .horizontalScroll(state),
     ) {
         repeat(PREVIEW_ITEM_COUNT) {
             Text(
                 text = (it + 1).toString(),
-                modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 16.dp)
+                modifier =
+                    Modifier
+                        .padding(horizontal = 8.dp, vertical = 16.dp),
             )
         }
     }
@@ -85,13 +90,14 @@ internal fun LazyListHorizontalScrollbarPreview() {
     val state = rememberLazyListState()
     LazyRow(
         modifier = Modifier.drawHorizontalScrollbar(state),
-        state = state
+        state = state,
     ) {
         items(PREVIEW_ITEM_COUNT) {
             Text(
                 text = (it + 1).toString(),
-                modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 16.dp)
+                modifier =
+                    Modifier
+                        .padding(horizontal = 8.dp, vertical = 16.dp),
             )
         }
     }

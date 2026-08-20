@@ -15,17 +15,17 @@ import com.batodev.sudoku.R
 @Composable
 fun CanContinueBadge(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier
-            .background(
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shape = MaterialTheme.shapes.large
-            )
-            .padding(vertical = 4.dp, horizontal = 8.dp)
+        modifier =
+            modifier
+                .background(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    shape = MaterialTheme.shapes.large,
+                ).padding(vertical = 4.dp, horizontal = 8.dp),
     ) {
         Text(
             text = stringResource(R.string.can_continue_label),
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
         )
     }
 }

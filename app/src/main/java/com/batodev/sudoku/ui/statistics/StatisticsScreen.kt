@@ -55,34 +55,36 @@ import kotlin.math.roundToInt
 fun StatisticsScreen(
     navigateHistory: () -> Unit,
     navigateSavedGame: (Long) -> Unit,
-    viewModel: StatisticsViewModel
+    viewModel: StatisticsViewModel,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val dateFormat by viewModel.dateFormat.collectAsStateWithLifecycle(initialValue = "")
     Scaffold(
-        modifier = Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier =
+            Modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = { StatisticsTopBar(scrollBehavior, navigateHistory) },
     ) { scaffoldPadding ->
         val recordListState = viewModel.recordList.collectAsState(initial = emptyList())
         val savedGameList = viewModel.savedGamesList.collectAsState(initial = emptyList())
 
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(scaffoldPadding)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(scaffoldPadding)
+                    .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             ChipRowDifficulty(
                 items = statisticsDifficultyFilters(),
                 selected = viewModel.selectedDifficulty,
-                onSelected = { viewModel.setDifficulty(it) }
+                onSelected = { viewModel.setDifficulty(it) },
             )
             ChipRowType(
                 types = statisticsTypeFilters(),
                 selected = viewModel.selectedType,
-                onSelected = { viewModel.setType(it) }
+                onSelected = { viewModel.setType(it) },
             )
 
             if (recordListState.value.isNotEmpty()) {
@@ -91,7 +93,7 @@ fun StatisticsScreen(
                     savedGameList = savedGameList,
                     viewModel = viewModel,
                     dateFormat = dateFormat,
-                    navigateSavedGame = navigateSavedGame
+                    navigateSavedGame = navigateSavedGame,
                 )
             } else {
                 EmptyScreen(stringResource(R.string.statistics_no_records))
@@ -108,36 +110,45 @@ private fun RecordsStatisticsContent(
     savedGameList: State<List<SavedGame>>,
     viewModel: StatisticsViewModel,
     dateFormat: String,
-    navigateSavedGame: (Long) -> Unit
+    navigateSavedGame: (Long) -> Unit,
 ) {
     var averageTime by remember {
         mutableStateOf(
             DateUtils.formatElapsedTime(
-                recordListState.value.sumOf { it.time.seconds } / recordListState.value.count()
-            )
+                recordListState.value.sumOf { it.time.seconds } / recordListState.value.count(),
+            ),
         )
     }
     var bestTime by remember {
         mutableStateOf(
-            DateUtils.formatElapsedTime(recordListState.value.first().time.seconds)
+            DateUtils.formatElapsedTime(
+                recordListState.value
+                    .first()
+                    .time.seconds,
+            ),
         )
     }
     LaunchedEffect(recordListState.value) {
-        averageTime = DateUtils.formatElapsedTime(
-            recordListState.value
-                .sumOf { it.time.seconds } / recordListState.value.count()
-        )
-        bestTime = DateUtils.formatElapsedTime(
-            recordListState.value.first().time.seconds
-        )
+        averageTime =
+            DateUtils.formatElapsedTime(
+                recordListState.value
+                    .sumOf { it.time.seconds } / recordListState.value.count(),
+            )
+        bestTime =
+            DateUtils.formatElapsedTime(
+                recordListState.value
+                    .first()
+                    .time.seconds,
+            )
     }
     StatisticsSection(
         title = stringResource(R.string.time),
         painter = painterResource(R.drawable.ic_round_hourglass_empty_24),
-        statRows = listOf(
-            listOf(stringResource(R.string.best_time), bestTime),
-            listOf(stringResource(R.string.average_time), averageTime),
-        )
+        statRows =
+            listOf(
+                listOf(stringResource(R.string.best_time), bestTime),
+                listOf(stringResource(R.string.average_time), averageTime),
+            ),
     )
     if (viewModel.selectedDifficulty == GameDifficulty.Unspecified) {
         OverallStatisticsContent(savedGameList, viewModel)
@@ -150,19 +161,25 @@ private fun RecordsStatisticsContent(
             title = stringResource(R.string.tip_card_records_list_title),
             details = stringResource(R.string.tip_card_records_list_summ),
             painter = painterResource(R.drawable.ic_outline_help_outline_24),
-            onCloseClicked = { viewModel.setRecordTipCard(false) }
+            onCloseClicked = { viewModel.setRecordTipCard(false) },
         )
     }
 }
 
 @Composable
-private fun OverallStatisticsContent(savedGameList: State<List<SavedGame>>, viewModel: StatisticsViewModel) {
+private fun OverallStatisticsContent(
+    savedGameList: State<List<SavedGame>>,
+    viewModel: StatisticsViewModel,
+) {
     GamesOverallStatistics(savedGameList, viewModel)
     WinStreakStatistics(savedGameList, viewModel)
 }
 
 @Composable
-private fun GamesOverallStatistics(savedGameList: State<List<SavedGame>>, viewModel: StatisticsViewModel) {
+private fun GamesOverallStatistics(
+    savedGameList: State<List<SavedGame>>,
+    viewModel: StatisticsViewModel,
+) {
     val gamesStarted by remember {
         mutableStateOf(savedGameList.value.count().toString())
     }
@@ -170,46 +187,52 @@ private fun GamesOverallStatistics(savedGameList: State<List<SavedGame>>, viewMo
         mutableStateOf(
             savedGameList.value
                 .count { it.completed && !it.giveUp && !it.canContinue }
-                .toString()
+                .toString(),
         )
     }
-    val winRate = if (savedGameList.value.isNotEmpty()) {
-        stringResource(
-            R.string.win_rate_percentage,
-            viewModel.getWinRate(savedGameList.value).roundToInt()
-        )
-    } else {
-        stringResource(R.string.no_value_default)
-    }
+    val winRate =
+        if (savedGameList.value.isNotEmpty()) {
+            stringResource(
+                R.string.win_rate_percentage,
+                viewModel.getWinRate(savedGameList.value).roundToInt(),
+            )
+        } else {
+            stringResource(R.string.no_value_default)
+        }
     OverallStatistics(
-        statsRow = listOf(
-            listOf(stringResource(R.string.games_started), gamesStarted),
-            listOf(stringResource(R.string.games_completed), gamesCompleted),
-            listOf(stringResource(R.string.win_rate), winRate)
-        )
+        statsRow =
+            listOf(
+                listOf(stringResource(R.string.games_started), gamesStarted),
+                listOf(stringResource(R.string.games_completed), gamesCompleted),
+                listOf(stringResource(R.string.win_rate), winRate),
+            ),
     )
 }
 
 @Composable
-private fun WinStreakStatistics(savedGameList: State<List<SavedGame>>, viewModel: StatisticsViewModel) {
+private fun WinStreakStatistics(
+    savedGameList: State<List<SavedGame>>,
+    viewModel: StatisticsViewModel,
+) {
     val currentStreak by remember {
         mutableStateOf(
-            viewModel.getCurrentStreak(savedGameList.value).toString()
+            viewModel.getCurrentStreak(savedGameList.value).toString(),
         )
     }
     val maxStreak by remember {
         mutableStateOf(
-            viewModel.getMaxStreak(savedGameList.value).toString()
+            viewModel.getMaxStreak(savedGameList.value).toString(),
         )
     }
 
     StatisticsSection(
         title = stringResource(R.string.win_streak),
         painter = painterResource(R.drawable.ic_outline_verified_24),
-        statRows = listOf(
-            listOf(stringResource(R.string.current_streak), currentStreak),
-            listOf(stringResource(R.string.best_streak), maxStreak)
-        )
+        statRows =
+            listOf(
+                listOf(stringResource(R.string.current_streak), currentStreak),
+                listOf(stringResource(R.string.best_streak), maxStreak),
+            ),
     )
     val streakCard = viewModel.streakTipCard.collectAsState(initial = false)
     AnimatedVisibility(visible = streakCard.value) {
@@ -218,7 +241,7 @@ private fun WinStreakStatistics(savedGameList: State<List<SavedGame>>, viewModel
             title = stringResource(R.string.win_streak),
             details = stringResource(R.string.tip_card_win_streak_summ),
             painter = painterResource(R.drawable.ic_outline_verified_24),
-            onCloseClicked = { viewModel.setStreakTipCard(false) }
+            onCloseClicked = { viewModel.setStreakTipCard(false) },
         )
     }
 }
@@ -228,46 +251,49 @@ private fun BestGamesList(
     recordListState: State<List<Record>>,
     viewModel: StatisticsViewModel,
     dateFormat: String,
-    navigateSavedGame: (Long) -> Unit
+    navigateSavedGame: (Long) -> Unit,
 ) {
     StatsSectionName(
         modifier = Modifier.padding(start = 12.dp, top = 12.dp),
-        title = stringResource(R.string.number_best_games, BEST_GAMES_SHOWN_COUNT) +
-            if (viewModel.selectedType != GameType.Unspecified &&
-                viewModel.selectedDifficulty != GameDifficulty.Unspecified
-            ) {
-                " ${stringResource(viewModel.selectedType.resName).lowercase()} " +
-                    stringResource(viewModel.selectedDifficulty.resName).lowercase()
-            } else {
-                ""
-            },
-        painter = painterResource(R.drawable.ic_outline_star_24)
+        title =
+            stringResource(R.string.number_best_games, BEST_GAMES_SHOWN_COUNT) +
+                if (viewModel.selectedType != GameType.Unspecified &&
+                    viewModel.selectedDifficulty != GameDifficulty.Unspecified
+                ) {
+                    " ${stringResource(viewModel.selectedType.resName).lowercase()} " +
+                        stringResource(viewModel.selectedDifficulty.resName).lowercase()
+                } else {
+                    ""
+                },
+        painter = painterResource(R.drawable.ic_outline_star_24),
     )
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 12.dp, end = 12.dp, bottom = 12.dp)
-            .clip(MaterialTheme.shapes.large)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(start = 12.dp, end = 12.dp, bottom = 12.dp)
+                .clip(MaterialTheme.shapes.large)
+                .background(MaterialTheme.colorScheme.surfaceVariant),
     ) {
         Column {
             var selectedIndex by remember { mutableIntStateOf(0) }
             recordListState.value.take(BEST_GAMES_SHOWN_COUNT).forEachIndexed { index, record ->
                 RecordItem(
-                    info = RecordItemInfo(
-                        time = record.time,
-                        difficulty = stringResource(record.difficulty.resName),
-                        date = record.date.toLocalDateTime(),
-                        type = stringResource(record.type.resName),
-                        dateFormat = dateFormat
-                    ),
+                    info =
+                        RecordItemInfo(
+                            time = record.time,
+                            difficulty = stringResource(record.difficulty.resName),
+                            date = record.date.toLocalDateTime(),
+                            type = stringResource(record.type.resName),
+                            dateFormat = dateFormat,
+                        ),
                     onClick = {
                         navigateSavedGame(record.boardUid)
                     },
                     onLongClick = {
                         selectedIndex = index
                         viewModel.showDeleteDialog = true
-                    }
+                    },
                 )
             }
             if (viewModel.showDeleteDialog) {
@@ -275,10 +301,10 @@ private fun BestGamesList(
                     onDismissRequest = { viewModel.showDeleteDialog = false },
                     onConfirm = {
                         viewModel.deleteRecord(
-                            recordListState.value[selectedIndex]
+                            recordListState.value[selectedIndex],
                         )
                     },
-                    index = selectedIndex
+                    index = selectedIndex,
                 )
             }
         }
@@ -288,13 +314,13 @@ private fun BestGamesList(
 @Composable
 fun OverallStatistics(
     modifier: Modifier = Modifier,
-    statsRow: List<List<String>>
+    statsRow: List<List<String>>,
 ) {
     StatisticsSection(
         modifier = modifier,
         title = stringResource(R.string.games),
         painter = painterResource(R.drawable.ic_rounded_stadia_controller_24),
-        statRows = statsRow
+        statRows = statsRow,
     )
 }
 
@@ -303,34 +329,36 @@ fun StatisticsSection(
     modifier: Modifier = Modifier,
     title: String,
     painter: Painter,
-    statRows: List<List<String>>
+    statRows: List<List<String>>,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(12.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(12.dp),
     ) {
         StatsSectionName(
             title = title,
-            painter = painter
+            painter = painter,
         )
         Card(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
         ) {
             Column(
-                modifier = Modifier.padding(12.dp)
+                modifier = Modifier.padding(12.dp),
             ) {
                 statRows.forEachIndexed { index, arr ->
                     StatRow(
                         startText = arr[0],
                         endText = arr[1],
-                        modifier = Modifier.padding(vertical = 8.dp)
+                        modifier = Modifier.padding(vertical = 8.dp),
                     )
                     if (index + 1 != statRows.size) {
                         Divider(
                             modifier = Modifier.fillMaxWidth(),
-                            color = MaterialTheme.colorScheme.outline
+                            color = MaterialTheme.colorScheme.outline,
                         )
                     }
                 }
@@ -343,13 +371,14 @@ fun StatisticsSection(
 fun StatsSectionName(
     modifier: Modifier = Modifier,
     title: String,
-    painter: Painter
+    painter: Painter,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(bottom = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             painter = painter,
@@ -359,7 +388,7 @@ fun StatsSectionName(
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(start = 12.dp)
+            modifier = Modifier.padding(start = 12.dp),
         )
     }
 }
@@ -370,19 +399,19 @@ private const val STAT_ROW_END_TEXT_FONT_WEIGHT = 700
 fun StatRow(
     startText: String,
     endText: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
             text = startText,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f)
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f),
         )
         Text(
             text = endText,
-            fontWeight = FontWeight(STAT_ROW_END_TEXT_FONT_WEIGHT)
+            fontWeight = FontWeight(STAT_ROW_END_TEXT_FONT_WEIGHT),
         )
     }
 }

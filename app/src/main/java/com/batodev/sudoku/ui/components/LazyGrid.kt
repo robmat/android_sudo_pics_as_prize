@@ -22,13 +22,13 @@ data class LazyGridBehavior(
     val verticalArrangement: Arrangement.Vertical =
         if (!reverseLayout) Arrangement.Top else Arrangement.Bottom,
     val horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
-    val userScrollEnabled: Boolean = true
+    val userScrollEnabled: Boolean = true,
 )
 
 /** The [state] and [spanCount] needed to draw the scrollbar overlay on a lazy grid. */
 data class LazyGridScrollbarState(
     val state: LazyGridState,
-    val spanCount: Int = 1
+    val spanCount: Int = 1,
 )
 
 @Composable
@@ -37,15 +37,16 @@ fun ScrollbarLazyVerticalGrid(
     modifier: Modifier = Modifier,
     scrollbarState: LazyGridScrollbarState = LazyGridScrollbarState(rememberLazyGridState()),
     behavior: LazyGridBehavior = LazyGridBehavior(),
-    content: LazyGridScope.() -> Unit
+    content: LazyGridScope.() -> Unit,
 ) {
     val flingBehavior: FlingBehavior = ScrollableDefaults.flingBehavior()
     LazyVerticalGrid(
         columns = columns,
-        modifier = modifier.drawVerticalScrollbar(
-            state = scrollbarState.state,
-            spanCount = scrollbarState.spanCount
-        ),
+        modifier =
+            modifier.drawVerticalScrollbar(
+                state = scrollbarState.state,
+                spanCount = scrollbarState.spanCount,
+            ),
         state = scrollbarState.state,
         contentPadding = behavior.contentPadding,
         reverseLayout = behavior.reverseLayout,
@@ -53,6 +54,6 @@ fun ScrollbarLazyVerticalGrid(
         horizontalArrangement = behavior.horizontalArrangement,
         flingBehavior = flingBehavior,
         userScrollEnabled = behavior.userScrollEnabled,
-        content = content
+        content = content,
     )
 }

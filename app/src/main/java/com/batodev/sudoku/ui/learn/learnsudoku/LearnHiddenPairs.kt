@@ -25,33 +25,34 @@ private const val LEARN_HIDDEN_PAIRS_NOTES_REDUCED =
     "3,4,4;3,4,5;3,4,8;4,3,4;4,3,5;4,3,7;4,5,4;4,5,5;5,3,6;5,3,9;5,4,7;5,4,8;5,5,6;5,5,9;"
 
 @Composable
-fun LearnHiddenPairs(
-    helpNavController: NavController
-) {
+fun LearnHiddenPairs(helpNavController: NavController) {
     TutorialBase(
         title = stringResource(R.string.learn_hidden_pairs_title),
-        helpNavController = helpNavController
+        helpNavController = helpNavController,
     ) {
         val sudokuParser = SudokuParser()
         val board by remember {
             mutableStateOf(
-                sudokuParser.parseBoard(
-                    LEARN_HIDDEN_PAIRS_BOARD,
-                    GameType.Default9x9,
-                    emptySeparator = '.'
-                ).toList()
+                sudokuParser
+                    .parseBoard(
+                        LEARN_HIDDEN_PAIRS_BOARD,
+                        GameType.Default9x9,
+                        emptySeparator = '.',
+                    ).toList(),
             )
         }
         var notes by remember {
             mutableStateOf(sudokuParser.parseNotes(LEARN_HIDDEN_PAIRS_NOTES_INITIAL))
         }
-        val steps = listOf(
-            stringResource(R.string.learn_hidden_pairs_1),
-            stringResource(R.string.learn_hidden_pairs_2)
-        )
-        val stepsCell = listOf(
-            listOf(Cell(row = 5, col = 3), Cell(row = 5, col = 5))
-        )
+        val steps =
+            listOf(
+                stringResource(R.string.learn_hidden_pairs_1),
+                stringResource(R.string.learn_hidden_pairs_2),
+            )
+        val stepsCell =
+            listOf(
+                listOf(Cell(row = 5, col = 3), Cell(row = 5, col = 5)),
+            )
         var step by remember { mutableIntStateOf(0) }
         LaunchedEffect(key1 = step) {
             when (step) {
@@ -63,7 +64,7 @@ fun LearnHiddenPairs(
         TutorialBoardStepContent(
             data = TutorialStepData(board = board, steps = steps, stepsCell = stepsCell, notes = notes),
             step = step,
-            onStepChange = { step = it }
+            onStepChange = { step = it },
         )
     }
 }

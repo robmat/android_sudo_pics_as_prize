@@ -9,5 +9,5 @@ data class TutorialStepData(
     val board: List<List<Cell>>,
     val steps: List<String>,
     val stepsCell: List<List<Cell>>,
-    val notes: List<Note>? = null
+    val notes: List<Note>? = null,
 )

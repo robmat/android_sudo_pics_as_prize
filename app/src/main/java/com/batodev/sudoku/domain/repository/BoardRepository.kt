@@ -1,3 +1,5 @@
 package com.batodev.sudoku.domain.repository
 
-interface BoardRepository : BoardReadRepository, BoardWriteRepository
+interface BoardRepository :
+    BoardReadRepository,
+    BoardWriteRepository

@@ -57,102 +57,111 @@ private const val UNLOCKED_COL_4 = 8
 private const val ERROR_ROW_1 = 4
 private const val ERROR_COL_1 = 4
 
-private val PREVIEW_UNLOCKED_CELLS = listOf(
-    UNLOCKED_ROW_1 to UNLOCKED_COL_1,
-    UNLOCKED_ROW_2 to UNLOCKED_COL_2,
-    UNLOCKED_ROW_3 to UNLOCKED_COL_3,
-    UNLOCKED_ROW_4 to UNLOCKED_COL_4
-)
+private val PREVIEW_UNLOCKED_CELLS =
+    listOf(
+        UNLOCKED_ROW_1 to UNLOCKED_COL_1,
+        UNLOCKED_ROW_2 to UNLOCKED_COL_2,
+        UNLOCKED_ROW_3 to UNLOCKED_COL_3,
+        UNLOCKED_ROW_4 to UNLOCKED_COL_4,
+    )
 private val PREVIEW_ERROR_CELLS = listOf(ERROR_ROW_1 to ERROR_COL_1)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsBoardTheme(
     viewModel: SettingsBoardThemeViewModel,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
 ) {
     val scrollBehavior = rememberTopAppBarScrollBehavior()
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CollapsingTopAppBar(
-                content = CollapsingTopAppBarContent(
-                    collapsingTitle = CollapsingTitle.medium(titleText = stringResource(R.string.board_theme_title)),
-                    navigationIcon = {
-                        IconButton(onClick = navigateBack) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_round_arrow_back_24),
-                                contentDescription = null
-                            )
-                        }
-                    }
-                ),
-                config = CollapsingTopAppBarConfig(scrollBehavior = scrollBehavior)
+                content =
+                    CollapsingTopAppBarContent(
+                        collapsingTitle = CollapsingTitle.medium(titleText = stringResource(R.string.board_theme_title)),
+                        navigationIcon = {
+                            IconButton(onClick = navigateBack) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_round_arrow_back_24),
+                                    contentDescription = null,
+                                )
+                            }
+                        },
+                    ),
+                config = CollapsingTopAppBarConfig(scrollBehavior = scrollBehavior),
             )
-        }
+        },
     ) { paddingValues ->
         BoardThemeSettingsContent(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            viewModel = viewModel
+            modifier =
+                Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+            viewModel = viewModel,
         )
     }
 }
 
 @Composable
-private fun BoardThemeSettingsContent(modifier: Modifier, viewModel: SettingsBoardThemeViewModel) {
+private fun BoardThemeSettingsContent(
+    modifier: Modifier = Modifier,
+    viewModel: SettingsBoardThemeViewModel,
+) {
     Column(modifier = modifier) {
         val positionLines by viewModel.positionLines.collectAsStateWithLifecycle(
-            initialValue = PreferencesConstants.DEFAULT_POSITION_LINES
+            initialValue = PreferencesConstants.DEFAULT_POSITION_LINES,
         )
         val highlightMistakes by viewModel.highlightMistakes.collectAsState(
-            initial = PreferencesConstants.DEFAULT_HIGHLIGHT_MISTAKES
+            initial = PreferencesConstants.DEFAULT_HIGHLIGHT_MISTAKES,
         )
         val boardCrossHighlight by viewModel.crossHighlight.collectAsState(
-            initial = PreferencesConstants.DEFAULT_BOARD_CROSS_HIGHLIGHT
+            initial = PreferencesConstants.DEFAULT_BOARD_CROSS_HIGHLIGHT,
         )
         BoardPreviewTheme(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 16.dp),
             positionLines = positionLines,
             errosHighlight = highlightMistakes != 0,
-            crossHighlight = boardCrossHighlight
+            crossHighlight = boardCrossHighlight,
         )
 
         val monetSudokuBoard by viewModel.monetSudokuBoard.collectAsStateWithLifecycle(
-            PreferencesConstants.DEFAULT_MONET_SUDOKU_BOARD
+            PreferencesConstants.DEFAULT_MONET_SUDOKU_BOARD,
         )
         PreferenceRowSwitch(
-            info = PreferenceRowInfo(
-                title = stringResource(R.string.pref_boardtheme_accent),
-                subtitle = stringResource(R.string.pref_boardtheme_accent_subtitle),
-                painter = rememberVectorPainter(Icons.Outlined.Palette)
-            ),
+            info =
+                PreferenceRowInfo(
+                    title = stringResource(R.string.pref_boardtheme_accent),
+                    subtitle = stringResource(R.string.pref_boardtheme_accent_subtitle),
+                    painter = rememberVectorPainter(Icons.Outlined.Palette),
+                ),
             checked = monetSudokuBoard,
             onClick = {
                 viewModel.updateMonetSudokuBoardSetting(!monetSudokuBoard)
-            }
+            },
         )
 
         PreferenceRowSwitch(
-            info = PreferenceRowInfo(
-                title = stringResource(R.string.pref_position_lines),
-                subtitle = stringResource(R.string.pref_position_lines_summ),
-                painter = rememberVectorPainter(Icons.Rounded.GridGoldenratio)
-            ),
+            info =
+                PreferenceRowInfo(
+                    title = stringResource(R.string.pref_position_lines),
+                    subtitle = stringResource(R.string.pref_position_lines_summ),
+                    painter = rememberVectorPainter(Icons.Rounded.GridGoldenratio),
+                ),
             checked = positionLines,
-            onClick = { viewModel.updatePositionLinesSetting(!positionLines) }
+            onClick = { viewModel.updatePositionLinesSetting(!positionLines) },
         )
 
         PreferenceRowSwitch(
-            info = PreferenceRowInfo(
-                title = stringResource(R.string.pref_cross_highlight),
-                subtitle = stringResource(R.string.pref_cross_highlight_subtitle),
-                painter = rememberVectorPainter(Icons.Rounded.GridOn)
-            ),
+            info =
+                PreferenceRowInfo(
+                    title = stringResource(R.string.pref_cross_highlight),
+                    subtitle = stringResource(R.string.pref_cross_highlight_subtitle),
+                    painter = rememberVectorPainter(Icons.Rounded.GridOn),
+                ),
             checked = boardCrossHighlight,
-            onClick = { viewModel.updateBoardCrossHighlight(!boardCrossHighlight) }
+            onClick = { viewModel.updateBoardCrossHighlight(!boardCrossHighlight) },
         )
     }
 }
@@ -162,37 +171,42 @@ private fun BoardPreviewTheme(
     positionLines: Boolean,
     errosHighlight: Boolean,
     crossHighlight: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val sudokuParser = SudokuParser()
-    val previewBoard = sudokuParser.parseBoard(
-        board = "..1...9...2..17.545...24..328.....9...529..47.74.9...1...........9..5.....3.4....",
-        gameType = GameType.Default9x9,
-        locked = true,
-        emptySeparator = '.'
-    ).also { grid ->
-        PREVIEW_UNLOCKED_CELLS.forEach { (row, col) ->
-            grid[row][col].locked = false
-        }
-        PREVIEW_ERROR_CELLS.forEach { (row, col) ->
-            grid[row][col].error = true
-        }
-    }
+    val previewBoard =
+        sudokuParser
+            .parseBoard(
+                board = "..1...9...2..17.545...24..328.....9...529..47.74.9...1...........9..5.....3.4....",
+                gameType = GameType.Default9x9,
+                locked = true,
+                emptySeparator = '.',
+            ).also { grid ->
+                PREVIEW_UNLOCKED_CELLS.forEach { (row, col) ->
+                    grid[row][col].locked = false
+                }
+                PREVIEW_ERROR_CELLS.forEach { (row, col) ->
+                    grid[row][col].error = true
+                }
+            }
     var selectedCell by remember { mutableStateOf(Cell(-1, -1, 0)) }
     Board(
         modifier = modifier,
         data = BoardData(board = previewBoard, size = 9),
-        interaction = BoardInteraction(
-            selectedCell = selectedCell,
-            onClick = { cell -> selectedCell = if (selectedCell == cell) Cell(-1, -1, 0) else cell }
-        ),
-        style = BoardStyle(
-            boardColors = LocalBoardColors.current,
-            displayOptions = BoardDisplayOptions(
-                positionLines = positionLines,
-                errorsHighlight = errosHighlight,
-                crossHighlight = crossHighlight
-            )
-        )
+        interaction =
+            BoardInteraction(
+                selectedCell = selectedCell,
+                onClick = { cell -> selectedCell = if (selectedCell == cell) Cell(-1, -1, 0) else cell },
+            ),
+        style =
+            BoardStyle(
+                boardColors = LocalBoardColors.current,
+                displayOptions =
+                    BoardDisplayOptions(
+                        positionLines = positionLines,
+                        errorsHighlight = errosHighlight,
+                        crossHighlight = crossHighlight,
+                    ),
+            ),
     )
 }

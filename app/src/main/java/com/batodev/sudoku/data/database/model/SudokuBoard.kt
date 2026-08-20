@@ -14,9 +14,9 @@ import com.batodev.sudoku.core.qqwing.GameType
             onDelete = ForeignKey.CASCADE,
             entity = Folder::class,
             parentColumns = arrayOf("uid"),
-            childColumns = arrayOf("folder_id")
-        )
-    ]
+            childColumns = arrayOf("folder_id"),
+        ),
+    ],
 )
 data class SudokuBoard(
     @PrimaryKey(autoGenerate = true) val uid: Long,
@@ -25,5 +25,5 @@ data class SudokuBoard(
     @ColumnInfo(name = "prize_image_name", defaultValue = "null") val prizeImageName: String? = null,
     @ColumnInfo(name = "difficulty") val difficulty: GameDifficulty,
     @ColumnInfo(name = "type") val type: GameType,
-    @ColumnInfo(name = "folder_id", defaultValue = "null") val folderId: Long? = null
+    @ColumnInfo(name = "folder_id", defaultValue = "null") val folderId: Long? = null,
 )

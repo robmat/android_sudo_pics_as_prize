@@ -33,14 +33,20 @@ import com.batodev.sudoku.ui.components.board.BoardInteraction
 import com.batodev.sudoku.ui.components.board.BoardStyle
 import com.batodev.sudoku.ui.learn.components.TutorialBase
 
-private data class RulesMistakeCell(val row: Int, val col: Int, val value: Int, val isError: Boolean)
-
-private val RULES_MISTAKE_CELLS = listOf(
-    RulesMistakeCell(row = 1, col = 7, value = 6, isError = true),
-    RulesMistakeCell(row = 3, col = 6, value = 2, isError = true),
-    RulesMistakeCell(row = 4, col = 7, value = 6, isError = false),
-    RulesMistakeCell(row = 4, col = 8, value = 8, isError = false)
+private data class RulesMistakeCell(
+    val row: Int,
+    val col: Int,
+    val value: Int,
+    val isError: Boolean,
 )
+
+private val RULES_MISTAKE_CELLS =
+    listOf(
+        RulesMistakeCell(row = 1, col = 7, value = 6, isError = true),
+        RulesMistakeCell(row = 3, col = 6, value = 2, isError = true),
+        RulesMistakeCell(row = 4, col = 7, value = 6, isError = false),
+        RulesMistakeCell(row = 4, col = 8, value = 8, isError = false),
+    )
 
 private fun applyMistakeHighlights(board: List<List<Cell>>): List<List<Cell>> {
     RULES_MISTAKE_CELLS.forEach { mistake ->
@@ -59,11 +65,11 @@ private fun LearnSudokuMistakesSection(previewBoard: List<List<Cell>>) {
 
     var highlightError by remember { mutableStateOf(false) }
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Checkbox(
             checked = highlightError,
-            onCheckedChange = { highlightError = !highlightError }
+            onCheckedChange = { highlightError = !highlightError },
         )
         Text(stringResource(R.string.sudoku_rules_mistakes_highlight))
     }
@@ -73,32 +79,33 @@ private fun LearnSudokuMistakesSection(previewBoard: List<List<Cell>>) {
     }
     Board(
         data = BoardData(board = applyMistakeHighlights(errorBoard), size = 9),
-        interaction = BoardInteraction(
-            selectedCell = secondSelectedCell,
-            onClick = { secondSelectedCell = it }
-        ),
-        style = BoardStyle(
-            boardColors = LocalBoardColors.current,
-            displayOptions = BoardDisplayOptions(errorsHighlight = highlightError)
-        )
+        interaction =
+            BoardInteraction(
+                selectedCell = secondSelectedCell,
+                onClick = { secondSelectedCell = it },
+            ),
+        style =
+            BoardStyle(
+                boardColors = LocalBoardColors.current,
+                displayOptions = BoardDisplayOptions(errorsHighlight = highlightError),
+            ),
     )
     Text(stringResource(R.string.sudoku_rules_mistakes_explanation))
 }
 
 @Composable
-fun LearnSudokuRules(
-    helpNavController: NavController
-) {
+fun LearnSudokuRules(helpNavController: NavController) {
     TutorialBase(
         title = stringResource(R.string.learn_sudoku_rules),
-        helpNavController = helpNavController
+        helpNavController = helpNavController,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                    .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             var selectedCell by remember { mutableStateOf(Cell(-1, -1, 0)) }
 
@@ -108,8 +115,8 @@ fun LearnSudokuRules(
                     sudokuParser.parseBoard(
                         board = "...6.....824753169...2........5..471...1..386...4..925...3........9........8.....",
                         gameType = GameType.Default9x9,
-                        emptySeparator = '.'
-                    )
+                        emptySeparator = '.',
+                    ),
                 )
             }
 
@@ -118,7 +125,7 @@ fun LearnSudokuRules(
             Board(
                 data = BoardData(board = previewBoard, size = 9),
                 interaction = BoardInteraction(selectedCell = selectedCell, onClick = { selectedCell = it }),
-                style = BoardStyle(boardColors = LocalBoardColors.current)
+                style = BoardStyle(boardColors = LocalBoardColors.current),
             )
             Spacer(modifier = Modifier.height(8.dp))
             LearnSudokuMistakesSection(previewBoard)

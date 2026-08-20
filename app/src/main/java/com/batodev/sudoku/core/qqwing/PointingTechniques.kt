@@ -5,8 +5,9 @@ package com.batodev.sudoku.core.qqwing
  * candidates for a value within a section fall inside a single row (or
  * column), that value can be eliminated from the rest of the row/column.
  */
-internal class PointingTechniques(private val board: QQWing) {
-
+internal class PointingTechniques(
+    private val board: QQWing,
+) {
     fun pointingRowReduction(round: Int): Boolean {
         for (valIndex in 0 until QQWing.ROW_COL_SEC_SIZE) {
             for (section in 0 until QQWing.ROW_COL_SEC_SIZE) {
@@ -39,7 +40,10 @@ internal class PointingTechniques(private val board: QQWing) {
         return false
     }
 
-    private fun findBoxRow(valIndex: Int, secStart: Int): Int? {
+    private fun findBoxRow(
+        valIndex: Int,
+        secStart: Int,
+    ): Int? {
         var inOneRow = true
         var boxRow = -1
         for (j in 0 until QQWing.GRID_SIZE_ROW) {
@@ -53,7 +57,12 @@ internal class PointingTechniques(private val board: QQWing) {
         return if (inOneRow && boxRow != -1) boxRow else null
     }
 
-    private fun eliminateRowCandidates(round: Int, valIndex: Int, section: Int, rowStart: Int): Boolean {
+    private fun eliminateRowCandidates(
+        round: Int,
+        valIndex: Int,
+        section: Int,
+        rowStart: Int,
+    ): Boolean {
         var doneSomething = false
         for (i in 0 until QQWing.ROW_COL_SEC_SIZE) {
             val position = rowStart + i
@@ -67,7 +76,10 @@ internal class PointingTechniques(private val board: QQWing) {
         return doneSomething
     }
 
-    private fun findBoxCol(valIndex: Int, secStart: Int): Int? {
+    private fun findBoxCol(
+        valIndex: Int,
+        secStart: Int,
+    ): Int? {
         var inOneCol = true
         var boxCol = -1
         for (i in 0 until QQWing.GRID_SIZE_COL) {
@@ -81,7 +93,12 @@ internal class PointingTechniques(private val board: QQWing) {
         return if (inOneCol && boxCol != -1) boxCol else null
     }
 
-    private fun eliminateColumnCandidates(round: Int, valIndex: Int, section: Int, colStart: Int): Boolean {
+    private fun eliminateColumnCandidates(
+        round: Int,
+        valIndex: Int,
+        section: Int,
+        colStart: Int,
+    ): Boolean {
         var doneSomething = false
         for (i in 0 until QQWing.ROW_COL_SEC_SIZE) {
             val position = colStart + QQWing.ROW_COL_SEC_SIZE * i

@@ -49,7 +49,10 @@ internal fun QQWing.reset(): Boolean {
     return true
 }
 
-private fun QQWing.markGiven(position: Int, round: Int): Boolean {
+private fun QQWing.markGiven(
+    position: Int,
+    round: Int,
+): Boolean {
     val valIndex = puzzle[position] - 1
     val valPos = getPossibilityIndexInternal(valIndex, position)
     val value = puzzle[position]
@@ -63,7 +66,11 @@ private fun QQWing.markGiven(position: Int, round: Int): Boolean {
  * Mark the given value at the given position. Go through the row, column,
  * and section for the position and remove the value from the possibilities.
  */
-internal fun QQWing.mark(position: Int, round: Int, value: Int) {
+internal fun QQWing.mark(
+    position: Int,
+    round: Int,
+    value: Int,
+) {
     require(solution[position] == 0) { "Marking position that already has been marked." }
     require(solutionRound[position] == 0) { "Marking position that was marked another round." }
     var valIndex = value - 1
@@ -100,7 +107,11 @@ internal fun QQWing.mark(position: Int, round: Int, value: Int) {
     }
 }
 
-private fun QQWing.markPossibilityUsed(valIndex: Int, position: Int, round: Int) {
+private fun QQWing.markPossibilityUsed(
+    valIndex: Int,
+    position: Int,
+    round: Int,
+) {
     val valPos = getPossibilityIndexInternal(valIndex, position)
     if (possibilities[valPos] == 0) {
         possibilities[valPos] = round

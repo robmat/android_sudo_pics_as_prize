@@ -7,5 +7,5 @@ internal data class ExploreFolderDialogState(
     val addSudokuBottomSheet: MutableState<Boolean>,
     val moveSelectedDialog: MutableState<Boolean>,
     val deleteBoardDialog: MutableState<Boolean>,
-    val deleteBoardDialogBoard: MutableState<SudokuBoard?>
+    val deleteBoardDialogBoard: MutableState<SudokuBoard?>,
 )

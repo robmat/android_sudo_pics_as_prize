@@ -23,8 +23,8 @@ internal suspend fun GameViewModel.saveGame() {
                 currentBoard = sudokuParser.boardToString(gameBoard),
                 notes = sudokuParser.notesToString(notes),
                 mistakes = mistakesCount,
-                lastPlayed = ZonedDateTime.now()
-            )
+                lastPlayed = ZonedDateTime.now(),
+            ),
         )
     } else {
         dependencies.savedGameRepository.insert(
@@ -35,8 +35,8 @@ internal suspend fun GameViewModel.saveGame() {
                 timer = java.time.Duration.ofSeconds(duration.inWholeSeconds),
                 mistakes = mistakesCount,
                 lastPlayed = ZonedDateTime.now(),
-                startedAt = ZonedDateTime.now()
-            )
+                startedAt = ZonedDateTime.now(),
+            ),
         )
     }
 }
@@ -49,10 +49,11 @@ internal fun GameViewModel.restoreSavedGame(savedGame: SavedGame?) {
 
     mistakesCount = savedGame.mistakes
     val sudokuParser = SudokuParser()
-    gameBoard = sudokuParser.parseBoard(
-        savedGame.currentBoard,
-        boardEntity.type
-    )
+    gameBoard =
+        sudokuParser.parseBoard(
+            savedGame.currentBoard,
+            boardEntity.type,
+        )
     notes = sudokuParser.parseNotes(savedGame.notes)
 
     for (i in gameBoard.indices) {
@@ -62,23 +63,28 @@ internal fun GameViewModel.restoreSavedGame(savedGame: SavedGame?) {
     }
 }
 
-private fun GameViewModel.restoreCellState(i: Int, j: Int) {
+private fun GameViewModel.restoreCellState(
+    i: Int,
+    j: Int,
+) {
     gameBoard[i][j].locked = initialBoard[i][j].locked
     if (gameBoard[i][j].value == 0 || gameBoard[i][j].locked) return
-    gameBoard[i][j].error = if (mistakesMethod.value == 1) {
-        !sudokuUtils.isValidCellDynamic(
-            board = gameBoard,
-            cell = gameBoard[i][j],
-            type = boardEntity.type
-        )
-    } else {
-        isValidCell(gameBoard, gameBoard[i][j])[i][j].error
-    }
+    gameBoard[i][j].error =
+        if (mistakesMethod.value == 1) {
+            !sudokuUtils.isValidCellDynamic(
+                board = gameBoard,
+                cell = gameBoard[i][j],
+                type = boardEntity.type,
+            )
+        } else {
+            isValidCell(gameBoard, gameBoard[i][j])[i][j].error
+        }
 }
 
-fun GameViewModel.getFontSize(type: GameType = gameType, factor: Int): TextUnit {
-    return sudokuUtils.getFontSize(type, factor)
-}
+fun GameViewModel.getFontSize(
+    type: GameType = gameType,
+    factor: Int,
+): TextUnit = sudokuUtils.getFontSize(type, factor)
 
 fun GameViewModel.setFirstGameFalse() {
     viewModelScope.launch(Dispatchers.IO) {
@@ -86,6 +92,4 @@ fun GameViewModel.setFirstGameFalse() {
     }
 }
 
-fun GameViewModel.prizeImageName(): String {
-    return boardEntity.prizeImageName.orEmpty()
-}
+fun GameViewModel.prizeImageName(): String = boardEntity.prizeImageName.orEmpty()

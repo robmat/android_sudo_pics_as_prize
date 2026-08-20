@@ -51,7 +51,7 @@ private const val PREVIEW_ASPECT_RATIO = 1f / 1.7f
 data class AppThemePreviewInfo(
     val selected: Boolean,
     val colorScheme: ColorScheme,
-    val shapes: Shapes
+    val shapes: Shapes,
 )
 
 @Composable
@@ -59,12 +59,12 @@ private fun RowScope.AppThemePreviewSelectionIndicator(info: AppThemePreviewInfo
     AnimatedVisibility(
         visible = info.selected,
         enter = fadeIn() + scaleIn(),
-        exit = fadeOut() + scaleOut()
+        exit = fadeOut() + scaleOut(),
     ) {
         Icon(
             imageVector = Icons.Filled.CheckCircle,
             contentDescription = null,
-            tint = info.colorScheme.primary
+            tint = info.colorScheme.primary,
         )
     }
 }
@@ -72,38 +72,41 @@ private fun RowScope.AppThemePreviewSelectionIndicator(info: AppThemePreviewInfo
 @Composable
 private fun AppThemePreviewTextBlock(info: AppThemePreviewInfo) {
     Box(
-        modifier = Modifier
-            .padding(start = 8.dp, end = 8.dp)
-            .background(
-                color = info.colorScheme.surfaceVariant,
-                shape = info.shapes.small,
-            )
-            .fillMaxWidth(1f),
+        modifier =
+            Modifier
+                .padding(start = 8.dp, end = 8.dp)
+                .background(
+                    color = info.colorScheme.surfaceVariant,
+                    shape = info.shapes.small,
+                ).fillMaxWidth(1f),
     ) {
         Column(
-            modifier = Modifier
-                .padding(4.dp)
-                .height(32.dp)
-                .fillMaxWidth()
+            modifier =
+                Modifier
+                    .padding(4.dp)
+                    .height(32.dp)
+                    .fillMaxWidth(),
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth(TERTIARY_BAR_WIDTH_FRACTION)
-                    .weight(1f)
-                    .background(
-                        color = info.colorScheme.tertiary,
-                        shape = RoundedCornerShape(5.dp)
-                    ),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(TERTIARY_BAR_WIDTH_FRACTION)
+                        .weight(1f)
+                        .background(
+                            color = info.colorScheme.tertiary,
+                            shape = RoundedCornerShape(5.dp),
+                        ),
             )
             Spacer(modifier = Modifier.height(6.dp))
             Box(
-                modifier = Modifier
-                    .fillMaxWidth(SECONDARY_BAR_WIDTH_FRACTION)
-                    .weight(1f)
-                    .background(
-                        color = info.colorScheme.secondary,
-                        shape = RoundedCornerShape(5.dp)
-                    ),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(SECONDARY_BAR_WIDTH_FRACTION)
+                        .weight(1f)
+                        .background(
+                            color = info.colorScheme.secondary,
+                            shape = RoundedCornerShape(5.dp),
+                        ),
             )
         }
     }
@@ -112,20 +115,22 @@ private fun AppThemePreviewTextBlock(info: AppThemePreviewInfo) {
 @Composable
 private fun AppThemePreviewAccentBar(info: AppThemePreviewInfo) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp)
-            .height(16.dp),
-        horizontalArrangement = Arrangement.Center
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
+                .height(16.dp),
+        horizontalArrangement = Arrangement.Center,
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth(ACCENT_BAR_WIDTH_FRACTION)
-                .background(
-                    color = info.colorScheme.primary,
-                    shape = info.shapes.small,
-                )
+            modifier =
+                Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(ACCENT_BAR_WIDTH_FRACTION)
+                    .background(
+                        color = info.colorScheme.primary,
+                        shape = info.shapes.small,
+                    ),
         )
     }
 }
@@ -133,39 +138,43 @@ private fun AppThemePreviewAccentBar(info: AppThemePreviewInfo) {
 @Composable
 private fun AppThemePreviewBottomBar(info: AppThemePreviewInfo) {
     Box(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier =
+            Modifier
+                .fillMaxWidth(),
         contentAlignment = Alignment.BottomCenter,
     ) {
         Surface(
             tonalElevation = 3.dp,
         ) {
             Row(
-                modifier = Modifier
-                    .height(32.dp)
-                    .fillMaxWidth()
-                    .background(info.colorScheme.surface)
-                    .padding(horizontal = 8.dp),
+                modifier =
+                    Modifier
+                        .height(32.dp)
+                        .fillMaxWidth()
+                        .background(info.colorScheme.surface)
+                        .padding(horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(
-                    modifier = Modifier
-                        .alpha(BOTTOM_BAR_ITEM_ALPHA)
-                        .height(17.dp)
-                        .weight(1f)
-                        .background(
-                            color = info.colorScheme.surfaceTint,
-                            shape = info.shapes.small,
-                        ),
+                    modifier =
+                        Modifier
+                            .alpha(BOTTOM_BAR_ITEM_ALPHA)
+                            .height(17.dp)
+                            .weight(1f)
+                            .background(
+                                color = info.colorScheme.surfaceTint,
+                                shape = info.shapes.small,
+                            ),
                 )
                 Box(
-                    modifier = Modifier
-                        .padding(start = 8.dp)
-                        .size(17.dp)
-                        .background(
-                            color = info.colorScheme.primaryContainer,
-                            shape = CircleShape,
-                        ),
+                    modifier =
+                        Modifier
+                            .padding(start = 8.dp)
+                            .size(17.dp)
+                            .background(
+                                color = info.colorScheme.primaryContainer,
+                                shape = CircleShape,
+                            ),
                 )
             }
         }
@@ -177,32 +186,34 @@ private fun AppThemePreviewBottomBar(info: AppThemePreviewInfo) {
 fun AppThemePreviewItem(
     info: AppThemePreviewInfo,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .aspectRatio(PREVIEW_ASPECT_RATIO)
-            .border(
-                width = 4.dp,
-                color = if (info.selected) {
-                    info.colorScheme.primary
-                } else {
-                    info.colorScheme.onSurface.copy(alpha = UNSELECTED_BORDER_ALPHA)
-                },
-                shape = RoundedCornerShape(15.dp),
-            )
-            .padding(4.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(info.colorScheme.background)
-            .clickable(onClick = onClick),
-        verticalArrangement = Arrangement.SpaceBetween
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .aspectRatio(PREVIEW_ASPECT_RATIO)
+                .border(
+                    width = 4.dp,
+                    color =
+                        if (info.selected) {
+                            info.colorScheme.primary
+                        } else {
+                            info.colorScheme.onSurface.copy(alpha = UNSELECTED_BORDER_ALPHA)
+                        },
+                    shape = RoundedCornerShape(15.dp),
+                ).padding(4.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(info.colorScheme.background)
+                .clickable(onClick = onClick),
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(32.dp)
-                .padding(8.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(32.dp)
+                    .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             AppThemePreviewSelectionIndicator(info)
@@ -216,34 +227,36 @@ fun AppThemePreviewItem(
 
 @LightDarkPreview
 @Composable
-fun AppThemePreviewItem_Preview() {
+private fun AppThemePreviewItem_Preview() {
     SudokuTheme {
         Surface {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Column(
-                    modifier = Modifier.width(100.dp)
+                    modifier = Modifier.width(100.dp),
                 ) {
                     AppThemePreviewItem(
-                        info = AppThemePreviewInfo(
-                            selected = true,
-                            colorScheme = MaterialTheme.colorScheme,
-                            shapes = MaterialTheme.shapes
-                        ),
-                        onClick = { }
+                        info =
+                            AppThemePreviewInfo(
+                                selected = true,
+                                colorScheme = MaterialTheme.colorScheme,
+                                shapes = MaterialTheme.shapes,
+                            ),
+                        onClick = { },
                     )
                 }
                 Column(
-                    modifier = Modifier.width(100.dp)
+                    modifier = Modifier.width(100.dp),
                 ) {
                     AppThemePreviewItem(
-                        info = AppThemePreviewInfo(
-                            selected = false,
-                            colorScheme = MaterialTheme.colorScheme,
-                            shapes = MaterialTheme.shapes
-                        ),
-                        onClick = { }
+                        info =
+                            AppThemePreviewInfo(
+                                selected = false,
+                                colorScheme = MaterialTheme.colorScheme,
+                                shapes = MaterialTheme.shapes,
+                            ),
+                        onClick = { },
                     )
                 }
             }

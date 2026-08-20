@@ -26,7 +26,7 @@ private fun NavGraphBuilder.homeDestination(navController: NavController) {
             navigatePlayGame = {
                 navController.navigate("game/${it.first}/${it.second}")
             },
-            hiltViewModel()
+            hiltViewModel(),
         )
     }
 }
@@ -38,7 +38,7 @@ private fun NavGraphBuilder.moreDestination(navController: NavController) {
             navigateLearn = { navController.navigate(Route.LEARN) },
             navigateAbout = { navController.navigate(Route.ABOUT) },
             navigateImport = { navController.navigate(Route.FOLDERS) },
-            navigateStatistics = { navController.navigate(Route.STATISTICS) }
+            navigateStatistics = { navController.navigate(Route.STATISTICS) },
         )
     }
 }
@@ -47,7 +47,7 @@ private fun NavGraphBuilder.aboutDestinations(navController: NavController) {
     animatedComposable(Route.ABOUT) {
         AboutScreen(
             navigateBack = { navController.popBackStack() },
-            navigateOpenSourceLicenses = { navController.navigate(Route.OPEN_SOURCE_LICENSES) }
+            navigateOpenSourceLicenses = { navController.navigate(Route.OPEN_SOURCE_LICENSES) },
         )
     }
 
@@ -63,7 +63,7 @@ private fun NavGraphBuilder.welcomeDestination(navController: NavController) {
                 navController.popBackStack()
                 navController.navigate(Route.HOME)
             },
-            hiltViewModel()
+            hiltViewModel(),
         )
     }
 }
@@ -73,7 +73,7 @@ private fun NavGraphBuilder.statisticsAndHistoryDestinations(navController: NavC
         StatisticsScreen(
             navigateHistory = { navController.navigate(Route.HISTORY) },
             navigateSavedGame = { navController.navigate("saved_game/$it") },
-            hiltViewModel()
+            hiltViewModel(),
         )
     }
 
@@ -82,10 +82,10 @@ private fun NavGraphBuilder.statisticsAndHistoryDestinations(navController: NavC
             navigateBack = { navController.popBackStack() },
             navigateSavedGame = { uid ->
                 navController.navigate(
-                    "saved_game/$uid"
+                    "saved_game/$uid",
                 )
             },
-            hiltViewModel()
+            hiltViewModel(),
         )
     }
 }
@@ -99,18 +99,19 @@ private fun NavGraphBuilder.learnDestination(navController: NavController) {
 private fun NavGraphBuilder.createEditSudokuDestination(navController: NavController) {
     animatedComposable(
         route = "createeditsudoku/{game_uid}/{folder_uid}",
-        arguments = listOf(
-            navArgument("game_uid") {
-                type = NavType.LongType
-            }, // used for editing
-            navArgument("folder_uid") {
-                type = NavType.LongType
-            } // folder where to save
-        )
+        arguments =
+            listOf(
+                navArgument("game_uid") {
+                    type = NavType.LongType
+                }, // used for editing
+                navArgument("folder_uid") {
+                    type = NavType.LongType
+                }, // folder where to save
+            ),
     ) {
         CreateSudokuScreen(
             navigateBack = { navController.popBackStack() },
-            hiltViewModel()
+            hiltViewModel(),
         )
     }
 }
@@ -118,29 +119,33 @@ private fun NavGraphBuilder.createEditSudokuDestination(navController: NavContro
 private fun NavGraphBuilder.settingsDestinations(navController: NavController) {
     animatedComposable(
         route = Route.SETTINGS,
-        arguments = listOf(
-            navArgument("fromGame") {
-                defaultValue = false
-                type = NavType.BoolType
-            }
-        )
+        arguments =
+            listOf(
+                navArgument("fromGame") {
+                    defaultValue = false
+                    type = NavType.BoolType
+                },
+            ),
     ) {
         SettingsScreen(
             navigateBack = { navController.popBackStack() },
             hiltViewModel(),
-            navigateBoardSettings = { navController.navigate("settings_board_theme") }
+            navigateBoardSettings = { navController.navigate("settings_board_theme") },
         )
     }
 
     animatedComposable(Route.SETTINGS_BOARD_THEME) {
         SettingsBoardTheme(
             viewModel = hiltViewModel(),
-            navigateBack = { navController.popBackStack() }
+            navigateBack = { navController.popBackStack() },
         )
     }
 }
 
-fun NavGraphBuilder.buildSudokuNavigationGraph(navController: NavController, context: Context) {
+fun NavGraphBuilder.buildSudokuNavigationGraph(
+    navController: NavController,
+    context: Context,
+) {
     homeDestination(navController)
     moreDestination(navController)
     aboutDestinations(navController)

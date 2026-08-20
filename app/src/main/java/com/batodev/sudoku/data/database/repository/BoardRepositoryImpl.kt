@@ -6,7 +6,7 @@ import com.batodev.sudoku.domain.repository.BoardRepository
 import com.batodev.sudoku.domain.repository.BoardWriteRepository
 
 class BoardRepositoryImpl(
-    boardDao: BoardDao
+    boardDao: BoardDao,
 ) : BoardRepository,
     BoardReadRepository by BoardReadRepositoryImpl(boardDao),
     BoardWriteRepository by BoardWriteRepositoryImpl(boardDao)

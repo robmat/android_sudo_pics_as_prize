@@ -36,26 +36,31 @@ private const val NOTE_TEXT_SIZE_DEFAULT_SP = 14
 private const val LINE_WIDTH_DP = 1.3
 private const val BOARD_CORNER_RADIUS_PX = 15f
 
-private fun defaultMainTextSizeFor(size: Int): TextUnit = when (size) {
-    BOARD_SIZE_6X6 -> MAIN_TEXT_SIZE_6X6_SP.sp
-    BOARD_SIZE_9X9 -> MAIN_TEXT_SIZE_9X9_SP.sp
-    BOARD_SIZE_12X12 -> MAIN_TEXT_SIZE_12X12_SP.sp
-    else -> MAIN_TEXT_SIZE_DEFAULT_SP.sp
-}
+private fun defaultMainTextSizeFor(size: Int): TextUnit =
+    when (size) {
+        BOARD_SIZE_6X6 -> MAIN_TEXT_SIZE_6X6_SP.sp
+        BOARD_SIZE_9X9 -> MAIN_TEXT_SIZE_9X9_SP.sp
+        BOARD_SIZE_12X12 -> MAIN_TEXT_SIZE_12X12_SP.sp
+        else -> MAIN_TEXT_SIZE_DEFAULT_SP.sp
+    }
 
-private fun defaultNoteTextSizeFor(size: Int): TextUnit = when (size) {
-    BOARD_SIZE_6X6 -> NOTE_TEXT_SIZE_6X6_SP.sp
-    BOARD_SIZE_9X9 -> NOTE_TEXT_SIZE_9X9_SP.sp
-    BOARD_SIZE_12X12 -> NOTE_TEXT_SIZE_12X12_SP.sp
-    else -> NOTE_TEXT_SIZE_DEFAULT_SP.sp
-}
+private fun defaultNoteTextSizeFor(size: Int): TextUnit =
+    when (size) {
+        BOARD_SIZE_6X6 -> NOTE_TEXT_SIZE_6X6_SP.sp
+        BOARD_SIZE_9X9 -> NOTE_TEXT_SIZE_9X9_SP.sp
+        BOARD_SIZE_12X12 -> NOTE_TEXT_SIZE_12X12_SP.sp
+        else -> NOTE_TEXT_SIZE_DEFAULT_SP.sp
+    }
 
 /**
  * Text sizes used to render the board's main digits and pencil-mark notes. Either can be left
  * `null` to fall back to the size-appropriate default (see [defaultMainTextSizeFor] and
  * [defaultNoteTextSizeFor]).
  */
-data class BoardTextSizes(val mainTextSize: TextUnit? = null, val noteTextSize: TextUnit? = null)
+data class BoardTextSizes(
+    val mainTextSize: TextUnit? = null,
+    val noteTextSize: TextUnit? = null,
+)
 
 /** Toggles that control what [Board] highlights/renders, beyond the puzzle data itself. */
 data class BoardDisplayOptions(
@@ -66,7 +71,7 @@ data class BoardDisplayOptions(
     val questions: Boolean = false,
     val renderNotes: Boolean = true,
     val zoomable: Boolean = false,
-    val crossHighlight: Boolean = false
+    val crossHighlight: Boolean = false,
 )
 
 /** Cell selection/interaction callbacks and the currently-selected/highlighted cells. */
@@ -74,21 +79,21 @@ data class BoardInteraction(
     val selectedCell: Cell,
     val onClick: (Cell) -> Unit,
     val onLongClick: (Cell) -> Unit = { },
-    val cellsToHighlight: List<Cell>? = null
+    val cellsToHighlight: List<Cell>? = null,
 )
 
 /** Everything that controls how [Board] looks: colors, text sizes and display toggles. */
 data class BoardStyle(
     val boardColors: SudokuBoardColors,
     val textSizes: BoardTextSizes? = null,
-    val displayOptions: BoardDisplayOptions = BoardDisplayOptions()
+    val displayOptions: BoardDisplayOptions = BoardDisplayOptions(),
 )
 
 /** The puzzle data [Board] renders: the [board] itself, its [size], and any pencil-mark [notes]. */
 data class BoardData(
     val board: List<List<Cell>>,
     val size: Int = board.size,
-    val notes: List<Note>? = null
+    val notes: List<Note>? = null,
 )
 
 /** Precomputed geometry/paint state needed to draw one frame of the sudoku board canvas. */
@@ -104,7 +109,7 @@ private data class BoardCanvasContext(
     val horThick: Int,
     val thinLineWidth: Float,
     val thickLineWidth: Float,
-    val paints: BoardPaints
+    val paints: BoardPaints,
 )
 
 private fun DrawScope.drawSudokuBoardContent(context: BoardCanvasContext) {
@@ -122,7 +127,7 @@ private fun DrawScope.drawSudokuBoardContent(context: BoardCanvasContext) {
         highlightColor,
         cellSize,
         maxWidth,
-        displayOptions.positionLines
+        displayOptions.positionLines,
     )
     if (displayOptions.identicalNumbersHighlight) {
         drawIdenticalNumbersHighlight(board, size, context.interaction.selectedCell, highlightColor, cellSize)
@@ -133,24 +138,25 @@ private fun DrawScope.drawSudokuBoardContent(context: BoardCanvasContext) {
         thickLineColor = thickLineColor,
         thickLineWidth = context.thickLineWidth,
         maxWidth = maxWidth,
-        cornerRadius = CornerRadius(BOARD_CORNER_RADIUS_PX, BOARD_CORNER_RADIUS_PX)
+        cornerRadius = CornerRadius(BOARD_CORNER_RADIUS_PX, BOARD_CORNER_RADIUS_PX),
     )
 
     drawSudokuGridLines(
         geometry = GridGeometry(size, cellSize, maxWidth, context.horThick, context.vertThick),
         style = GridLineStyle(thickLineColor, thinLineColor, context.thickLineWidth, context.thinLineWidth),
-        boundsCheckVerticalLines = true
+        boundsCheckVerticalLines = true,
     )
 
     drawNumbers(
         size = size,
         board = board,
         paints = context.paints,
-        options = DrawNumbersOptions(
-            highlightErrors = displayOptions.errorsHighlight,
-            questions = displayOptions.questions
-        ),
-        cellSize = cellSize
+        options =
+            DrawNumbersOptions(
+                highlightErrors = displayOptions.errorsHighlight,
+                questions = displayOptions.questions,
+            ),
+        cellSize = cellSize,
     )
 
     if (!notes.isNullOrEmpty() && !displayOptions.questions && displayOptions.renderNotes) {
@@ -158,7 +164,7 @@ private fun DrawScope.drawSudokuBoardContent(context: BoardCanvasContext) {
             size = size,
             paint = context.paints.notePaint,
             notes = notes,
-            metrics = NoteCellMetrics(cellSize, context.cellSizeDivWidth, context.cellSizeDivHeight)
+            metrics = NoteCellMetrics(cellSize, context.cellSizeDivWidth, context.cellSizeDivHeight),
         )
     }
 
@@ -173,7 +179,7 @@ fun Board(
     data: BoardData,
     interaction: BoardInteraction,
     style: BoardStyle,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val size = data.size
     val mainTextSize = style.textSizes?.mainTextSize ?: defaultMainTextSizeFor(size)
@@ -196,28 +202,30 @@ fun Board(
 
         val paints = rememberBoardPaints(mainTextSize, noteTextSize, boardColors)
 
-        val boardInteractionModifier = rememberBoardInteractionModifier(
-            board = data.board,
-            cellSizeProvider = { cellSize },
-            maxWidth = maxWidth,
-            displayOptions = style.displayOptions,
-            interaction = interaction
-        )
+        val boardInteractionModifier =
+            rememberBoardInteractionModifier(
+                board = data.board,
+                cellSizeProvider = { cellSize },
+                maxWidth = maxWidth,
+                displayOptions = style.displayOptions,
+                interaction = interaction,
+            )
 
-        val canvasContext = BoardCanvasContext(
-            data = data,
-            interaction = interaction,
-            style = style,
-            maxWidth = maxWidth,
-            cellSize = cellSize,
-            cellSizeDivWidth = cellSizeDivWidth,
-            cellSizeDivHeight = cellSizeDivHeight,
-            vertThick = vertThick,
-            horThick = horThick,
-            thinLineWidth = thinLineWidth,
-            thickLineWidth = thickLineWidth,
-            paints = paints
-        )
+        val canvasContext =
+            BoardCanvasContext(
+                data = data,
+                interaction = interaction,
+                style = style,
+                maxWidth = maxWidth,
+                cellSize = cellSize,
+                cellSizeDivWidth = cellSizeDivWidth,
+                cellSizeDivHeight = cellSizeDivHeight,
+                vertThick = vertThick,
+                horThick = horThick,
+                thinLineWidth = thinLineWidth,
+                thickLineWidth = thickLineWidth,
+                paints = paints,
+            )
 
         Canvas(modifier = boardInteractionModifier) {
             drawSudokuBoardContent(canvasContext)
@@ -233,18 +241,19 @@ private fun BoardPreviewLight() {
             val sudokuParser = SudokuParser()
             val board by remember {
                 mutableStateOf(
-                    sudokuParser.parseBoard(
-                        board = "....1........4.............7...........9........68...............5...............",
-                        gameType = GameType.Default9x9,
-                        emptySeparator = '.'
-                    ).toList()
+                    sudokuParser
+                        .parseBoard(
+                            board = "....1........4.............7...........9........68...............5...............",
+                            gameType = GameType.Default9x9,
+                            emptySeparator = '.',
+                        ).toList(),
                 )
             }
             val notes = sudokuParser.parseNotes("2,3,1;2,3,5;")
             Board(
                 data = BoardData(board = board, notes = notes),
                 interaction = BoardInteraction(selectedCell = Cell(-1, -1), onClick = { }),
-                style = BoardStyle(boardColors = previewSudokuBoardColors())
+                style = BoardStyle(boardColors = previewSudokuBoardColors()),
             )
         }
     }

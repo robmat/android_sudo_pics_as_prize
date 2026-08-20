@@ -8,8 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 
-internal fun GameViewModel.getBoardNoRef(): List<List<Cell>> =
-    gameBoard.map { items -> items.map { item -> item.copy() } }
+internal fun GameViewModel.getBoardNoRef(): List<List<Cell>> = gameBoard.map { items -> items.map { item -> item.copy() } }
 
 internal fun GameViewModel.countRemainingUses(board: List<List<Cell>>): MutableList<Int> {
     val uses = mutableListOf<Int>()
@@ -21,7 +20,7 @@ internal fun GameViewModel.countRemainingUses(board: List<List<Cell>>): MutableL
 
 internal fun GameViewModel.isValidCell(
     board: List<List<Cell>> = getBoardNoRef(),
-    cell: Cell
+    cell: Cell,
 ): List<List<Cell>> {
     if (solvedBoard.isNotEmpty()) {
         board[cell.row][cell.col].error =
@@ -49,8 +48,8 @@ internal fun GameViewModel.isCompleted(board: List<List<Cell>> = getBoardNoRef()
                     completed = true,
                     giveUp = false,
                     canContinue = false,
-                    finishedAt = ZonedDateTime.now()
-                )
+                    finishedAt = ZonedDateTime.now(),
+                ),
             )
         }
     }
@@ -69,7 +68,11 @@ fun GameViewModel.checkMistakesAll() {
     gameBoard = new
 }
 
-private fun GameViewModel.applyMistakeCheck(board: List<List<Cell>>, i: Int, j: Int): List<List<Cell>> {
+private fun GameViewModel.applyMistakeCheck(
+    board: List<List<Cell>>,
+    i: Int,
+    j: Int,
+): List<List<Cell>> {
     when (mistakesMethod.value) {
         0 -> board[i][j].error = false
         1 -> board[i][j].error = !sudokuUtils.isValidCellDynamic(board, board[i][j], boardEntity.type)
@@ -84,15 +87,16 @@ internal fun GameViewModel.solveBoard() {
     val boardToSolve = boardEntity.initialBoard.map { it.digitToInt(GameViewModel.RADIX) }.toIntArray()
     val solved = qqWing.solve(boardToSolve, boardEntity.type)
 
-    val newSolvedBoard = List(boardEntity.type.size) { row ->
-        List(boardEntity.type.size) { col ->
-            Cell(
-                row,
-                col,
-                0
-            )
+    val newSolvedBoard =
+        List(boardEntity.type.size) { row ->
+            List(boardEntity.type.size) { col ->
+                Cell(
+                    row,
+                    col,
+                    0,
+                )
+            }
         }
-    }
     for (i in 0 until size) {
         for (j in 0 until size) {
             newSolvedBoard[i][j].value = solved[i * size + j]
@@ -102,7 +106,7 @@ internal fun GameViewModel.solveBoard() {
     viewModelScope.launch(Dispatchers.IO) {
         val sudokuParser = SudokuParser()
         dependencies.updateBoardUseCase(
-            boardEntity.copy(solvedBoard = sudokuParser.boardToString(newSolvedBoard))
+            boardEntity.copy(solvedBoard = sudokuParser.boardToString(newSolvedBoard)),
         )
     }
     solvedBoard = newSolvedBoard

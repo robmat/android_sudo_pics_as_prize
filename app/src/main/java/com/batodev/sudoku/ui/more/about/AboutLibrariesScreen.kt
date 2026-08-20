@@ -27,8 +27,9 @@ import com.mikepenz.aboutlibraries.ui.compose.m3.libraryColors
 fun AboutLibrariesScreen(navigateBack: () -> Unit) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     Scaffold(
-        modifier = Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier =
+            Modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.libraries_licenses_title)) },
@@ -37,33 +38,38 @@ fun AboutLibrariesScreen(navigateBack: () -> Unit) {
                     IconButton(onClick = navigateBack) {
                         Icon(
                             painterResource(R.drawable.ic_round_arrow_back_24),
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
-                }
+                },
             )
         },
     ) { innerPadding ->
         LibrariesContainer(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            colors = LibraryDefaults.libraryColors(
-                libraryBackgroundColor = MaterialTheme.colorScheme.background,
-                libraryContentColor = MaterialTheme.colorScheme.onBackground,
-                versionChipColors = LibraryDefaults.chipColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+            colors =
+                LibraryDefaults.libraryColors(
+                    libraryBackgroundColor = MaterialTheme.colorScheme.background,
+                    libraryContentColor = MaterialTheme.colorScheme.onBackground,
+                    versionChipColors =
+                        LibraryDefaults.chipColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                        ),
+                    licenseChipColors =
+                        LibraryDefaults.chipColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                        ),
+                    fundingChipColors =
+                        LibraryDefaults.chipColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                        ),
                 ),
-                licenseChipColors = LibraryDefaults.chipColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                fundingChipColors = LibraryDefaults.chipColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            )
         )
     }
 }

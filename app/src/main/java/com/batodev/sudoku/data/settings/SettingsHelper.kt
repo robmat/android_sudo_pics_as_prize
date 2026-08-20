@@ -3,7 +3,9 @@ package com.batodev.sudoku.data.settings
 import android.content.Context
 import android.content.SharedPreferences
 
-class SettingsHelper(context: Context) {
+class SettingsHelper(
+    context: Context,
+) {
     private val sharedPreferences: SharedPreferences
     val preferences: Preferences
 

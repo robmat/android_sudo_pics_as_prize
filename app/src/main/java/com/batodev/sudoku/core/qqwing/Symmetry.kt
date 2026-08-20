@@ -21,7 +21,13 @@ package com.batodev.sudoku.core.qqwing
  */
 // @formatter:on
 enum class Symmetry {
-    NONE, ROTATE90, ROTATE180, MIRROR, FLIP, RANDOM;
+    NONE,
+    ROTATE90,
+    ROTATE180,
+    MIRROR,
+    FLIP,
+    RANDOM,
+    ;
 
     companion object {
         operator fun get(s: String?): Symmetry? {

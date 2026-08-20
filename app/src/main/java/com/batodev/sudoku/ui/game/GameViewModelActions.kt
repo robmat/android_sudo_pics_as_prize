@@ -23,21 +23,22 @@ fun GameViewModel.startTimer() {
     gamePlaying = true
     val updateRate = GameViewModel.TIMER_UPDATE_RATE_MS
 
-    timer = fixedRateTimer(initialDelay = updateRate, period = updateRate) {
-        val prevTime = duration
+    timer =
+        fixedRateTimer(initialDelay = updateRate, period = updateRate) {
+            val prevTime = duration
 
-        duration = duration.plus((updateRate * GameViewModel.NANOS_PER_MILLI).toDuration(DurationUnit.NANOSECONDS))
-        // update text every second
-        if (prevTime.toInt(DurationUnit.SECONDS) != duration.toInt(DurationUnit.SECONDS)) {
-            timeText = duration.toFormattedString()
-            // save game
-            if (gameBoard.any { it.any { cell -> cell.value != 0 } }) {
-                viewModelScope.launch(Dispatchers.IO) {
-                    saveGame()
+            duration = duration.plus((updateRate * GameViewModel.NANOS_PER_MILLI).toDuration(DurationUnit.NANOSECONDS))
+            // update text every second
+            if (prevTime.toInt(DurationUnit.SECONDS) != duration.toInt(DurationUnit.SECONDS)) {
+                timeText = duration.toFormattedString()
+                // save game
+                if (gameBoard.any { it.any { cell -> cell.value != 0 } }) {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        saveGame()
+                    }
                 }
             }
         }
-    }
 }
 
 fun GameViewModel.pauseTimer() {
@@ -48,15 +49,26 @@ fun GameViewModel.pauseTimer() {
 fun GameViewModel.toolbarClick(item: ToolBarItem) {
     if (!gamePlaying) return
     when (item) {
-        ToolBarItem.Undo -> handleUndo()
-        ToolBarItem.Redo -> handleRedo()
-        ToolBarItem.Hint -> useHint()
+        ToolBarItem.Undo -> {
+            handleUndo()
+        }
+
+        ToolBarItem.Redo -> {
+            handleRedo()
+        }
+
+        ToolBarItem.Hint -> {
+            useHint()
+        }
+
         ToolBarItem.Note -> {
             notesToggled = !notesToggled
             eraseButtonToggled = false
         }
 
-        ToolBarItem.Remove -> handleRemove()
+        ToolBarItem.Remove -> {
+            handleRemove()
+        }
     }
 }
 
@@ -154,8 +166,8 @@ fun GameViewModel.giveUp() {
                     giveUp = true,
                     mistakes = mistakesCount,
                     canContinue = false,
-                    finishedAt = ZonedDateTime.now()
-                )
+                    finishedAt = ZonedDateTime.now(),
+                ),
             )
         }
     }
@@ -170,8 +182,8 @@ fun GameViewModel.onGameComplete() {
                 type = boardEntity.type,
                 difficulty = boardEntity.difficulty,
                 date = ZonedDateTime.now(),
-                time = duration.toJavaDuration()
-            )
+                time = duration.toJavaDuration(),
+            ),
         )
     }
     pauseTimer()

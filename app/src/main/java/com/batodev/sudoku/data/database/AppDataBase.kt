@@ -20,7 +20,7 @@ import com.batodev.sudoku.data.database.model.SudokuBoard
 
 @Database(
     entities = [Record::class, SudokuBoard::class, SavedGame::class, Folder::class],
-    version = 1
+    version = 1,
     /*,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
@@ -33,11 +33,13 @@ import com.batodev.sudoku.data.database.model.SudokuBoard
     DurationConverter::class,
     ZonedDateTimeConverter::class,
     GameDifficultyConverter::class,
-    GameTypeConverter::class
+    GameTypeConverter::class,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun recordDao(): RecordDao
+
     abstract fun boardDao(): BoardDao
+
     abstract fun savedGameDao(): SavedGameDao
 
     abstract fun folderDao(): FolderDao
@@ -47,11 +49,13 @@ abstract class AppDatabase : RoomDatabase() {
 
         fun getInstance(context: Context): AppDatabase {
             if (INSTANCE == null) {
-                INSTANCE = Room.databaseBuilder(
-                    context,
-                    AppDatabase::class.java,
-                    "main_database"
-                ).build()
+                INSTANCE =
+                    Room
+                        .databaseBuilder(
+                            context,
+                            AppDatabase::class.java,
+                            "main_database",
+                        ).build()
             }
 
             return INSTANCE as AppDatabase

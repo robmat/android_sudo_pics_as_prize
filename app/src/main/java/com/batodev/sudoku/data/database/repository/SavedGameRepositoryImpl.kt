@@ -7,7 +7,7 @@ import com.batodev.sudoku.domain.repository.SavedGameRepository
 import kotlinx.coroutines.flow.Flow
 
 class SavedGameRepositoryImpl(
-    private val savedGameDao: SavedGameDao
+    private val savedGameDao: SavedGameDao,
 ) : SavedGameRepository {
     override fun getAll(): Flow<List<SavedGame>> = savedGameDao.getAll()
 

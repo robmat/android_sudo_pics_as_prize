@@ -36,14 +36,14 @@ fun SavedGameScreen(
     navigateBack: () -> Unit,
     navigatePlayGame: (Long) -> Unit,
     navigateToFolder: (Long) -> Unit,
-    viewModel: SavedGameViewModel
+    viewModel: SavedGameViewModel,
 ) {
     val dateFormat by viewModel.dateFormat.collectAsStateWithLifecycle(
-        initialValue = ""
+        initialValue = "",
     )
     val dateTimeFormatter by remember(dateFormat) {
         mutableStateOf(
-            AppSettingsManager.dateFormat(dateFormat)
+            AppSettingsManager.dateFormat(dateFormat),
         )
     }
     Scaffold(
@@ -51,8 +51,9 @@ fun SavedGameScreen(
     ) { innerPadding ->
         LaunchedEffect(Unit) { viewModel.updateGameDetails() }
 
-        val hasLoadedGame = viewModel.savedGame != null && viewModel.boardEntity != null &&
-            viewModel.parsedCurrentBoard.isNotEmpty() && viewModel.parsedInitialBoard.isNotEmpty()
+        val hasLoadedGame =
+            viewModel.savedGame != null && viewModel.boardEntity != null &&
+                viewModel.parsedCurrentBoard.isNotEmpty() && viewModel.parsedInitialBoard.isNotEmpty()
         if (hasLoadedGame) {
             SavedGameContent(viewModel, innerPadding, dateTimeFormatter, navigateToFolder, navigatePlayGame)
         } else {
@@ -67,7 +68,7 @@ fun SavedGameScreen(
 internal fun ExportDialog(
     onDismiss: () -> Unit,
     boardString: String,
-    onClickCopy: () -> Unit
+    onClickCopy: () -> Unit,
 ) {
     AlertDialog(
         title = { Text(stringResource(R.string.export_string_title)) },
@@ -80,27 +81,29 @@ internal fun ExportDialog(
         text = {
             Column {
                 OutlinedTextField(
-                    modifier = Modifier
-                        .padding(top = 8.dp),
+                    modifier =
+                        Modifier
+                            .padding(top = 8.dp),
                     value = boardString,
                     onValueChange = { },
-                    readOnly = true
+                    readOnly = true,
                 )
                 FilledTonalButton(
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .align(Alignment.CenterHorizontally),
+                    modifier =
+                        Modifier
+                            .padding(top = 8.dp)
+                            .align(Alignment.CenterHorizontally),
                     onClick = {
                         onClickCopy()
                         onDismiss()
                     },
-                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                 ) {
                     Icon(Icons.Rounded.ContentCopy, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(stringResource(R.string.export_string_copy))
                 }
             }
-        }
+        },
     )
 }

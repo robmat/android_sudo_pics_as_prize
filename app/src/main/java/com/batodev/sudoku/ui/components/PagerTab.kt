@@ -14,7 +14,7 @@ import androidx.compose.ui.text.style.TextOverflow
 fun PagerTab(
     selected: Boolean,
     title: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Tab(
         selected = selected,
@@ -23,8 +23,8 @@ fun PagerTab(
             Text(
                 text = title,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
-        }
+        },
     )
 }

@@ -57,15 +57,15 @@ fun GameScreen(
     val restartButtonAnimation: Float by animateFloatAsState(
         targetValue = restartButtonAngleState.floatValue,
         animationSpec = tween(durationMillis = RESTART_BUTTON_ANIMATION_DURATION_MS),
-        label = "this_label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning"
+        label = "this_label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning",
     )
 
     val resetTimer by viewModel.resetTimerOnRestart.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_GAME_RESET_TIMER
+        initialValue = PreferencesConstants.DEFAULT_GAME_RESET_TIMER,
     )
 
     val mistakesLimit by viewModel.mistakesLimit.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_MISTAKES_LIMIT
+        initialValue = PreferencesConstants.DEFAULT_MISTAKES_LIMIT,
     )
 
     val renderNotesState = remember { mutableStateOf(true) }
@@ -73,15 +73,16 @@ fun GameScreen(
     Scaffold(
         topBar = {
             GameTopBar(viewModel, navigateBack, navigateSettings, restartButtonAnimation)
-        }
+        },
     ) { scaffoldPaddings ->
         Box {
             GamePrizeImage(viewModel)
             Column(
-                modifier = Modifier
-                    .padding(scaffoldPaddings)
-                    .padding(horizontal = 12.dp),
-                verticalArrangement = Arrangement.SpaceEvenly
+                modifier =
+                    Modifier
+                        .padding(scaffoldPaddings)
+                        .padding(horizontal = 12.dp),
+                verticalArrangement = Arrangement.SpaceEvenly,
             ) {
                 GameStatsRow(viewModel, mistakesLimit)
                 GameBoardArea(viewModel, renderNotesState, localView)
@@ -91,7 +92,7 @@ fun GameScreen(
     }
 
     val keepScreenOn by viewModel.keepScreenOn.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_KEEP_SCREEN_ON
+        initialValue = PreferencesConstants.DEFAULT_KEEP_SCREEN_ON,
     )
     if (keepScreenOn) {
         KeepScreenOn()
@@ -112,7 +113,7 @@ private fun GameFirstGameOverlay(viewModel: GameViewModel) {
             onFinished = {
                 viewModel.setFirstGameFalse()
                 viewModel.startTimer()
-            }
+            },
         )
     }
 }
@@ -149,7 +150,10 @@ private fun GameLifecycleEffects(viewModel: GameViewModel) {
                 viewModel.currCell = Cell(-1, -1, 0)
             }
 
-            Lifecycle.Event.ON_DESTROY -> viewModel.pauseTimer()
+            Lifecycle.Event.ON_DESTROY -> {
+                viewModel.pauseTimer()
+            }
+
             else -> {}
         }
     }
@@ -159,7 +163,7 @@ data class NotesMenuActions(
     val onDismiss: () -> Unit,
     val onComputeNotesClick: () -> Unit,
     val onClearNotesClick: () -> Unit,
-    val onRenderNotesClick: () -> Unit
+    val onRenderNotesClick: () -> Unit,
 )
 
 @Composable
@@ -172,14 +176,14 @@ fun NotesMenu(
     RoundedDropdownMenu(
         modifier = modifier,
         expanded = expanded,
-        onDismissRequest = { actions.onDismiss() }
+        onDismissRequest = { actions.onDismiss() },
     ) {
         DropdownMenuItem(
             text = { Text(stringResource(R.string.action_compute_notes)) },
             onClick = {
                 actions.onComputeNotesClick()
                 actions.onDismiss()
-            }
+            },
         )
         DropdownMenuItem(
             text = {
@@ -188,21 +192,21 @@ fun NotesMenu(
             onClick = {
                 actions.onClearNotesClick()
                 actions.onDismiss()
-            }
+            },
         )
         DropdownMenuItem(
             text = {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(stringResource(R.string.action_show_notes))
                     Checkbox(
                         checked = renderNotes,
-                        onCheckedChange = { actions.onRenderNotesClick() }
+                        onCheckedChange = { actions.onRenderNotesClick() },
                     )
                 }
             },
-            onClick = actions.onRenderNotesClick
+            onClick = actions.onRenderNotesClick,
         )
     }
 }
@@ -217,20 +221,20 @@ fun UndoRedoMenu(
     RoundedDropdownMenu(
         modifier = modifier,
         expanded = expanded,
-        onDismissRequest = { onDismiss() }
+        onDismissRequest = { onDismiss() },
     ) {
         DropdownMenuItem(
             text = { Text(stringResource(R.string.redo)) },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Rounded.Redo,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             },
             onClick = {
                 onRedoClick()
                 onDismiss()
-            }
+            },
         )
     }
 }
@@ -246,21 +250,21 @@ fun GameMenu(
     RoundedDropdownMenu(
         modifier = modifier,
         expanded = expanded,
-        onDismissRequest = onDismiss
+        onDismissRequest = onDismiss,
     ) {
         DropdownMenuItem(
             text = { Text(stringResource(R.string.action_give_up)) },
             onClick = {
                 onGiveUpClick()
                 onDismiss()
-            }
+            },
         )
         DropdownMenuItem(
             text = { Text(stringResource(R.string.settings_title)) },
             onClick = {
                 onSettingsClick()
                 onDismiss()
-            }
+            },
         )
     }
 }
@@ -272,11 +276,11 @@ fun TopBoardSection(
 ) {
     Row(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = text,
-            modifier = Modifier.padding(horizontal = 4.dp)
+            modifier = Modifier.padding(horizontal = 4.dp),
         )
     }
 }
@@ -288,9 +292,10 @@ fun OnLifecycleEvent(onEvent: (owner: LifecycleOwner, event: Lifecycle.Event) ->
 
     DisposableEffect(lifecycleOwner.value) {
         val lifecycle = lifecycleOwner.value.lifecycle
-        val observer = LifecycleEventObserver { owner, event ->
-            eventHandler.value(owner, event)
-        }
+        val observer =
+            LifecycleEventObserver { owner, event ->
+                eventHandler.value(owner, event)
+            }
 
         lifecycle.addObserver(observer)
         onDispose {

@@ -14,5 +14,5 @@ data class AfterGameStatsInfo(
     val giveUp: Boolean,
     val notesTaken: Int,
     val records: List<Record>,
-    val timeText: String
+    val timeText: String,
 )

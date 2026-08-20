@@ -27,11 +27,10 @@ fun LazyGridState.isScrollingUp(): Boolean {
 }
 
 @Composable
-fun LazyGridState.isScrolledToStart(): Boolean {
-    return remember {
+fun LazyGridState.isScrolledToStart(): Boolean =
+    remember {
         derivedStateOf {
             val firstItem = layoutInfo.visibleItemsInfo.firstOrNull()
             firstItem == null || firstItem.index == 0
         }
     }.value
-}

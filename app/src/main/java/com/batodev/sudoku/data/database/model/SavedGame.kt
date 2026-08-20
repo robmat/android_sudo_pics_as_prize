@@ -15,9 +15,9 @@ import java.time.ZonedDateTime
             onDelete = CASCADE,
             entity = SudokuBoard::class,
             parentColumns = arrayOf("uid"),
-            childColumns = arrayOf("board_uid")
-        )
-    ]
+            childColumns = arrayOf("board_uid"),
+        ),
+    ],
 )
 data class SavedGame(
     @PrimaryKey

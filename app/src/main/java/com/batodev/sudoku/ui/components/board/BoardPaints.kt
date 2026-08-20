@@ -25,14 +25,18 @@ internal data class BoardPaints(
     val textPaint: Paint,
     val errorTextPaint: Paint,
     val lockedTextPaint: Paint,
-    val notePaint: Paint
+    val notePaint: Paint,
 )
 
-private fun buildTextPaint(color: Color, textSizePx: Float): Paint = Paint().apply {
-    this.color = color.toArgb()
-    isAntiAlias = true
-    textSize = textSizePx
-}
+private fun buildTextPaint(
+    color: Color,
+    textSizePx: Float,
+): Paint =
+    Paint().apply {
+        this.color = color.toArgb()
+        isAntiAlias = true
+        textSize = textSizePx
+    }
 
 /** The colors [rememberBoardPaints] uses, bundled so recomposing the [LaunchedEffect] below only
  * needs a single key. */
@@ -40,11 +44,13 @@ private data class BoardPaintColors(
     val foregroundColor: Color,
     val errorColor: Color,
     val altForegroundColor: Color,
-    val notesColor: Color
+    val notesColor: Color,
 )
 
-private fun dimensionPx(context: Context, sp: Float): Float =
-    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, context.resources.displayMetrics)
+private fun dimensionPx(
+    context: Context,
+    sp: Float,
+): Float = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, context.resources.displayMetrics)
 
 /**
  * Builds and remembers the [BoardPaints] for [Board], recreating them whenever the text sizes or
@@ -55,14 +61,15 @@ private fun dimensionPx(context: Context, sp: Float): Float =
 internal fun rememberBoardPaints(
     mainTextSize: TextUnit,
     noteTextSize: TextUnit,
-    boardColors: SudokuBoardColors
+    boardColors: SudokuBoardColors,
 ): BoardPaints {
-    val colors = BoardPaintColors(
-        foregroundColor = boardColors.foregroundColor,
-        errorColor = boardColors.errorColor,
-        altForegroundColor = boardColors.altForegroundColor,
-        notesColor = boardColors.notesColor
-    )
+    val colors =
+        BoardPaintColors(
+            foregroundColor = boardColors.foregroundColor,
+            errorColor = boardColors.errorColor,
+            altForegroundColor = boardColors.altForegroundColor,
+            notesColor = boardColors.notesColor,
+        )
 
     var fontSizePx = with(LocalDensity.current) { mainTextSize.toPx() }
     var noteSizePx = with(LocalDensity.current) { noteTextSize.toPx() }
@@ -78,10 +85,11 @@ internal fun rememberBoardPaints(
         noteSizePx = dimensionPx(context, noteTextSize.value)
         textPaint = buildTextPaint(colors.foregroundColor, fontSizePx)
         notePaint = buildTextPaint(colors.notesColor, noteSizePx)
-        errorTextPaint = buildTextPaint(
-            Color(ERROR_TEXT_COLOR_RED, ERROR_TEXT_COLOR_GREEN, ERROR_TEXT_COLOR_BLUE),
-            fontSizePx
-        )
+        errorTextPaint =
+            buildTextPaint(
+                Color(ERROR_TEXT_COLOR_RED, ERROR_TEXT_COLOR_GREEN, ERROR_TEXT_COLOR_BLUE),
+                fontSizePx,
+            )
         lockedTextPaint = buildTextPaint(colors.altForegroundColor, fontSizePx)
     }
 

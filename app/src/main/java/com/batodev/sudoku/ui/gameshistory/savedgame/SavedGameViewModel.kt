@@ -33,100 +33,103 @@ import kotlin.math.pow
 
 @HiltViewModel
 class SavedGameViewModel
-@Inject constructor(
-    private val boardRepository: BoardRepository,
-    private val savedGameRepository: SavedGameRepository,
-    private val getFolderUseCase: GetFolderUseCase,
-    appSettingsManager: AppSettingsManager,
-    themeSettingsManager: ThemeSettingsManager,
-    savedStateHandle: SavedStateHandle
-) : ViewModel() {
-    companion object {
-        private const val PERCENTAGE_MULTIPLIER = 100f
-    }
+    @Inject
+    constructor(
+        private val boardRepository: BoardRepository,
+        private val savedGameRepository: SavedGameRepository,
+        private val getFolderUseCase: GetFolderUseCase,
+        appSettingsManager: AppSettingsManager,
+        themeSettingsManager: ThemeSettingsManager,
+        savedStateHandle: SavedStateHandle,
+    ) : ViewModel() {
+        companion object {
+            private const val PERCENTAGE_MULTIPLIER = 100f
+        }
 
-    val boardUid = savedStateHandle.get<Long>("uid")
+        val boardUid = savedStateHandle.get<Long>("uid")
 
-    val fontSize = appSettingsManager.fontSize
-    val dateFormat = appSettingsManager.dateFormat
+        val fontSize = appSettingsManager.fontSize
+        val dateFormat = appSettingsManager.dateFormat
 
-    var savedGame by mutableStateOf<SavedGame?>(null)
-    var boardEntity by mutableStateOf<SudokuBoard?>(null)
+        var savedGame by mutableStateOf<SavedGame?>(null)
+        var boardEntity by mutableStateOf<SudokuBoard?>(null)
 
-    var parsedInitialBoard by mutableStateOf(emptyList<List<Cell>>())
-    var parsedCurrentBoard by mutableStateOf(emptyList<List<Cell>>())
-    var notes by mutableStateOf(emptyList<Note>())
+        var parsedInitialBoard by mutableStateOf(emptyList<List<Cell>>())
+        var parsedCurrentBoard by mutableStateOf(emptyList<List<Cell>>())
+        var notes by mutableStateOf(emptyList<Note>())
 
-    var exportDialog by mutableStateOf(false)
+        var exportDialog by mutableStateOf(false)
 
-    private val _gameFolder: MutableStateFlow<Folder?> = MutableStateFlow(null)
-    val gameFolder = _gameFolder.asStateFlow()
+        private val _gameFolder: MutableStateFlow<Folder?> = MutableStateFlow(null)
+        val gameFolder = _gameFolder.asStateFlow()
 
-    private val _gameProgressPercentage = MutableStateFlow(0)
-    val gameProgressPercentage = _gameProgressPercentage.asStateFlow()
+        private val _gameProgressPercentage = MutableStateFlow(0)
+        val gameProgressPercentage = _gameProgressPercentage.asStateFlow()
 
-    val crossHighlight = themeSettingsManager.boardCrossHighlight
+        val crossHighlight = themeSettingsManager.boardCrossHighlight
 
-    fun updateGameDetails() {
-        viewModelScope.launch(Dispatchers.IO) {
-            boardEntity = boardRepository.get(boardUid ?: 0)
-            savedGame = savedGameRepository.get(boardUid ?: 0)
+        fun updateGameDetails() {
+            viewModelScope.launch(Dispatchers.IO) {
+                boardEntity = boardRepository.get(boardUid ?: 0)
+                savedGame = savedGameRepository.get(boardUid ?: 0)
 
-            boardEntity?.let { boardEntity ->
-                savedGame?.let { savedGame ->
-                    withContext(Dispatchers.Default) {
-                        val sudokuParser = SudokuParser()
-                        parsedInitialBoard =
-                            sudokuParser.parseBoard(
-                                boardEntity.initialBoard,
-                                boardEntity.type,
-                                locked = true
-                            )
-                        parsedCurrentBoard =
-                            sudokuParser.parseBoard(savedGame.currentBoard, boardEntity.type)
-                                .onEach { cells ->
-                                    cells.forEach { cell ->
-                                        cell.locked =
-                                            parsedInitialBoard[cell.row][cell.col].value != 0
+                boardEntity?.let { boardEntity ->
+                    savedGame?.let { savedGame ->
+                        withContext(Dispatchers.Default) {
+                            val sudokuParser = SudokuParser()
+                            parsedInitialBoard =
+                                sudokuParser.parseBoard(
+                                    boardEntity.initialBoard,
+                                    boardEntity.type,
+                                    locked = true,
+                                )
+                            parsedCurrentBoard =
+                                sudokuParser
+                                    .parseBoard(savedGame.currentBoard, boardEntity.type)
+                                    .onEach { cells ->
+                                        cells.forEach { cell ->
+                                            cell.locked =
+                                                parsedInitialBoard[cell.row][cell.col].value != 0
+                                        }
                                     }
-                                }
-                        notes = sudokuParser.parseNotes(savedGame.notes)
+                            notes = sudokuParser.parseNotes(savedGame.notes)
+                        }
                     }
-                }
 
-                viewModelScope.launch {
-                    boardEntity.folderId?.let { folderUid ->
-                        val folder = getFolderUseCase(folderUid)
-                        folder.collectLatest {
-                            _gameFolder.emit(it)
+                    viewModelScope.launch {
+                        boardEntity.folderId?.let { folderUid ->
+                            val folder = getFolderUseCase(folderUid)
+                            folder.collectLatest {
+                                _gameFolder.emit(it)
+                            }
                         }
                     }
                 }
             }
         }
-    }
 
-    fun countProgressFilled() {
-        viewModelScope.launch {
-            var totalCells = 1
-            var count = 0
-            boardEntity?.let { board ->
-                totalCells = (board.type.sectionWidth * board.type.sectionHeight)
-                    .toDouble()
-                    .pow(2.0)
-                    .toInt()
-                count =
-                    totalCells - parsedCurrentBoard.sumOf { cells -> cells.count { cell -> cell.value == 0 } }
+        fun countProgressFilled() {
+            viewModelScope.launch {
+                var totalCells = 1
+                var count = 0
+                boardEntity?.let { board ->
+                    totalCells =
+                        (board.type.sectionWidth * board.type.sectionHeight)
+                            .toDouble()
+                            .pow(2.0)
+                            .toInt()
+                    count =
+                        totalCells - parsedCurrentBoard.sumOf { cells -> cells.count { cell -> cell.value == 0 } }
+                }
+                _gameProgressPercentage.emit((count.toFloat() / totalCells.toFloat() * PERCENTAGE_MULTIPLIER).toInt())
             }
-            _gameProgressPercentage.emit((count.toFloat() / totalCells.toFloat() * PERCENTAGE_MULTIPLIER).toInt())
         }
-    }
 
-    fun getFontSize(factor: Int): TextUnit {
-        boardEntity?.let {
-            val sudokuUtils = SudokuUtils()
-            return sudokuUtils.getFontSize(it.type, factor)
+        fun getFontSize(factor: Int): TextUnit {
+            boardEntity?.let {
+                val sudokuUtils = SudokuUtils()
+                return sudokuUtils.getFontSize(it.type, factor)
+            }
+            return 24.sp
         }
-        return 24.sp
     }
-}

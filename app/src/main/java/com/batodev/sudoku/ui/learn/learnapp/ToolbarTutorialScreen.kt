@@ -15,12 +15,12 @@ import com.batodev.sudoku.ui.onboarding.FirstGameScreen
 fun ToolbarTutorialScreen(helpNavController: NavController) {
     TutorialBase(
         title = stringResource(R.string.learn_app_toolbar),
-        helpNavController = helpNavController
+        helpNavController = helpNavController,
     ) {
         FirstGameScreen()
         Text(
             text = stringResource(R.string.learn_app_toolbar_notes_menu),
-            modifier = Modifier.padding(horizontal = 12.dp)
+            modifier = Modifier.padding(horizontal = 12.dp),
         )
     }
 }

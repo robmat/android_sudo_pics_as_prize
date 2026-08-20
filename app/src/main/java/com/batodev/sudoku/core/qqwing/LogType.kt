@@ -20,7 +20,9 @@ package com.batodev.sudoku.core.qqwing
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 // @formatter:on
-enum class LogType(val description: String) {
+enum class LogType(
+    val description: String,
+) {
     GIVEN("Mark given"),
     SINGLE("Mark only possibility for cell"),
     HIDDEN_SINGLE_ROW("Mark single possibility for value in row"),
@@ -37,5 +39,5 @@ enum class LogType(val description: String) {
     COLUMN_BOX("Remove possibilities for section because all values are in one column"),
     HIDDEN_PAIR_ROW("Remove possibilities from hidden pair in row"),
     HIDDEN_PAIR_COLUMN("Remove possibilities from hidden pair in column"),
-    HIDDEN_PAIR_SECTION("Remove possibilities from hidden pair in section")
+    HIDDEN_PAIR_SECTION("Remove possibilities from hidden pair in section"),
 }

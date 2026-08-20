@@ -27,16 +27,17 @@ internal const val ROTATE_ICON_FULL_DEGREES = 360f
 
 @Composable
 internal fun ShowSolutionAction(viewModel: GameViewModel) {
-    val reachedMistakesLimitOrGaveUp = viewModel.mistakesCount >= PreferencesConstants.MISTAKES_LIMIT ||
-        viewModel.giveUp
+    val reachedMistakesLimitOrGaveUp =
+        viewModel.mistakesCount >= PreferencesConstants.MISTAKES_LIMIT ||
+            viewModel.giveUp
     AnimatedVisibility(
-        visible = viewModel.endGame && reachedMistakesLimitOrGaveUp
+        visible = viewModel.endGame && reachedMistakesLimitOrGaveUp,
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             FilledTonalButton(
-                onClick = { viewModel.showSolution = !viewModel.showSolution }
+                onClick = { viewModel.showSolution = !viewModel.showSolution },
             ) {
                 AnimatedContent(
                     if (viewModel.showSolution) {
@@ -44,7 +45,7 @@ internal fun ShowSolutionAction(viewModel: GameViewModel) {
                     } else {
                         stringResource(R.string.action_show_solution)
                     },
-                    label = "this_label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning"
+                    label = "this_label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning",
                 ) {
                     Text(it)
                 }
@@ -58,7 +59,7 @@ internal fun PlayPauseAction(viewModel: GameViewModel) {
     AnimatedVisibility(visible = !viewModel.endGame) {
         val rotationAngle by animateFloatAsState(
             targetValue = if (viewModel.gamePlaying) 0f else ROTATE_ICON_FULL_DEGREES,
-            label = "this_label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning"
+            label = "this_label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning",
         )
         IconButton(onClick = {
             if (!viewModel.gamePlaying) viewModel.startTimer() else viewModel.pauseTimer()
@@ -66,43 +67,50 @@ internal fun PlayPauseAction(viewModel: GameViewModel) {
         }) {
             Icon(
                 modifier = Modifier.rotate(rotationAngle),
-                painter = painterResource(
-                    if (viewModel.gamePlaying) {
-                        R.drawable.ic_round_pause_24
-                    } else {
-                        R.drawable.ic_round_play_24
-                    }
-                ),
-                contentDescription = null
+                painter =
+                    painterResource(
+                        if (viewModel.gamePlaying) {
+                            R.drawable.ic_round_pause_24
+                        } else {
+                            R.drawable.ic_round_play_24
+                        },
+                    ),
+                contentDescription = null,
             )
         }
     }
 }
 
 @Composable
-internal fun RestartAction(viewModel: GameViewModel, restartButtonAnimation: Float) {
+internal fun RestartAction(
+    viewModel: GameViewModel,
+    restartButtonAnimation: Float,
+) {
     AnimatedVisibility(visible = !viewModel.endGame) {
         IconButton(
             onClick = { viewModel.restartDialog = true },
-            modifier = Modifier.testTag("game_restart")
+            modifier = Modifier.testTag("game_restart"),
         ) {
             Icon(
                 modifier = Modifier.rotate(restartButtonAnimation),
                 painter = painterResource(R.drawable.ic_round_replay_24),
-                contentDescription = null
+                contentDescription = null,
             )
         }
     }
 }
 
 @Composable
-internal fun GameMenuAction(viewModel: GameViewModel, navigateSettings: () -> Unit) {
+internal fun GameMenuAction(
+    viewModel: GameViewModel,
+    navigateSettings: () -> Unit,
+) {
     AnimatedVisibility(visible = !viewModel.endGame) {
         Box {
             IconButton(onClick = { viewModel.showMenu = !viewModel.showMenu }) {
                 Icon(
                     Icons.Default.MoreVert,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
             GameMenu(
@@ -115,7 +123,7 @@ internal fun GameMenuAction(viewModel: GameViewModel, navigateSettings: () -> Un
                 onSettingsClick = {
                     navigateSettings()
                     viewModel.showMenu = false
-                }
+                },
             )
         }
     }

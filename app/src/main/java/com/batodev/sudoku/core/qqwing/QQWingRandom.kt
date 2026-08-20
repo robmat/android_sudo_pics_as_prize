@@ -20,7 +20,10 @@ internal object QQWingRandom {
     /**
      * Shuffle the values in an array of integers.
      */
-    fun shuffleArray(array: IntArray, size: Int) {
+    fun shuffleArray(
+        array: IntArray,
+        size: Int,
+    ) {
         for (i in 0 until size) {
             val tailSize = size - i
             val randTailPos = Math.abs(random.nextInt()) % tailSize + i

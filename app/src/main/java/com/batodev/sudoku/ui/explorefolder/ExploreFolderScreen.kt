@@ -93,41 +93,43 @@ data class ExploreFolderNavigation(
     val navigatePlayGame: (Triple<Long, Boolean, Long>) -> Unit,
     val navigateImportFromFile: (Pair<String, Long>) -> Unit,
     val navigateEditGame: (Pair<Long, Long>) -> Unit,
-    val navigateCreateSudoku: (Long) -> Unit
+    val navigateCreateSudoku: (Long) -> Unit,
 )
 
 @OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalAnimationApi::class,
-    ExperimentalFoundationApi::class
+    ExperimentalFoundationApi::class,
 )
 @Composable
 fun ExploreFolderScreen(
     viewModel: ExploreFolderViewModel,
-    navigation: ExploreFolderNavigation
+    navigation: ExploreFolderNavigation,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
 
-    val dialogState = ExploreFolderDialogState(
-        addSudokuBottomSheet = rememberSaveable { mutableStateOf(false) },
-        moveSelectedDialog = rememberSaveable { mutableStateOf(false) },
-        deleteBoardDialog = rememberSaveable { mutableStateOf(false) },
-        // used for a delete dialog when deleting
-        deleteBoardDialogBoard = remember { mutableStateOf<SudokuBoard?>(null) }
-    )
+    val dialogState =
+        ExploreFolderDialogState(
+            addSudokuBottomSheet = rememberSaveable { mutableStateOf(false) },
+            moveSelectedDialog = rememberSaveable { mutableStateOf(false) },
+            deleteBoardDialog = rememberSaveable { mutableStateOf(false) },
+            // used for a delete dialog when deleting
+            deleteBoardDialogBoard = remember { mutableStateOf<SudokuBoard?>(null) },
+        )
 
     val folders by viewModel.folders.collectAsStateWithLifecycle(initialValue = emptyList())
     val folder by viewModel.folder.collectAsStateWithLifecycle(null)
     val games by viewModel.games.collectAsStateWithLifecycle(emptyMap())
 
     var contentUri by remember { mutableStateOf<Uri?>(null) }
-    val openDocumentLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument(),
-        onResult = {
-            contentUri = it
-        }
-    )
+    val openDocumentLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.OpenDocument(),
+            onResult = {
+                contentUri = it
+            },
+        )
 
     LaunchedEffect(contentUri) {
         contentUri?.let { uri ->
@@ -143,14 +145,14 @@ fun ExploreFolderScreen(
 
     Scaffold(
         topBar = { ExploreFolderTopBar(viewModel, folder, games, navigation.navigateBack, dialogState) },
-        floatingActionButton = { ExploreFolderFab(lazyListState, coroutineScope) }
+        floatingActionButton = { ExploreFolderFab(lazyListState, coroutineScope) },
     ) { paddingValues ->
         ExploreFolderBody(
             viewModel,
             ExploreFolderListState(folder, games, lazyListState),
             paddingValues,
             navigation,
-            dialogState
+            dialogState,
         )
     }
 
@@ -161,7 +163,7 @@ fun ExploreFolderScreen(
         MoveSudokuToFolderDialog(
             availableFolders = folders.filter { it != folder },
             onDismiss = { dialogState.moveSelectedDialog.value = false },
-            onConfirmMove = { folderUid -> viewModel.moveBoards(folderUid) }
+            onConfirmMove = { folderUid -> viewModel.moveBoards(folderUid) },
         )
     }
 
@@ -175,7 +177,7 @@ data class GameInFolderInfo(
     val difficulty: String,
     val type: String,
     val gameId: Long,
-    val savedGame: SavedGame?
+    val savedGame: SavedGame?,
 )
 
 data class GameInFolderActions(
@@ -183,7 +185,7 @@ data class GameInFolderActions(
     val onPlayClick: () -> Unit,
     val onEditClick: () -> Unit,
     val onDeleteClick: () -> Unit,
-    val onLongClick: () -> Unit = { }
+    val onLongClick: () -> Unit = { },
 )
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -196,26 +198,28 @@ fun GameInFolderWidget(
     modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
-        modifier = modifier
-            .clip(CardDefaults.elevatedShape)
-            .combinedClickable(onClick = actions.onClick, onLongClick = actions.onLongClick),
+        modifier =
+            modifier
+                .clip(CardDefaults.elevatedShape)
+                .combinedClickable(onClick = actions.onClick, onLongClick = actions.onLongClick),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
         ) {
             AnimatedVisibility(
                 visible = selected,
                 enter = fadeIn() + expandHorizontally(clip = false),
                 exit = fadeOut() + shrinkHorizontally(clip = false),
-                modifier = Modifier.align(Alignment.CenterVertically)
+                modifier = Modifier.align(Alignment.CenterVertically),
             ) {
                 Icon(
                     imageVector = Icons.Rounded.CheckCircle,
                     tint = MaterialTheme.colorScheme.primary,
                     contentDescription = null,
-                    modifier = Modifier.padding(end = 12.dp)
+                    modifier = Modifier.padding(end = 12.dp),
                 )
             }
             Column {
@@ -223,10 +227,12 @@ fun GameInFolderWidget(
                 AnimatedVisibility(
                     visible = expanded,
                     modifier = Modifier.animateContentSize(),
-                    enter = slideInVertically(tween(EXPAND_ANIMATION_DURATION_MS)) +
-                        expandVertically(tween(EXPAND_ANIMATION_DURATION_MS)),
-                    exit = slideOutVertically(tween(EXPAND_ANIMATION_DURATION_MS)) +
-                        shrinkVertically(tween(EXPAND_ANIMATION_DURATION_MS))
+                    enter =
+                        slideInVertically(tween(EXPAND_ANIMATION_DURATION_MS)) +
+                            expandVertically(tween(EXPAND_ANIMATION_DURATION_MS)),
+                    exit =
+                        slideOutVertically(tween(EXPAND_ANIMATION_DURATION_MS)) +
+                            shrinkVertically(tween(EXPAND_ANIMATION_DURATION_MS)),
                 ) {
                     GameInFolderExpandedActions(info.savedGame, actions)
                 }
@@ -239,21 +245,24 @@ fun GameInFolderWidget(
 private fun GameInFolderSummary(info: GameInFolderInfo) {
     Row {
         Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(4.dp))
-                .size(130.dp)
+            modifier =
+                Modifier
+                    .clip(RoundedCornerShape(4.dp))
+                    .size(130.dp),
         ) {
             BoardPreview(
-                content = BoardPreviewContent(
-                    size = sqrt(info.board.length.toFloat()).toInt(),
-                    boardString = info.board,
-                    boardColors = LocalBoardColors.current
-                )
+                content =
+                    BoardPreviewContent(
+                        size = sqrt(info.board.length.toFloat()).toInt(),
+                        boardString = info.board,
+                        boardColors = LocalBoardColors.current,
+                    ),
             )
         }
         Column(
-            modifier = Modifier
-                .padding(horizontal = 12.dp)
+            modifier =
+                Modifier
+                    .padding(horizontal = 12.dp),
         ) {
             Text("${info.difficulty} ${info.type}")
 
@@ -264,8 +273,8 @@ private fun GameInFolderSummary(info: GameInFolderInfo) {
                         R.string.saved_game_time,
                         savedGame.timer
                             .toKotlinDuration()
-                            .toFormattedString()
-                    )
+                            .toFormattedString(),
+                    ),
                 )
             } else {
                 Text(stringResource(R.string.game_not_started))
@@ -282,7 +291,10 @@ private fun GameInFolderSummary(info: GameInFolderInfo) {
 }
 
 @Composable
-private fun GameInFolderExpandedActions(savedGame: SavedGame?, actions: GameInFolderActions) {
+private fun GameInFolderExpandedActions(
+    savedGame: SavedGame?,
+    actions: GameInFolderActions,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround,
@@ -290,24 +302,24 @@ private fun GameInFolderExpandedActions(savedGame: SavedGame?, actions: GameInFo
         IconWithText(
             imageVector = Icons.Rounded.PlayArrow,
             text =
-            if (savedGame == null || !savedGame.canContinue) {
-                stringResource(R.string.action_play)
-            } else {
-                stringResource(R.string.action_continue)
-            },
+                if (savedGame == null || !savedGame.canContinue) {
+                    stringResource(R.string.action_play)
+                } else {
+                    stringResource(R.string.action_continue)
+                },
             onClick = actions.onPlayClick,
-            enabled = savedGame?.canContinue ?: true
+            enabled = savedGame?.canContinue ?: true,
         )
         IconWithText(
             imageVector = if (savedGame == null) Icons.Rounded.Edit else Icons.Rounded.EditOff,
             text = stringResource(R.string.action_edit),
             onClick = actions.onEditClick,
-            enabled = savedGame == null
+            enabled = savedGame == null,
         )
         IconWithText(
             imageVector = Icons.Outlined.Delete,
             text = stringResource(R.string.action_delete),
-            onClick = actions.onDeleteClick
+            onClick = actions.onDeleteClick,
         )
     }
 }
@@ -317,20 +329,20 @@ private fun IconWithText(
     imageVector: ImageVector,
     text: String,
     enabled: Boolean = true,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         IconButton(
             onClick = onClick,
-            enabled = enabled
+            enabled = enabled,
         ) {
             Icon(imageVector, contentDescription = null)
         }
         Text(
             text = text,
-            style = MaterialTheme.typography.bodySmall
+            style = MaterialTheme.typography.bodySmall,
         )
     }
 }
@@ -340,7 +352,7 @@ private fun IconWithText(
 internal fun DefaultTopAppBar(
     title: @Composable () -> Unit,
     navigateBack: () -> Unit,
-    onImportMenuClick: () -> Unit
+    onImportMenuClick: () -> Unit,
 ) {
     TopAppBar(
         title = title,
@@ -353,7 +365,7 @@ internal fun DefaultTopAppBar(
                     leadingIcon = {
                         Icon(
                             Icons.Rounded.AddCircleOutline,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     },
                     text = {
@@ -362,10 +374,10 @@ internal fun DefaultTopAppBar(
                     onClick = {
                         onImportMenuClick()
                         closeMenu()
-                    }
+                    },
                 )
             }
-        }
+        },
     )
 }
 
@@ -376,7 +388,7 @@ internal fun SelectionTopAppbar(
     onCloseClick: () -> Unit,
     onClickMoveSelected: () -> Unit,
     onClickDeleteSelected: () -> Unit,
-    onClickSelectAll: () -> Unit
+    onClickSelectAll: () -> Unit,
 ) {
     TopAppBar(
         title = title,
@@ -389,25 +401,26 @@ internal fun SelectionTopAppbar(
             IconButton(onClick = onClickMoveSelected) {
                 Icon(
                     imageVector = Icons.Outlined.DriveFileMove,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
             IconButton(onClick = onClickDeleteSelected) {
                 Icon(
                     imageVector = Icons.Rounded.Delete,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
             IconButton(onClick = onClickSelectAll) {
                 Icon(
                     painterResource(R.drawable.ic_outline_select_all_24),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
-        )
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+            ),
     )
 }
 
@@ -416,7 +429,7 @@ private fun MoveSudokuToFolderDialog(
     availableFolders: List<Folder>,
     onDismiss: () -> Unit,
     onConfirmMove: (Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     AlertDialog(
         modifier = modifier,
@@ -432,34 +445,35 @@ private fun MoveSudokuToFolderDialog(
             Column {
                 Text(
                     text = stringResource(R.string.move_games_to_folder_subtitle),
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.padding(bottom = 8.dp),
                 )
                 EdgeIndicatedLazyColumn {
                     items(availableFolders) { folder ->
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = 48.dp)
-                                .clip(MaterialTheme.shapes.small)
-                                .clickable {
-                                    onConfirmMove(folder.uid)
-                                    onDismiss()
-                                },
-                            verticalAlignment = Alignment.CenterVertically
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(min = 48.dp)
+                                    .clip(MaterialTheme.shapes.small)
+                                    .clickable {
+                                        onConfirmMove(folder.uid)
+                                        onDismiss()
+                                    },
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.Folder,
                                 contentDescription = null,
-                                modifier = Modifier.padding(horizontal = 12.dp)
+                                modifier = Modifier.padding(horizontal = 12.dp),
                             )
                             Text(
                                 text = folder.name,
-                                style = MaterialTheme.typography.bodyLarge
+                                style = MaterialTheme.typography.bodyLarge,
                             )
                         }
                     }
                 }
             }
-        }
+        },
     )
 }

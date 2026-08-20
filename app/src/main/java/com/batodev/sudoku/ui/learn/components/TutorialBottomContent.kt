@@ -40,25 +40,26 @@ fun TutorialBoardStepContent(
     data: TutorialStepData,
     step: Int,
     onStepChange: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.padding(horizontal = 12.dp)
+        modifier = modifier.padding(horizontal = 12.dp),
     ) {
         Board(
             data = BoardData(board = data.board, notes = data.notes),
-            interaction = BoardInteraction(
-                selectedCell = Cell(-1, -1),
-                onClick = { },
-                cellsToHighlight = if (step < data.stepsCell.size) data.stepsCell[step] else null
-            ),
-            style = BoardStyle(boardColors = LocalBoardColors.current)
+            interaction =
+                BoardInteraction(
+                    selectedCell = Cell(-1, -1),
+                    onClick = { },
+                    cellsToHighlight = if (step < data.stepsCell.size) data.stepsCell[step] else null,
+                ),
+            style = BoardStyle(boardColors = LocalBoardColors.current),
         )
         TutorialBottomContent(
             steps = data.steps,
             step = step,
             onPreviousClick = { if (step > 0) onStepChange(step - 1) },
-            onNextClick = { if (step < (data.steps.size - 1)) onStepChange(step + 1) }
+            onNextClick = { if (step < (data.steps.size - 1)) onStepChange(step + 1) },
         )
     }
 }
@@ -70,14 +71,15 @@ fun TutorialBottomContent(
     step: Int,
     onPreviousClick: () -> Unit,
     onNextClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .padding(top = 8.dp)
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.SpaceBetween
+        modifier =
+            modifier
+                .padding(top = 8.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
         AnimatedContent(targetState = steps[step]) { stepText ->
             Column {
@@ -85,15 +87,16 @@ fun TutorialBottomContent(
             }
         }
         Row(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            modifier =
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             AnimatedVisibility(
                 visible = step > 0,
                 enter = fadeIn() + slideInVertically(),
-                exit = fadeOut() + slideOutVertically { it }
+                exit = fadeOut() + slideOutVertically { it },
             ) {
                 FilledTonalButton(onClick = onPreviousClick) {
                     Text(stringResource(R.string.page_previous))
@@ -103,7 +106,7 @@ fun TutorialBottomContent(
             AnimatedVisibility(
                 visible = step < steps.size - 1,
                 enter = fadeIn() + slideInVertically(),
-                exit = fadeOut() + slideOutVertically { it }
+                exit = fadeOut() + slideOutVertically { it },
             ) {
                 FilledTonalButton(onClick = onNextClick) {
                     Text(stringResource(R.string.page_next))

@@ -12,7 +12,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class OnboardingTest {
-
     @get:Rule
     val composeTestRule = createEmptyComposeRule()
 

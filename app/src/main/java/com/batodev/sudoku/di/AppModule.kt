@@ -16,22 +16,23 @@ const val ACRA_SHARED_PREFS_NAME = "acra_shared_pref"
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
-
     @Provides
     @Singleton
     fun provideAcraSharedPrefs(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
     ): SharedPreferences = context.getSharedPreferences(ACRA_SHARED_PREFS_NAME, Context.MODE_PRIVATE)
 
     // settings datastore
     @Provides
     @Singleton
-    fun provideAppSettingsManager(@ApplicationContext context: Context) =
-        AppSettingsManager(context)
+    fun provideAppSettingsManager(
+        @ApplicationContext context: Context,
+    ) = AppSettingsManager(context)
 
     // appTheme datastore
     @Provides
     @Singleton
-    fun provideThemeSettingsManager(@ApplicationContext context: Context) =
-        ThemeSettingsManager(context)
+    fun provideThemeSettingsManager(
+        @ApplicationContext context: Context,
+    ) = ThemeSettingsManager(context)
 }

@@ -28,7 +28,6 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class HomeScreenTest {
-
     @get:Rule
     val composeTestRule = createEmptyComposeRule()
 
@@ -44,7 +43,8 @@ class HomeScreenTest {
 
     @Test
     fun moreGamesButtonFiresExternalViewIntent() {
-        Intents.intending(hasAction(Intent.ACTION_VIEW))
+        Intents
+            .intending(hasAction(Intent.ACTION_VIEW))
             .respondWith(Instrumentation.ActivityResult(0, null))
         ActivityScenario.launch(MainActivity::class.java).use {
             composeTestRule.completeOnboardingIfShown()
@@ -55,7 +55,8 @@ class HomeScreenTest {
 
     @Test
     fun bottomNavGalleryLaunchesGalleryActivity() {
-        Intents.intending(hasComponent(GalleryActivity::class.java.name))
+        Intents
+            .intending(hasComponent(GalleryActivity::class.java.name))
             .respondWith(Instrumentation.ActivityResult(0, null))
         ActivityScenario.launch(MainActivity::class.java).use {
             composeTestRule.completeOnboardingIfShown()

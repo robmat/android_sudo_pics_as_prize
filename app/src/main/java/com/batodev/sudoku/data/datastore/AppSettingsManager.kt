@@ -19,7 +19,9 @@ import java.util.Locale
 import javax.inject.Singleton
 
 @Singleton
-class AppSettingsManager(context: Context) {
+class AppSettingsManager(
+    context: Context,
+) {
     private val Context.createDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
     internal val dataStore = context.createDataStore
 
@@ -79,124 +81,145 @@ class AppSettingsManager(context: Context) {
     internal val lastSelectedGameDifficultyTypeKey =
         stringPreferencesKey("last_selected_difficulty_type")
 
-    val firstLaunch = dataStore.data.map { preferences ->
-        preferences[firstLaunchKey] ?: true
-    }
+    val firstLaunch =
+        dataStore.data.map { preferences ->
+            preferences[firstLaunchKey] ?: true
+        }
 
-    val mistakesLimit = dataStore.data.map { preferences ->
-        preferences[mistakesLimitKey] ?: PreferencesConstants.DEFAULT_MISTAKES_LIMIT
-    }
+    val mistakesLimit =
+        dataStore.data.map { preferences ->
+            preferences[mistakesLimitKey] ?: PreferencesConstants.DEFAULT_MISTAKES_LIMIT
+        }
 
-    val hintsDisabled = dataStore.data.map { preferences ->
-        preferences[hintsDisabledKey] ?: PreferencesConstants.DEFAULT_HINTS_DISABLED
-    }
+    val hintsDisabled =
+        dataStore.data.map { preferences ->
+            preferences[hintsDisabledKey] ?: PreferencesConstants.DEFAULT_HINTS_DISABLED
+        }
 
-    val timerEnabled = dataStore.data.map { preferences ->
-        preferences[timerKey] ?: PreferencesConstants.DEFAULT_SHOW_TIMER
-    }
+    val timerEnabled =
+        dataStore.data.map { preferences ->
+            preferences[timerKey] ?: PreferencesConstants.DEFAULT_SHOW_TIMER
+        }
 
-    val resetTimerEnabled = dataStore.data.map { preferences ->
-        preferences[resetTimerKey] ?: PreferencesConstants.DEFAULT_GAME_RESET_TIMER
-    }
+    val resetTimerEnabled =
+        dataStore.data.map { preferences ->
+            preferences[resetTimerKey] ?: PreferencesConstants.DEFAULT_GAME_RESET_TIMER
+        }
 
-    val highlightMistakes = dataStore.data.map { preferences ->
-        preferences[highlightMistakesKey] ?: PreferencesConstants.DEFAULT_HIGHLIGHT_MISTAKES
-    }
+    val highlightMistakes =
+        dataStore.data.map { preferences ->
+            preferences[highlightMistakesKey] ?: PreferencesConstants.DEFAULT_HIGHLIGHT_MISTAKES
+        }
 
-    val highlightIdentical = dataStore.data.map { preferences ->
-        preferences[highlightIdenticalKey] ?: PreferencesConstants.DEFAULT_HIGHLIGHT_IDENTICAL
-    }
+    val highlightIdentical =
+        dataStore.data.map { preferences ->
+            preferences[highlightIdenticalKey] ?: PreferencesConstants.DEFAULT_HIGHLIGHT_IDENTICAL
+        }
 
-    val remainingUse = dataStore.data.map { preferences ->
-        preferences[remainingUseKey] ?: PreferencesConstants.DEFAULT_REMAINING_USES
-    }
+    val remainingUse =
+        dataStore.data.map { preferences ->
+            preferences[remainingUseKey] ?: PreferencesConstants.DEFAULT_REMAINING_USES
+        }
 
-    val positionLines = dataStore.data.map { preferences ->
-        preferences[positionLinesKey] ?: PreferencesConstants.DEFAULT_POSITION_LINES
-    }
+    val positionLines =
+        dataStore.data.map { preferences ->
+            preferences[positionLinesKey] ?: PreferencesConstants.DEFAULT_POSITION_LINES
+        }
 
-    val autoEraseNotes = dataStore.data.map { preferences ->
-        preferences[autoEraseNotesKey] ?: PreferencesConstants.DEFAULT_AUTO_ERASE_NOTES
-    }
+    val autoEraseNotes =
+        dataStore.data.map { preferences ->
+            preferences[autoEraseNotesKey] ?: PreferencesConstants.DEFAULT_AUTO_ERASE_NOTES
+        }
 
-    val inputMethod = dataStore.data.map { preferences ->
-        preferences[inputMethodKey] ?: PreferencesConstants.DEFAULT_INPUT_METHOD
-    }
+    val inputMethod =
+        dataStore.data.map { preferences ->
+            preferences[inputMethodKey] ?: PreferencesConstants.DEFAULT_INPUT_METHOD
+        }
 
-    val fontSize = dataStore.data.map { preferences ->
-        preferences[fontSizeKey] ?: PreferencesConstants.DEFAULT_FONT_SIZE_FACTOR
-    }
+    val fontSize =
+        dataStore.data.map { preferences ->
+            preferences[fontSizeKey] ?: PreferencesConstants.DEFAULT_FONT_SIZE_FACTOR
+        }
 
-    val keepScreenOn = dataStore.data.map { preferences ->
-        preferences[keepScreenOnKey] ?: PreferencesConstants.DEFAULT_KEEP_SCREEN_ON
-    }
+    val keepScreenOn =
+        dataStore.data.map { preferences ->
+            preferences[keepScreenOnKey] ?: PreferencesConstants.DEFAULT_KEEP_SCREEN_ON
+        }
 
-    val firstGame = dataStore.data.map { preferences ->
-        preferences[firstGameKey] ?: true
-    }
+    val firstGame =
+        dataStore.data.map { preferences ->
+            preferences[firstGameKey] ?: true
+        }
 
-    val funKeyboardOverNumbers = dataStore.data.map { prefs ->
-        prefs[funKeyboardOverNumKey] ?: PreferencesConstants.DEFAULT_FUN_KEYBOARD_OVER_NUM
-    }
+    val funKeyboardOverNumbers =
+        dataStore.data.map { prefs ->
+            prefs[funKeyboardOverNumKey] ?: PreferencesConstants.DEFAULT_FUN_KEYBOARD_OVER_NUM
+        }
 
-    val dateFormat = dataStore.data.map { prefs ->
-        prefs[dateFormatKey] ?: ""
-    }
+    val dateFormat =
+        dataStore.data.map { prefs ->
+            prefs[dateFormatKey] ?: ""
+        }
 
     /**
      * Whether to save the last selected type and difficulty in the HomeScreen
      */
-    val saveSelectedGameDifficultyType = dataStore.data.map { prefs ->
-        prefs[saveSelectedGameDifficultyTypeKey]
-            ?: PreferencesConstants.DEFAULT_SAVE_LAST_SELECTED_DIFF_TYPE
-    }
+    val saveSelectedGameDifficultyType =
+        dataStore.data.map { prefs ->
+            prefs[saveSelectedGameDifficultyTypeKey]
+                ?: PreferencesConstants.DEFAULT_SAVE_LAST_SELECTED_DIFF_TYPE
+        }
 
     /**
      * Last selected difficulty and type. Returns Pair<GameDifficulty, GameType>
      */
-    val lastSelectedGameDifficultyType = dataStore.data.map { prefs ->
-        var gameDifficulty = GameDifficulty.Easy
-        var gameType = GameType.Default9x9
+    val lastSelectedGameDifficultyType =
+        dataStore.data.map { prefs ->
+            var gameDifficulty = GameDifficulty.Easy
+            var gameType = GameType.Default9x9
 
-        val key = prefs[lastSelectedGameDifficultyTypeKey] ?: ""
-        if (key.isNotEmpty() && key.contains(";")) {
-            gameDifficulty = when (key.substring(0, key.indexOf(";"))) {
-                "0" -> GameDifficulty.Unspecified
-                "1" -> GameDifficulty.Simple
-                "2" -> GameDifficulty.Easy
-                "3" -> GameDifficulty.Moderate
-                "4" -> GameDifficulty.Hard
-                "5" -> GameDifficulty.Challenge
-                "6" -> GameDifficulty.Custom
-                else -> GameDifficulty.Easy
+            val key = prefs[lastSelectedGameDifficultyTypeKey] ?: ""
+            if (key.isNotEmpty() && key.contains(";")) {
+                gameDifficulty =
+                    when (key.substring(0, key.indexOf(";"))) {
+                        "0" -> GameDifficulty.Unspecified
+                        "1" -> GameDifficulty.Simple
+                        "2" -> GameDifficulty.Easy
+                        "3" -> GameDifficulty.Moderate
+                        "4" -> GameDifficulty.Hard
+                        "5" -> GameDifficulty.Challenge
+                        "6" -> GameDifficulty.Custom
+                        else -> GameDifficulty.Easy
+                    }
+                gameType =
+                    when (key.substring(key.indexOf(";") + 1)) {
+                        "0" -> GameType.Unspecified
+                        "1" -> GameType.Default9x9
+                        "2" -> GameType.Default12x12
+                        "3" -> GameType.Default6x6
+                        else -> GameType.Default9x9
+                    }
             }
-            gameType = when (key.substring(key.indexOf(";") + 1)) {
-                "0" -> GameType.Unspecified
-                "1" -> GameType.Default9x9
-                "2" -> GameType.Default12x12
-                "3" -> GameType.Default6x6
-                else -> GameType.Default9x9
-            }
+            Pair(gameDifficulty, gameType)
         }
-        Pair(gameDifficulty, gameType)
-    }
 
     companion object {
-        fun dateFormat(format: String): DateTimeFormatter = when (format) {
-            "" -> {
-                DateTimeFormatter.ofPattern(
-                    DateTimeFormatterBuilder.getLocalizedDateTimePattern(
-                        FormatStyle.SHORT,
-                        null,
-                        IsoChronology.INSTANCE,
-                        Locale.getDefault()
+        fun dateFormat(format: String): DateTimeFormatter =
+            when (format) {
+                "" -> {
+                    DateTimeFormatter.ofPattern(
+                        DateTimeFormatterBuilder.getLocalizedDateTimePattern(
+                            FormatStyle.SHORT,
+                            null,
+                            IsoChronology.INSTANCE,
+                            Locale.getDefault(),
+                        ),
                     )
-                )
-            }
+                }
 
-            else -> {
-                DateTimeFormatter.ofPattern(format, Locale.getDefault())
+                else -> {
+                    DateTimeFormatter.ofPattern(format, Locale.getDefault())
+                }
             }
-        }
     }
 }

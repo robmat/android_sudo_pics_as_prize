@@ -6,8 +6,9 @@ package com.batodev.sudoku.core.qqwing
  * can be eliminated from the rest of the box; and the symmetric case for
  * columns.
  */
-internal class BoxLineTechniques(private val board: QQWing) {
-
+internal class BoxLineTechniques(
+    private val board: QQWing,
+) {
     fun colBoxReduction(round: Int): Boolean {
         for (valIndex in 0 until QQWing.ROW_COL_SEC_SIZE) {
             for (col in 0 until QQWing.ROW_COL_SEC_SIZE) {
@@ -36,7 +37,10 @@ internal class BoxLineTechniques(private val board: QQWing) {
         return false
     }
 
-    private fun findColBox(valIndex: Int, col: Int): Int? {
+    private fun findColBox(
+        valIndex: Int,
+        col: Int,
+    ): Int? {
         var inOneBox = true
         var colBox = -1
         for (i in 0 until QQWing.GRID_SIZE_COL) {
@@ -51,7 +55,12 @@ internal class BoxLineTechniques(private val board: QQWing) {
         return if (inOneBox && colBox != -1) colBox else null
     }
 
-    private fun eliminateColBoxCandidates(round: Int, valIndex: Int, col: Int, colBox: Int): Boolean {
+    private fun eliminateColBoxCandidates(
+        round: Int,
+        valIndex: Int,
+        col: Int,
+        colBox: Int,
+    ): Boolean {
         var doneSomething = false
         val row = QQWing.GRID_SIZE_ROW * colBox
         val secStart = cellToSectionStartCellInternal(rowColumnToCellInternal(row, col))
@@ -72,7 +81,10 @@ internal class BoxLineTechniques(private val board: QQWing) {
         return doneSomething
     }
 
-    private fun findRowBox(valIndex: Int, row: Int): Int? {
+    private fun findRowBox(
+        valIndex: Int,
+        row: Int,
+    ): Int? {
         var inOneBox = true
         var rowBox = -1
         for (i in 0 until QQWing.GRID_SIZE_ROW) {
@@ -87,7 +99,12 @@ internal class BoxLineTechniques(private val board: QQWing) {
         return if (inOneBox && rowBox != -1) rowBox else null
     }
 
-    private fun eliminateRowBoxCandidates(round: Int, valIndex: Int, row: Int, rowBox: Int): Boolean {
+    private fun eliminateRowBoxCandidates(
+        round: Int,
+        valIndex: Int,
+        row: Int,
+        rowBox: Int,
+    ): Boolean {
         var doneSomething = false
         val column = QQWing.GRID_SIZE_COL * rowBox
         val secStart = cellToSectionStartCellInternal(rowColumnToCellInternal(row, column))

@@ -25,10 +25,12 @@ class GsudokuParser : FileImportParser {
         return null
     }
 
-    private fun isValidBoard(boardString: String): Boolean =
-        boardString.length == STANDARD_BOARD_LENGTH && boardString.all { it.isDigit() }
+    private fun isValidBoard(boardString: String): Boolean = boardString.length == STANDARD_BOARD_LENGTH && boardString.all { it.isDigit() }
 
-    private fun processSudokuTag(parser: XmlPullParser, parsedBoards: MutableList<String>): Boolean {
+    private fun processSudokuTag(
+        parser: XmlPullParser,
+        parsedBoards: MutableList<String>,
+    ): Boolean {
         val boardString = extractBoardData(parser)
         val success = boardString == null || isValidBoard(boardString)
         if (success && boardString != null) {

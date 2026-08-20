@@ -92,17 +92,17 @@ private fun ImportFromFileTopBar(navigateBack: () -> Unit) {
             Text(
                 text = stringResource(R.string.import_from_file_title),
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
         },
         navigationIcon = {
             IconButton(onClick = navigateBack) {
                 Icon(
                     imageVector = Icons.Rounded.Close,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
-        }
+        },
     )
 }
 
@@ -112,12 +112,12 @@ private fun ImportFromFileFab(lazyGridState: LazyGridState) {
     AnimatedVisibility(
         visible = lazyGridState.isScrollingUp() && !lazyGridState.isScrolledToStart(),
         enter = fadeIn() + scaleIn(),
-        exit = fadeOut() + scaleOut()
+        exit = fadeOut() + scaleOut(),
     ) {
         FloatingActionButton(
             onClick = {
                 coroutineScope.launch { lazyGridState.animateScrollToItem(0) }
-            }
+            },
         ) {
             Icon(Icons.Rounded.KeyboardArrowUp, contentDescription = null)
         }
@@ -129,17 +129,18 @@ private fun ImportFromFileFab(lazyGridState: LazyGridState) {
 private fun ImportFromFileDifficultyRow(
     viewModel: ImportFromFileViewModel,
     gamesToImport: List<String>,
-    onRequestFolderName: () -> Unit
+    onRequestFolderName: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        modifier =
+            Modifier
+                .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Box {
             var gameTypeMenuExpanded by remember { mutableStateOf(false) }
             val dropDownIconRotation by animateFloatAsState(
-                if (gameTypeMenuExpanded) DROPDOWN_EXPANDED_ROTATION_DEGREES else 0f
+                if (gameTypeMenuExpanded) DROPDOWN_EXPANDED_ROTATION_DEGREES else 0f,
             )
             TextButton(onClick = { gameTypeMenuExpanded = !gameTypeMenuExpanded }) {
                 AnimatedContent(stringResource(viewModel.difficultyForImport.resName)) { text ->
@@ -148,13 +149,13 @@ private fun ImportFromFileDifficultyRow(
                 Icon(
                     modifier = Modifier.rotate(dropDownIconRotation),
                     imageVector = Icons.Rounded.ArrowDropDown,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
             DifficultyDropdownMenu(
                 expanded = gameTypeMenuExpanded,
                 onDismissRequest = { gameTypeMenuExpanded = false },
-                onClick = { difficulty -> viewModel.setDifficulty(difficulty) }
+                onClick = { difficulty -> viewModel.setDifficulty(difficulty) },
             )
         }
         FilledTonalButton(
@@ -165,7 +166,7 @@ private fun ImportFromFileDifficultyRow(
                 } else {
                     viewModel.saveImported()
                 }
-            }
+            },
         ) {
             Text(stringResource(R.string.action_save))
         }
@@ -173,7 +174,10 @@ private fun ImportFromFileDifficultyRow(
 }
 
 @Composable
-private fun ImportFromFileGrid(lazyGridState: LazyGridState, gamesToImport: List<String>) {
+private fun ImportFromFileGrid(
+    lazyGridState: LazyGridState,
+    gamesToImport: List<String>,
+) {
     var span by remember { mutableIntStateOf(1) }
     ScrollbarLazyVerticalGrid(
         columns = GridCells.Adaptive(130.dp),
@@ -182,23 +186,24 @@ private fun ImportFromFileGrid(lazyGridState: LazyGridState, gamesToImport: List
         content = {
             items(
                 items = gamesToImport,
-                span = { GridItemSpan(1).also { span = maxLineSpan } }
+                span = { GridItemSpan(1).also { span = maxLineSpan } },
             ) { item ->
                 Column(
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(8.dp),
                 ) {
                     BoardPreview(
-                        content = BoardPreviewContent(
-                            size = PREVIEW_BOARD_SIZE,
-                            boardString = item,
-                            boardColors = LocalBoardColors.current
-                        )
+                        content =
+                            BoardPreviewContent(
+                                size = PREVIEW_BOARD_SIZE,
+                                boardString = item,
+                                boardColors = LocalBoardColors.current,
+                            ),
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     HorizontalDivider()
                 }
             }
-        }
+        },
     )
 }
 
@@ -207,11 +212,11 @@ private fun ImportFromFileLoadingDialog() {
     Dialog(onDismissRequest = { }) {
         Surface(
             shape = RoundedCornerShape(28.dp),
-            color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
+            color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
         ) {
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.padding(24.dp)
+                modifier = Modifier.padding(24.dp),
             ) {
                 CircularProgressIndicator(Modifier.align(Alignment.Center))
             }
@@ -226,19 +231,20 @@ private fun ImportFromFileContent(
     viewModel: ImportFromFileViewModel,
     gamesToImport: List<String>,
     lazyGridState: LazyGridState,
-    onRequestFolderName: () -> Unit
+    onRequestFolderName: () -> Unit,
 ) {
     Column(Modifier.padding(paddingValues)) {
         Column(
-            modifier = Modifier
-                .padding(horizontal = 12.dp)
+            modifier =
+                Modifier
+                    .padding(horizontal = 12.dp),
         ) {
             Text(
                 pluralStringResource(
                     R.plurals.number_puzzles_to_import,
                     gamesToImport.size,
-                    gamesToImport.size
-                )
+                    gamesToImport.size,
+                ),
             )
             ImportFromFileDifficultyRow(viewModel, gamesToImport, onRequestFolderName)
         }
@@ -253,7 +259,7 @@ private fun ImportFromFileContent(
 @Composable
 private fun ImportFromFileFolderNameDialog(
     viewModel: ImportFromFileViewModel,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     var value by remember { mutableStateOf("") }
     var isError by rememberSaveable { mutableStateOf(false) }
@@ -273,7 +279,7 @@ private fun ImportFromFileFolderNameDialog(
                 singleLine = true,
                 value = value,
                 onValueChange = { value = it },
-                label = { Text(stringResource(R.string.create_folder_name)) }
+                label = { Text(stringResource(R.string.create_folder_name)) },
             )
         },
         onDismissRequest = onDismiss,
@@ -286,25 +292,25 @@ private fun ImportFromFileFolderNameDialog(
                     } else {
                         isError = true
                     }
-                }
+                },
             ) {
                 Text(stringResource(R.string.dialog_ok))
             }
         },
         dismissButton = {
             TextButton(
-                onClick = onDismiss
+                onClick = onDismiss,
             ) {
                 Text(stringResource(R.string.action_cancel))
             }
-        }
+        },
     )
 }
 
 @Composable
 private fun ImportFromFileEffects(
     viewModel: ImportFromFileViewModel,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
 ) {
     val context = LocalContext.current
     val importFromFileFailMessage = stringResource(R.string.import_from_file_fail)
@@ -325,11 +331,12 @@ private fun ImportFromFileEffects(
     val importError by viewModel.importError.collectAsStateWithLifecycle()
     LaunchedEffect(importError) {
         if (importError) {
-            Toast.makeText(
-                context,
-                importFromFileFailMessage,
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast
+                .makeText(
+                    context,
+                    importFromFileFailMessage,
+                    Toast.LENGTH_SHORT,
+                ).show()
             navigateBack()
         }
     }
@@ -339,7 +346,7 @@ private fun ImportFromFileEffects(
 @Composable
 fun ImportFromFileScreen(
     viewModel: ImportFromFileViewModel,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
 ) {
     BackHandler {
         navigateBack()
@@ -353,14 +360,14 @@ fun ImportFromFileScreen(
 
     Scaffold(
         topBar = { ImportFromFileTopBar(navigateBack) },
-        floatingActionButton = { ImportFromFileFab(lazyGridState) }
+        floatingActionButton = { ImportFromFileFab(lazyGridState) },
     ) { paddingValues ->
         ImportFromFileContent(
             paddingValues = paddingValues,
             viewModel = viewModel,
             gamesToImport = gamesToImport,
             lazyGridState = lazyGridState,
-            onRequestFolderName = { setFolderNameDialog = true }
+            onRequestFolderName = { setFolderNameDialog = true },
         )
     }
 

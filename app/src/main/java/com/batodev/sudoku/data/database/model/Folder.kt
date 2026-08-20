@@ -9,5 +9,5 @@ import java.time.ZonedDateTime
 data class Folder(
     @PrimaryKey(autoGenerate = true) val uid: Long,
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "date_created") val createdAt: ZonedDateTime
+    @ColumnInfo(name = "date_created") val createdAt: ZonedDateTime,
 )

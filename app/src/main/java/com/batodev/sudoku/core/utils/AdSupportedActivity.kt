@@ -26,9 +26,7 @@ abstract class AdSupportedActivity : AppCompatActivity() {
         isActivityVisible = false
     }
 
-    fun isActivityVisible(): Boolean {
-        return isActivityVisible
-    }
+    fun isActivityVisible(): Boolean = isActivityVisible
 
     /**
      * Starts (or continues) the recurring ad-check loop: shows an ad via [AdHelper] whenever the

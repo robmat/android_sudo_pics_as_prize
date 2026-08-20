@@ -20,7 +20,10 @@ import kotlin.math.floor
 private const val MIN_ZOOM = 1f
 private const val MAX_ZOOM = 3f
 
-private data class ZoomPanState(val zoom: MutableFloatState, val offset: MutableState<Offset>)
+private data class ZoomPanState(
+    val zoom: MutableFloatState,
+    val offset: MutableState<Offset>,
+)
 
 /**
  * Builds the [Modifier] that gives [Board] its tap/long-press-to-select and (if
@@ -37,13 +40,14 @@ internal fun rememberBoardInteractionModifier(
     cellSizeProvider: () -> Float,
     maxWidth: Float,
     displayOptions: BoardDisplayOptions,
-    interaction: BoardInteraction
+    interaction: BoardInteraction,
 ): Modifier {
     val enabled = displayOptions.enabled
-    val zoomPan = ZoomPanState(
-        zoom = remember(enabled) { mutableFloatStateOf(1f) },
-        offset = remember(enabled) { mutableStateOf(Offset.Zero) }
-    )
+    val zoomPan =
+        ZoomPanState(
+            zoom = remember(enabled) { mutableFloatStateOf(1f) },
+            offset = remember(enabled) { mutableStateOf(Offset.Zero) },
+        )
 
     val tapModifier = rememberTapModifier(board, cellSizeProvider, enabled, interaction, zoomPan)
     val zoomModifier = rememberZoomModifier(maxWidth, enabled, zoomPan)
@@ -56,7 +60,7 @@ private fun rememberTapModifier(
     cellSizeProvider: () -> Float,
     enabled: Boolean,
     interaction: BoardInteraction,
-    zoomPan: ZoomPanState
+    zoomPan: ZoomPanState,
 ): Modifier {
     val onClick = interaction.onClick
     val onLongClick = interaction.onLongClick
@@ -68,12 +72,14 @@ private fun rememberTapModifier(
                     if (enabled) {
                         val cellSize = cellSizeProvider()
                         val totalOffset = it / zoomPan.zoom.floatValue + zoomPan.offset.value
-                        val row = floor((totalOffset.y) / cellSize)
-                            .toInt()
-                            .coerceIn(board.indices)
-                        val column = floor((totalOffset.x) / cellSize)
-                            .toInt()
-                            .coerceIn(board.indices)
+                        val row =
+                            floor((totalOffset.y) / cellSize)
+                                .toInt()
+                                .coerceIn(board.indices)
+                        val column =
+                            floor((totalOffset.x) / cellSize)
+                                .toInt()
+                                .coerceIn(board.indices)
                         onClick(board[row][column])
                     }
                 },
@@ -85,42 +91,45 @@ private fun rememberTapModifier(
                         val column = floor((totalOffset.x) / cellSize).toInt()
                         onLongClick(board[row][column])
                     }
-                }
+                },
             )
         }
 }
 
-private fun rememberZoomModifier(maxWidth: Float, enabled: Boolean, zoomPan: ZoomPanState): Modifier {
-    return Modifier
+private fun rememberZoomModifier(
+    maxWidth: Float,
+    enabled: Boolean,
+    zoomPan: ZoomPanState,
+): Modifier =
+    Modifier
         .pointerInput(enabled) {
             detectTransformGestures(
                 onGesture = { gestureCentroid, gesturePan, gestureZoom, _ ->
                     if (enabled) {
                         applyZoomGesture(zoomPan, maxWidth, gestureCentroid, gesturePan, gestureZoom)
                     }
-                }
+                },
             )
-        }
-        .graphicsLayer {
+        }.graphicsLayer {
             translationX = -zoomPan.offset.value.x * zoomPan.zoom.floatValue
             translationY = -zoomPan.offset.value.y * zoomPan.zoom.floatValue
             scaleX = zoomPan.zoom.floatValue
             scaleY = zoomPan.zoom.floatValue
             TransformOrigin(0f, 0f).also { transformOrigin = it }
         }
-}
 
 private fun applyZoomGesture(
     zoomPan: ZoomPanState,
     maxWidth: Float,
     gestureCentroid: Offset,
     gesturePan: Offset,
-    gestureZoom: Float
+    gestureZoom: Float,
 ) {
     val oldScale = zoomPan.zoom.floatValue
     val newScale = (oldScale * gestureZoom).coerceIn(MIN_ZOOM..MAX_ZOOM)
-    var offset = (zoomPan.offset.value + gestureCentroid / oldScale) -
-        (gestureCentroid / newScale + gesturePan / oldScale)
+    var offset =
+        (zoomPan.offset.value + gestureCentroid / oldScale) -
+            (gestureCentroid / newScale + gesturePan / oldScale)
     zoomPan.zoom.floatValue = newScale
     if (offset.x < 0) {
         offset = Offset(0f, offset.y)

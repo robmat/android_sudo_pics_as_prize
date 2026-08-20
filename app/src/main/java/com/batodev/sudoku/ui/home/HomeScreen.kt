@@ -64,31 +64,33 @@ private fun HomeAdBanner() {
             context.startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("https://play.google.com/store/apps/dev?id=8228670503574649511")
-                )
+                    Uri.parse("https://play.google.com/store/apps/dev?id=8228670503574649511"),
+                ),
             )
         },
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
         shape = RectangleShape,
-        modifier = Modifier
-            .border(
-                1.dp,
-                LocalBoardColors.current.thinLineColor,
-                RoundedCornerShape(8.dp)
-            )
+        modifier =
+            Modifier
+                .border(
+                    1.dp,
+                    LocalBoardColors.current.thinLineColor,
+                    RoundedCornerShape(8.dp),
+                ),
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
                 painter = painterResource(id = R.drawable.emberfox),
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .height(130.dp),
-                contentDescription = stringResource(id = R.string.app_name)
+                modifier =
+                    Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .height(130.dp),
+                contentDescription = stringResource(id = R.string.app_name),
             )
             Text(
                 text = stringResource(id = R.string.more_games_like_this),
                 style = MaterialTheme.typography.titleMedium,
-                color = LocalBoardColors.current.thinLineColor
+                color = LocalBoardColors.current.thinLineColor,
             )
         }
     }
@@ -99,20 +101,20 @@ private fun HomePlayControls(
     viewModel: HomeViewModel,
     lastGame: SavedGame?,
     navigatePlayGame: (Pair<Long, Boolean>) -> Unit,
-    onRequestContinueGameDialog: () -> Unit
+    onRequestContinueGameDialog: () -> Unit,
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         HorizontalPicker(
             text = stringResource(viewModel.selectedDifficulty.resName),
             onLeftClick = { viewModel.changeDifficulty(-1) },
-            onRightClick = { viewModel.changeDifficulty(1) }
+            onRightClick = { viewModel.changeDifficulty(1) },
         )
         HorizontalPicker(
             text = stringResource(viewModel.selectedType.resName),
             onLeftClick = { viewModel.changeType(-1) },
-            onRightClick = { viewModel.changeType(1) }
+            onRightClick = { viewModel.changeType(1) },
         )
 
         Spacer(Modifier.height(12.dp))
@@ -138,7 +140,10 @@ private fun HomePlayControls(
 }
 
 @Composable
-private fun HomeContinueGameDialog(viewModel: HomeViewModel, onDismiss: () -> Unit) {
+private fun HomeContinueGameDialog(
+    viewModel: HomeViewModel,
+    onDismiss: () -> Unit,
+) {
     AlertDialog(
         title = { Text(stringResource(R.string.dialog_new_game)) },
         text = { Text(stringResource(R.string.dialog_new_game_text)) },
@@ -156,7 +161,7 @@ private fun HomeContinueGameDialog(viewModel: HomeViewModel, onDismiss: () -> Un
                 Text(stringResource(R.string.action_cancel))
             }
         },
-        onDismissRequest = onDismiss
+        onDismissRequest = onDismiss,
     )
 }
 
@@ -170,7 +175,7 @@ fun HomeScreen(
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceAround
+            verticalArrangement = Arrangement.SpaceAround,
         ) {
             val lastGame by viewModel.lastSavedGame.collectAsStateWithLifecycle()
 
@@ -186,25 +191,26 @@ fun HomeScreen(
 
             Text(
                 text = stringResource(R.string.app_name),
-                style = MaterialTheme.typography.headlineLarge
+                style = MaterialTheme.typography.headlineLarge,
             )
             HomeAdBanner()
             HomePlayControls(
                 viewModel = viewModel,
                 lastGame = lastGame,
                 navigatePlayGame = navigatePlayGame,
-                onRequestContinueGameDialog = { continueGameDialog = true }
+                onRequestContinueGameDialog = { continueGameDialog = true },
             )
         }
 
         if (viewModel.isGenerating || viewModel.isSolving) {
             GeneratingDialog(
                 onDismiss = { },
-                text = when {
-                    viewModel.isGenerating -> stringResource(R.string.dialog_generating)
-                    viewModel.isSolving -> stringResource(R.string.dialog_solving)
-                    else -> ""
-                }
+                text =
+                    when {
+                        viewModel.isGenerating -> stringResource(R.string.dialog_generating)
+                        viewModel.isSolving -> stringResource(R.string.dialog_solving)
+                        else -> ""
+                    },
             )
         }
 
@@ -214,7 +220,7 @@ fun HomeScreen(
 
         LaunchedEffect(
             viewModel.lastSelectedGameDifficultyType,
-            viewModel.saveSelectedGameDifficultyType
+            viewModel.saveSelectedGameDifficultyType,
         ) {
             viewModel.restoreDifficultyAndType()
         }
@@ -229,23 +235,23 @@ fun GeneratingDialog(
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = RoundedCornerShape(28.dp),
-            color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
+            color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
         ) {
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.padding(24.dp)
+                modifier = Modifier.padding(24.dp),
             ) {
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Column {
                         Text(
                             text = text,
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
                         )
                     }
                     Column(
-                        modifier = Modifier.padding(top = 16.dp)
+                        modifier = Modifier.padding(top = 16.dp),
                     ) {
                         CircularProgressIndicator()
                     }
@@ -264,29 +270,30 @@ fun HorizontalPicker(
     onRightClick: () -> Unit,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 36.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp, horizontal = 36.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         IconButton(onClick = onLeftClick) {
             Icon(
                 painter = painterResource(R.drawable.ic_round_keyboard_arrow_left_24),
-                contentDescription = null
+                contentDescription = null,
             )
         }
         AnimatedContent(
             targetState = text,
             transitionSpec = { fadeIn() togetherWith fadeOut() },
-            label = "this_label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning"
+            label = "this_label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning",
         ) { text ->
             Text(text)
         }
         IconButton(onClick = onRightClick) {
             Icon(
                 painter = painterResource(R.drawable.ic_round_keyboard_arrow_right_24),
-                contentDescription = null
+                contentDescription = null,
             )
         }
     }

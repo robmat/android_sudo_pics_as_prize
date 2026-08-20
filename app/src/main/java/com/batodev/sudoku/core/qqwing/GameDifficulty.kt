@@ -2,12 +2,14 @@ package com.batodev.sudoku.core.qqwing
 
 import com.batodev.sudoku.R
 
-enum class GameDifficulty(val resName: Int) {
+enum class GameDifficulty(
+    val resName: Int,
+) {
     Unspecified(R.string.difficulty_unspecified),
     Simple(R.string.difficulty_simple),
     Easy(R.string.difficulty_easy),
     Moderate(R.string.difficulty_moderate),
     Hard(R.string.difficulty_hard),
     Challenge(R.string.difficulty_challenge),
-    Custom(R.string.difficulty_custom)
+    Custom(R.string.difficulty_custom),
 }

@@ -8,8 +8,9 @@ package com.batodev.sudoku.core.qqwing
  * The row/column/section variants share the exact same logic, differing
  * only in how a (group, index-within-group) pair maps to a board position.
  */
-internal class HiddenPairTechniques(private val board: QQWing) {
-
+internal class HiddenPairTechniques(
+    private val board: QQWing,
+) {
     fun hiddenPairInRow(round: Int): Boolean {
         for (row in 0 until QQWing.ROW_COL_SEC_SIZE) {
             if (findHiddenPair(round, row, LogType.HIDDEN_PAIR_ROW) { r, col -> rowColumnToCellInternal(r, col) }) {
@@ -21,9 +22,10 @@ internal class HiddenPairTechniques(private val board: QQWing) {
 
     fun hiddenPairInColumn(round: Int): Boolean {
         for (column in 0 until QQWing.ROW_COL_SEC_SIZE) {
-            val found = findHiddenPair(round, column, LogType.HIDDEN_PAIR_COLUMN) { col, row ->
-                rowColumnToCellInternal(row, col)
-            }
+            val found =
+                findHiddenPair(round, column, LogType.HIDDEN_PAIR_COLUMN) { col, row ->
+                    rowColumnToCellInternal(row, col)
+                }
             if (found) return true
         }
         return false
@@ -31,9 +33,10 @@ internal class HiddenPairTechniques(private val board: QQWing) {
 
     fun hiddenPairInSection(round: Int): Boolean {
         for (section in 0 until QQWing.ROW_COL_SEC_SIZE) {
-            val found = findHiddenPair(round, section, LogType.HIDDEN_PAIR_SECTION) { sec, secInd ->
-                sectionToCellInternal(sec, secInd)
-            }
+            val found =
+                findHiddenPair(round, section, LogType.HIDDEN_PAIR_SECTION) { sec, secInd ->
+                    sectionToCellInternal(sec, secInd)
+                }
             if (found) return true
         }
         return false
@@ -44,7 +47,12 @@ internal class HiddenPairTechniques(private val board: QQWing) {
      * [group]), where [positionAt] maps an index within that group to a
      * board position.
      */
-    private fun findHiddenPair(round: Int, group: Int, logType: LogType, positionAt: (Int, Int) -> Int): Boolean {
+    private fun findHiddenPair(
+        round: Int,
+        group: Int,
+        logType: LogType,
+        positionAt: (Int, Int) -> Int,
+    ): Boolean {
         for (valIndex in 0 until QQWing.ROW_COL_SEC_SIZE) {
             val (i1, i2, count) = countValueOccurrencesInGroup(group, valIndex, positionAt)
             if (count != 2) continue
@@ -65,7 +73,7 @@ internal class HiddenPairTechniques(private val board: QQWing) {
     private fun countValueOccurrencesInGroup(
         group: Int,
         valIndex: Int,
-        positionAt: (Int, Int) -> Int
+        positionAt: (Int, Int) -> Int,
     ): Triple<Int, Int, Int> {
         var i1 = -1
         var i2 = -1
@@ -90,7 +98,7 @@ internal class HiddenPairTechniques(private val board: QQWing) {
         valIndex: Int,
         valIndex2: Int,
         position1: Int,
-        position2: Int
+        position2: Int,
     ): Boolean {
         var doneSomething = false
         for (valIndex3 in 0 until QQWing.ROW_COL_SEC_SIZE) {

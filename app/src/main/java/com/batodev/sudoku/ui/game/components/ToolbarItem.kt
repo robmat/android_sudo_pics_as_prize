@@ -28,7 +28,7 @@ enum class ToolBarItem {
     Hint,
     Note,
     Remove,
-    Redo
+    Redo,
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -38,40 +38,42 @@ fun ToolbarItem(
     painter: Painter,
     toggled: Boolean = false,
     onClick: () -> Unit = { },
-    onLongClick: () -> Unit = { }
+    onLongClick: () -> Unit = { },
 ) {
     Box(
-        modifier = modifier
-            .clip(MaterialTheme.shapes.large)
-            .background(
-                if (toggled) {
-                    MaterialTheme.colorScheme.primaryContainer
-                } else {
-                    MaterialTheme.colorScheme.surfaceColorAtElevation(
-                        2.dp
-                    )
-                }
-            )
-            .combinedClickable(
-                onClick = onClick,
-                onLongClick = onLongClick
-            ),
-        contentAlignment = Alignment.Center
+        modifier =
+            modifier
+                .clip(MaterialTheme.shapes.large)
+                .background(
+                    if (toggled) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surfaceColorAtElevation(
+                            2.dp,
+                        )
+                    },
+                ).combinedClickable(
+                    onClick = onClick,
+                    onLongClick = onLongClick,
+                ),
+        contentAlignment = Alignment.Center,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp, horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
                 painter = painter,
                 contentDescription = null,
-                tint = if (toggled) {
-                    MaterialTheme.colorScheme.onPrimaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onSurface
-                }
+                tint =
+                    if (toggled) {
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
+                    },
             )
         }
     }
@@ -85,12 +87,12 @@ private fun KeyboardItemPreview() {
             Row {
                 ToolbarItem(
                     modifier = Modifier.weight(1f),
-                    painter = painterResource(R.drawable.ic_round_edit_24)
+                    painter = painterResource(R.drawable.ic_round_edit_24),
                 )
                 ToolbarItem(
                     modifier = Modifier.weight(1f),
                     painter = painterResource(R.drawable.ic_round_edit_24),
-                    toggled = true
+                    toggled = true,
                 )
             }
         }

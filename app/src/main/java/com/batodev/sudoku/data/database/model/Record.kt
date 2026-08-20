@@ -17,14 +17,14 @@ import java.time.ZonedDateTime
             onDelete = CASCADE,
             entity = SudokuBoard::class,
             parentColumns = arrayOf("uid"),
-            childColumns = arrayOf("board_uid")
-        )
-    ]
+            childColumns = arrayOf("board_uid"),
+        ),
+    ],
 )
 data class Record(
     @PrimaryKey @ColumnInfo(name = "board_uid") val boardUid: Long,
     @ColumnInfo(name = "type") val type: GameType,
     @ColumnInfo(name = "difficulty") val difficulty: GameDifficulty,
     @ColumnInfo(name = "date") val date: ZonedDateTime,
-    @ColumnInfo(name = "time") val time: Duration
+    @ColumnInfo(name = "time") val time: Duration,
 )

@@ -22,6 +22,7 @@ package com.batodev.sudoku.core.qqwing
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 // @formatter:on
+
 /**
  * The board containing all the memory structures needed for solving or
  * generating sudoku puzzles.
@@ -36,7 +37,10 @@ package com.batodev.sudoku.core.qqwing
  * [NakedPairTechniques]) - kept this way so that no single file/class grows
  * unwieldy.
  */
-class QQWing(type: GameType, difficulty: GameDifficulty) {
+class QQWing(
+    type: GameType,
+    difficulty: GameDifficulty,
+) {
     internal val historyRecorder = SolveHistoryRecorder()
 
     /**

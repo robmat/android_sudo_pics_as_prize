@@ -44,7 +44,10 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StatisticsTopBar(scrollBehavior: TopAppBarScrollBehavior, navigateHistory: () -> Unit) {
+fun StatisticsTopBar(
+    scrollBehavior: TopAppBarScrollBehavior,
+    navigateHistory: () -> Unit,
+) {
     TopAppBar(
         title = { Text(stringResource(R.string.statistics)) },
         scrollBehavior = scrollBehavior,
@@ -52,35 +55,37 @@ fun StatisticsTopBar(scrollBehavior: TopAppBarScrollBehavior, navigateHistory: (
             IconButton(onClick = navigateHistory) {
                 Icon(
                     painter = painterResource(R.drawable.ic_round_history_24),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
-        }
+        },
     )
 }
 
-fun statisticsDifficultyFilters(): List<GameDifficulty> = listOf(
-    GameDifficulty.Unspecified,
-    GameDifficulty.Easy,
-    GameDifficulty.Moderate,
-    GameDifficulty.Hard,
-    GameDifficulty.Challenge,
-    GameDifficulty.Custom
-)
+fun statisticsDifficultyFilters(): List<GameDifficulty> =
+    listOf(
+        GameDifficulty.Unspecified,
+        GameDifficulty.Easy,
+        GameDifficulty.Moderate,
+        GameDifficulty.Hard,
+        GameDifficulty.Challenge,
+        GameDifficulty.Custom,
+    )
 
 @Composable
-fun statisticsTypeFilters(): List<Pair<GameType, String>> = listOf(
-    Pair(GameType.Default9x9, stringResource(R.string.type_default_9x9)),
-    Pair(GameType.Default6x6, stringResource(R.string.type_default_6x6)),
-    Pair(GameType.Default12x12, stringResource(R.string.type_default_12x12))
-)
+fun statisticsTypeFilters(): List<Pair<GameType, String>> =
+    listOf(
+        Pair(GameType.Default9x9, stringResource(R.string.type_default_9x9)),
+        Pair(GameType.Default6x6, stringResource(R.string.type_default_6x6)),
+        Pair(GameType.Default12x12, stringResource(R.string.type_default_12x12)),
+    )
 
 @Composable
 fun ShowDeleteDialog(
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
     onConfirm: () -> Unit,
-    index: Int
+    index: Int,
 ) {
     AlertDialog(
         modifier = modifier,
@@ -103,9 +108,9 @@ fun ShowDeleteDialog(
         },
         text = {
             Text(
-                text = stringResource(R.string.delete_record_dialog, index + 1)
+                text = stringResource(R.string.delete_record_dialog, index + 1),
             )
-        }
+        },
     )
 }
 
@@ -115,19 +120,20 @@ fun ChipRowType(
     modifier: Modifier = Modifier,
     types: List<Pair<GameType, String>>,
     selected: GameType,
-    onSelected: (GameType) -> Unit
+    onSelected: (GameType) -> Unit,
 ) {
     LazyRow(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         items(types) { type ->
             val selectedColor by animateColorAsState(
-                targetValue = if (type.first == selected) {
-                    MaterialTheme.colorScheme.secondaryContainer
-                } else {
-                    MaterialTheme.colorScheme.surface
-                }
+                targetValue =
+                    if (type.first == selected) {
+                        MaterialTheme.colorScheme.secondaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surface
+                    },
             )
             ElevatedFilterChip(
                 modifier = Modifier.padding(horizontal = 2.dp),
@@ -135,11 +141,12 @@ fun ChipRowType(
                 onClick = { onSelected(type.first) },
                 label = { Text(type.second) },
                 shape = RoundedCornerShape(16.dp),
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = selectedColor,
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
-                elevation = FilterChipDefaults.elevatedFilterChipElevation(4.dp)
+                colors =
+                    FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = selectedColor,
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
+                elevation = FilterChipDefaults.elevatedFilterChipElevation(4.dp),
             )
         }
     }
@@ -151,20 +158,21 @@ fun ChipRowDifficulty(
     items: List<GameDifficulty>,
     selected: GameDifficulty,
     onSelected: (GameDifficulty) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     LazyRow(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(horizontal = 8.dp)
+        contentPadding = PaddingValues(horizontal = 8.dp),
     ) {
         items(items) { item ->
             val selectedColor by animateColorAsState(
-                targetValue = if (selected == item) {
-                    MaterialTheme.colorScheme.secondaryContainer
-                } else {
-                    MaterialTheme.colorScheme.surface
-                }
+                targetValue =
+                    if (selected == item) {
+                        MaterialTheme.colorScheme.secondaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surface
+                    },
             )
             ElevatedFilterChip(
                 selected = selected == item,
@@ -175,15 +183,16 @@ fun ChipRowDifficulty(
                             stringResource(item.resName)
                         } else {
                             stringResource(R.string.statistics_difficulty_filter_all)
-                        }
+                        },
                     )
                 },
                 shape = RoundedCornerShape(16.dp),
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = selectedColor,
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
-                elevation = FilterChipDefaults.elevatedFilterChipElevation(4.dp)
+                colors =
+                    FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = selectedColor,
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
+                elevation = FilterChipDefaults.elevatedFilterChipElevation(4.dp),
             )
         }
     }
@@ -194,7 +203,7 @@ data class RecordItemInfo(
     val date: LocalDateTime,
     val difficulty: String,
     val type: String,
-    val dateFormat: String
+    val dateFormat: String,
 )
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -203,41 +212,43 @@ fun RecordItem(
     info: RecordItemInfo,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = { },
-    onLongClick: () -> Unit = { }
+    onLongClick: () -> Unit = { },
 ) {
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.large)
-            .combinedClickable(
-                onClick = onClick,
-                onLongClick = onLongClick
-            )
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.large)
+                .combinedClickable(
+                    onClick = onClick,
+                    onLongClick = onLongClick,
+                ),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 10.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 10.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = "${info.difficulty} ${info.type}"
+                    text = "${info.difficulty} ${info.type}",
                 )
                 Spacer(modifier = Modifier.width(14.dp))
                 Text(
-                    text = stringResource(R.string.time) + ": ${DateUtils.formatElapsedTime(info.time.seconds)}"
+                    text = stringResource(R.string.time) + ": ${DateUtils.formatElapsedTime(info.time.seconds)}",
                 )
             }
             Row {
                 Text(
-                    text = info.date.format(AppSettingsManager.dateFormat(info.dateFormat))
+                    text = info.date.format(AppSettingsManager.dateFormat(info.dateFormat)),
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = info.date.format(DateTimeFormatter.ofPattern("HH:mm"))
+                    text = info.date.format(DateTimeFormatter.ofPattern("HH:mm")),
                 )
             }
         }
