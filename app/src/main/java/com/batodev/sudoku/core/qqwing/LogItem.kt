@@ -1,8 +1,5 @@
 package com.batodev.sudoku.core.qqwing
 
-import com.batodev.sudoku.core.qqwing.QQWing.Companion.cellToColumn
-import com.batodev.sudoku.core.qqwing.QQWing.Companion.cellToRow
-
 // @formatter:off
 /*
  * qqwing - Sudoku solver and generator
@@ -80,13 +77,13 @@ class LogItem {
      * Get the row (1 indexed), or -1 if no row
      */
     val row: Int
-        get() = if (position <= -1) -1 else cellToRow(position) + 1
+        get() = if (position <= -1) -1 else cellToRowInternal(position) + 1
 
     /**
      * Get the column (1 indexed), or -1 if no column
      */
     val column: Int
-        get() = if (position <= -1) -1 else cellToColumn(position) + 1
+        get() = if (position <= -1) -1 else cellToColumnInternal(position) + 1
 
     /**
      * Get the value, or -1 if no value

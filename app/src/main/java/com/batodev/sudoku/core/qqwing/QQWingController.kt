@@ -2,16 +2,17 @@ package com.batodev.sudoku.core.qqwing
 
 import android.os.Process
 import android.util.Log
-import java.util.Date
 import java.util.LinkedList
 import java.util.Random
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
+private const val DEFAULT_9X9_BOARD_SIZE = 81
+
 class QQWingController {
     val options = QQWingOptions()
     private var level: IntArray? = null
-    private var solution: IntArray = IntArray(81)
+    private var solution: IntArray = IntArray(DEFAULT_9X9_BOARD_SIZE)
     private val generated = LinkedList<IntArray>()
     var isImpossible = false
         private set
@@ -108,7 +109,9 @@ class QQWingController {
                     private val qqWing = createQQWing()
                     private fun createQQWing(): QQWing {
                         val ss = QQWing(options.gameType, options.gameDifficulty)
-                        ss.setRecordHistory(options.printHistory || options.printInstructions || options.printStats || options.gameDifficulty !== GameDifficulty.Unspecified)
+                        val needsHistory = options.printHistory || options.printInstructions ||
+                            options.printStats || options.gameDifficulty !== GameDifficulty.Unspecified
+                        ss.setRecordHistory(needsHistory)
                         ss.setLogHistory(options.logHistory)
                         ss.setPrintStyle(options.printStyle)
                         return ss
@@ -151,7 +154,10 @@ class QQWingController {
                                     solutionCount = qqWing.countSolutionsLimited()
 
                                     // Solve the puzzle
-                                    if (options.printSolution || options.printHistory || options.printStats || options.printInstructions || options.gameDifficulty !== GameDifficulty.Unspecified) {
+                                    val needsSolution = options.printSolution || options.printHistory ||
+                                        options.printStats || options.printInstructions ||
+                                        options.gameDifficulty !== GameDifficulty.Unspecified
+                                    if (needsSolution) {
                                         qqWing.solve()
                                         solution = qqWing.solution
                                     }
@@ -159,7 +165,10 @@ class QQWingController {
                                     // Bail out if it didn't meet the difficulty
                                     // standards for generation
                                     if (options.action == Action.GENERATE) {
-                                        if (options.gameDifficulty != GameDifficulty.Unspecified && options.gameDifficulty != qqWing.getDifficulty()) {
+                                        val targetDifficulty = options.gameDifficulty
+                                        val missedDifficultyTarget = targetDifficulty != GameDifficulty.Unspecified &&
+                                            targetDifficulty != qqWing.getDifficulty()
+                                        if (missedDifficultyTarget) {
                                             havePuzzle = false
                                             // check if other threads have
                                             // finished the job
@@ -180,8 +189,8 @@ class QQWingController {
                                     }
                                 }
                             }
-                        } catch (e: Exception) {
-                            Log.e("QQWing", "Exception Occured", e)
+                        } catch (expectedException: Exception) {
+                            Log.e("QQWing", "Exception Occured", expectedException)
                             return
                         }
                     }
@@ -193,8 +202,9 @@ class QQWingController {
             for (i in threads.indices) {
                 try {
                     threads[i]!!.join()
-                } catch (e: InterruptedException) {
-                    e.printStackTrace()
+                } catch (interruptedException: InterruptedException) {
+                    Log.w("QQWingController", "Interrupted while waiting for solver thread", interruptedException)
+                    Thread.currentThread().interrupt()
                 }
             }
         }
@@ -231,10 +241,5 @@ class QQWingController {
             return true
         }
         return false
-    }
-
-    companion object {
-        private val microseconds: Long
-            get() = Date().time * 1000
     }
 }

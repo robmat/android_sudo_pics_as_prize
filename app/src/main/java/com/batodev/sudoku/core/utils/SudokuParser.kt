@@ -49,20 +49,19 @@ class SudokuParser {
      * @param boardList Sudoku board
      * @return Sudoku in string
      */
+    private fun cellToChar(cell: Cell, emptySeparator: Char): String {
+        val isStandardDigit = cell.value <= MAX_STANDARD_DIGIT
+        return when {
+            isStandardDigit && cell.value != 0 -> cell.value.toString()
+            isStandardDigit -> emptySeparator.toString()
+            else -> cell.value.toString(radix)
+        }
+    }
+
     fun boardToString(boardList: List<List<Cell>>, emptySeparator: Char = '0'): String {
         var boardString = ""
         boardList.forEach { cells ->
-            cells.forEach { cell ->
-                boardString += if (cell.value <= MAX_STANDARD_DIGIT) {
-                    if (cell.value != 0) {
-                        cell.value.toString()
-                    } else {
-                        emptySeparator
-                    }
-                } else {
-                    cell.value.toString(radix)
-                }
-            }
+            cells.forEach { cell -> boardString += cellToChar(cell, emptySeparator) }
         }
         return boardString
     }

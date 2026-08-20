@@ -77,7 +77,9 @@ fun HelpCardPreview() {
     SudokuTheme {
         HelpCard(
             title = "This is the title",
-            details = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tempus arcu vitae elit congue scelerisque. Sed a vestibulum tellus. Suspendisse tristique dui eget nisi dictum tempus",
+            details = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tempus arcu " +
+                "vitae elit congue scelerisque. Sed a vestibulum tellus. Suspendisse tristique dui " +
+                "eget nisi dictum tempus",
             painter = painterResource(R.drawable.ic_outline_verified_24),
             onCloseClicked = {}
         )

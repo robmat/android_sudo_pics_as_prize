@@ -9,33 +9,22 @@ import androidx.lifecycle.viewModelScope
 import com.batodev.sudoku.core.qqwing.QQWingController
 import com.batodev.sudoku.core.utils.SudokuParser
 import com.batodev.sudoku.data.database.model.SudokuBoard
-import com.batodev.sudoku.domain.usecase.UpdateManyBoardsUseCase
-import com.batodev.sudoku.domain.usecase.board.DeleteBoardUseCase
-import com.batodev.sudoku.domain.usecase.board.DeleteBoardsUseCase
-import com.batodev.sudoku.domain.usecase.board.GetBoardsInFolderWithSavedUseCase
-import com.batodev.sudoku.domain.usecase.board.UpdateBoardUseCase
-import com.batodev.sudoku.domain.usecase.folder.GetFolderUseCase
-import com.batodev.sudoku.domain.usecase.folder.GetFoldersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val EXPLORE_FOLDER_BOARD_CHAR_RADIX = 13
+
 @HiltViewModel
 class ExploreFolderViewModel @Inject constructor(
-    getFolderUseCase: GetFolderUseCase,
-    getBoardsInFolderWithSavedUseCase: GetBoardsInFolderWithSavedUseCase,
-    private val updateBoardUseCase: UpdateBoardUseCase,
-    private val updateManyBoardsUseCase: UpdateManyBoardsUseCase,
-    private val deleteBoardUseCase: DeleteBoardUseCase,
-    private val deleteBoardsUseCase: DeleteBoardsUseCase,
-    getFoldersUseCase: GetFoldersUseCase,
+    private val dependencies: ExploreFolderDependencies,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val folderUid = savedStateHandle.get<Long>("uid") ?: 0
 
-    val folder = getFolderUseCase(folderUid)
-    val games = getBoardsInFolderWithSavedUseCase(folderUid)
+    val folder = dependencies.getFolderUseCase(folderUid)
+    val games = dependencies.getBoardsInFolderWithSavedUseCase(folderUid)
 
     var gameUidToPlay: Long? by mutableStateOf(null)
     var isPlayedBefore by mutableStateOf(false)
@@ -44,7 +33,7 @@ class ExploreFolderViewModel @Inject constructor(
     var inSelectionMode by mutableStateOf(false)
     var selectedBoardsList by mutableStateOf(emptyList<SudokuBoard>())
 
-    val folders = getFoldersUseCase()
+    val folders = dependencies.getFoldersUseCase()
 
     fun prepareSudokuToPlay(board: SudokuBoard) {
         gameUidToPlay = board.uid
@@ -52,12 +41,14 @@ class ExploreFolderViewModel @Inject constructor(
             viewModelScope.launch {
                 val qqWingController = QQWingController()
                 val sudokuParser = SudokuParser()
-                val boardToSolve = board.initialBoard.map { it.digitToInt(13) }.toIntArray()
+                val boardToSolve = board.initialBoard
+                    .map { it.digitToInt(EXPLORE_FOLDER_BOARD_CHAR_RADIX) }
+                    .toIntArray()
 
                 val solved = qqWingController.solve(boardToSolve, board.type)
 
                 if (qqWingController.solutionCount == 1) {
-                    updateBoardUseCase(
+                    dependencies.writeUseCases.updateBoardUseCase(
                         board.copy(solvedBoard = sudokuParser.boardToString(solved))
                     )
                     readyToPlay = true
@@ -85,7 +76,7 @@ class ExploreFolderViewModel @Inject constructor(
 
     fun deleteSelected() {
         viewModelScope.launch(Dispatchers.IO) {
-            deleteBoardsUseCase(selectedBoardsList)
+            dependencies.writeUseCases.deleteBoardsUseCase(selectedBoardsList)
             selectedBoardsList = emptyList()
             inSelectionMode = false
         }
@@ -93,13 +84,13 @@ class ExploreFolderViewModel @Inject constructor(
 
     fun deleteGame(board: SudokuBoard) {
         viewModelScope.launch {
-            deleteBoardUseCase(board)
+            dependencies.writeUseCases.deleteBoardUseCase(board)
         }
     }
 
     fun moveBoards(folderUid: Long) {
         viewModelScope.launch {
-            updateManyBoardsUseCase(
+            dependencies.writeUseCases.updateManyBoardsUseCase(
                 selectedBoardsList.map { it.copy(folderId = folderUid) }
             )
             selectedBoardsList = emptyList()

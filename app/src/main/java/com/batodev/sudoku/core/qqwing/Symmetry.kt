@@ -29,7 +29,7 @@ enum class Symmetry {
             return try {
                 s = s.uppercase()
                 valueOf(s)
-            } catch (aix: IllegalArgumentException) {
+            } catch (_: IllegalArgumentException) {
                 null
             }
         }

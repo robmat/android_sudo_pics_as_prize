@@ -1,75 +1,33 @@
 package com.batodev.sudoku.ui.learn.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import com.batodev.sudoku.R
+import com.batodev.sudoku.ui.components.PreferenceRow
+import com.batodev.sudoku.ui.components.PreferenceRowInfo
+import com.batodev.sudoku.ui.components.PreferenceRowInteractions
 
-@OptIn(ExperimentalFoundationApi::class)
+/**
+ * A row in the "learn" list. This is a thin wrapper around the shared [PreferenceRow] (with no
+ * clip shape, so it keeps its original unclipped appearance) that always shows an icon,
+ * defaulting to a help icon.
+ */
 @Composable
 fun LearnRowItem(
     title: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    subtitle: String? = null,
-    onLongClick: () -> Unit = { },
-    painter: Painter = painterResource(R.drawable.ic_outline_help_outline_24)
+    subtitle: String? = null
 ) {
-    val height = if (subtitle != null) 72.dp else 56.dp
-
-    val titleStyle = MaterialTheme.typography.bodyLarge
-    val subtitleTextStyle = MaterialTheme.typography.bodyMedium.copy(
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
+    PreferenceRow(
+        modifier = modifier,
+        info = PreferenceRowInfo(
+            title = title,
+            subtitle = subtitle,
+            painter = painterResource(R.drawable.ic_outline_help_outline_24)
+        ),
+        interactions = PreferenceRowInteractions(onClick = onClick),
+        shape = null
     )
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = height)
-            .combinedClickable(
-                onLongClick = onLongClick,
-                onClick = onClick
-            ),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Icon(
-            painter = painter,
-            modifier = Modifier
-                .padding(start = 12.dp, end = 14.dp)
-                .size(24.dp),
-            tint = MaterialTheme.colorScheme.secondary,
-            contentDescription = null,
-        )
-        Column(
-            Modifier
-                .padding(horizontal = 16.dp)
-                .weight(1f),
-        ) {
-            Text(
-                text = title,
-                style = titleStyle,
-            )
-            if (subtitle != null) {
-                Text(
-                    modifier = Modifier.padding(top = 4.dp),
-                    text = subtitle,
-                    style = subtitleTextStyle,
-                )
-            }
-        }
-    }
 }

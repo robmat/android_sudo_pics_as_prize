@@ -20,7 +20,8 @@ import com.batodev.sudoku.data.database.model.SudokuBoard
 
 @Database(
     entities = [Record::class, SudokuBoard::class, SavedGame::class, Folder::class],
-    version = 1/*,
+    version = 1
+    /*,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),

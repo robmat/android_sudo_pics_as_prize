@@ -1,7 +1,5 @@
 package com.batodev.sudoku.core.utils
 
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.sp
 import com.batodev.sudoku.core.Cell
 import com.batodev.sudoku.core.Note
 import com.batodev.sudoku.core.qqwing.GameType
@@ -46,31 +44,37 @@ class SudokuUtils {
         return candidates
     }
 
+    private fun hasDuplicateInBox(board: List<List<Cell>>, cell: Cell, type: GameType): Boolean {
+        for (i in getBoxRowRange(cell, type.sectionHeight)) {
+            for (j in getBoxColRange(cell, type.sectionWidth)) {
+                val isDuplicateInBox = board[i][j].value != 0 && board[i][j].value == cell.value &&
+                    (i != cell.row || j != cell.col)
+                if (isDuplicateInBox) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    private fun hasDuplicateInRowOrCol(board: List<List<Cell>>, cell: Cell, type: GameType): Boolean {
+        for (i in 0 until type.size) {
+            val isDuplicateInRowOrCol = (board[i][cell.col].value == cell.value && i != cell.row) ||
+                (board[cell.row][i].value == cell.value && i != cell.col)
+            if (isDuplicateInRowOrCol) {
+                return true
+            }
+        }
+        return false
+    }
+
     // returns if given cell not violating sudoku rules
     fun isValidCellDynamic(
         board: List<List<Cell>>,
         cell: Cell,
         type: GameType
     ): Boolean {
-        val sudokuUtils = SudokuUtils()
-        for (i in sudokuUtils.getBoxRowRange(cell, type.sectionHeight)) {
-            for (j in sudokuUtils.getBoxColRange(cell, type.sectionWidth)) {
-                val isDuplicateInBox = board[i][j].value != 0 && board[i][j].value == cell.value &&
-                    (i != cell.row || j != cell.col)
-                if (isDuplicateInBox) {
-                    return false
-                }
-            }
-        }
-
-        for (i in 0 until type.size) {
-            val isDuplicateInRowOrCol = (board[i][cell.col].value == cell.value && i != cell.row) ||
-                (board[cell.row][i].value == cell.value && i != cell.col)
-            if (isDuplicateInRowOrCol) {
-                return false
-            }
-        }
-        return true
+        return !hasDuplicateInBox(board, cell, type) && !hasDuplicateInRowOrCol(board, cell, type)
     }
 
     // returns count of given number on board
@@ -117,39 +121,5 @@ class SudokuUtils {
             }
         }
         return newNotes
-    }
-
-    // factor: 0 - small, 1 medium (default), 2 - big
-    fun getFontSize(type: GameType, factor: Int): TextUnit {
-        return when (type) {
-            GameType.Unspecified -> fontSizeUnspecified(factor)
-            GameType.Default9x9 -> fontSize9x9(factor)
-            GameType.Default12x12 -> fontSize12x12(factor)
-            GameType.Default6x6 -> fontSize6x6(factor)
-        }
-    }
-
-    private fun fontSizeUnspecified(factor: Int): TextUnit = when (factor) {
-        1 -> 26.sp
-        2 -> 34.sp
-        else -> 22.sp
-    }
-
-    private fun fontSize9x9(factor: Int): TextUnit = when (factor) {
-        1 -> 28.sp
-        2 -> 36.sp
-        else -> 22.sp
-    }
-
-    private fun fontSize12x12(factor: Int): TextUnit = when (factor) {
-        1 -> 24.sp
-        2 -> 32.sp
-        else -> 18.sp
-    }
-
-    private fun fontSize6x6(factor: Int): TextUnit = when (factor) {
-        1 -> 34.sp
-        2 -> 40.sp
-        else -> 24.sp
     }
 }

@@ -12,6 +12,11 @@ import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 
+private const val ENTER_DURATION_MS = 220
+private const val ENTER_DELAY_MS = 90
+private const val EXIT_DURATION_MS = 90
+private const val ENTER_INITIAL_SCALE = 0.92f
+
 fun NavGraphBuilder.animatedComposable(
     route: String,
     arguments: List<NamedNavArgument> = emptyList(),
@@ -22,24 +27,24 @@ fun NavGraphBuilder.animatedComposable(
     arguments = arguments,
     deepLinks = deepLinks,
     enterTransition = {
-        fadeIn(animationSpec = tween(220, delayMillis = 90)) +
+        fadeIn(animationSpec = tween(ENTER_DURATION_MS, delayMillis = ENTER_DELAY_MS)) +
             scaleIn(
-                initialScale = 0.92f,
-                animationSpec = tween(220, delayMillis = 90)
+                initialScale = ENTER_INITIAL_SCALE,
+                animationSpec = tween(ENTER_DURATION_MS, delayMillis = ENTER_DELAY_MS)
             )
     },
     exitTransition = {
-        fadeOut(animationSpec = tween(90))
+        fadeOut(animationSpec = tween(EXIT_DURATION_MS))
     },
     popEnterTransition = {
-        fadeIn(animationSpec = tween(220, delayMillis = 90)) +
+        fadeIn(animationSpec = tween(ENTER_DURATION_MS, delayMillis = ENTER_DELAY_MS)) +
             scaleIn(
-                initialScale = 0.92f,
-                animationSpec = tween(220, delayMillis = 90)
+                initialScale = ENTER_INITIAL_SCALE,
+                animationSpec = tween(ENTER_DURATION_MS, delayMillis = ENTER_DELAY_MS)
             )
     },
     popExitTransition = {
-        fadeOut(animationSpec = tween(90))
+        fadeOut(animationSpec = tween(EXIT_DURATION_MS))
     },
     content = content
 )

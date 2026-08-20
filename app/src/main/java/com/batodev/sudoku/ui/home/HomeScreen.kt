@@ -50,10 +50,115 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batodev.sudoku.R
+import com.batodev.sudoku.data.database.model.SavedGame
 import com.batodev.sudoku.ui.theme.SudokuBoardColorsImpl
 import kotlinx.coroutines.runBlocking
 
 val LocalBoardColors = staticCompositionLocalOf { SudokuBoardColorsImpl() }
+
+@Composable
+private fun HomeAdBanner() {
+    val context = LocalContext.current
+    Button(
+        onClick = {
+            context.startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://play.google.com/store/apps/dev?id=8228670503574649511")
+                )
+            )
+        },
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+        shape = RectangleShape,
+        modifier = Modifier
+            .border(
+                1.dp,
+                LocalBoardColors.current.thinLineColor,
+                RoundedCornerShape(8.dp)
+            )
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Image(
+                painter = painterResource(id = R.drawable.emberfox),
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .height(130.dp),
+                contentDescription = stringResource(id = R.string.app_name)
+            )
+            Text(
+                text = stringResource(id = R.string.more_games_like_this),
+                style = MaterialTheme.typography.titleMedium,
+                color = LocalBoardColors.current.thinLineColor
+            )
+        }
+    }
+}
+
+@Composable
+private fun HomePlayControls(
+    viewModel: HomeViewModel,
+    lastGame: SavedGame?,
+    navigatePlayGame: (Pair<Long, Boolean>) -> Unit,
+    onRequestContinueGameDialog: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        HorizontalPicker(
+            text = stringResource(viewModel.selectedDifficulty.resName),
+            onLeftClick = { viewModel.changeDifficulty(-1) },
+            onRightClick = { viewModel.changeDifficulty(1) }
+        )
+        HorizontalPicker(
+            text = stringResource(viewModel.selectedType.resName),
+            onLeftClick = { viewModel.changeType(-1) },
+            onRightClick = { viewModel.changeType(1) }
+        )
+
+        Spacer(Modifier.height(12.dp))
+
+        if (lastGame != null && !lastGame.completed) {
+            Button(onClick = {
+                navigatePlayGame(Pair(lastGame.uid, true))
+            }) {
+                Text(stringResource(R.string.action_continue))
+            }
+            FilledTonalButton(onClick = onRequestContinueGameDialog) {
+                Text(stringResource(R.string.action_play))
+            }
+        } else {
+            Button(onClick = {
+                viewModel.giveUpLastGame()
+                viewModel.startGame()
+            }) {
+                Text(stringResource(R.string.action_play))
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeContinueGameDialog(viewModel: HomeViewModel, onDismiss: () -> Unit) {
+    AlertDialog(
+        title = { Text(stringResource(R.string.dialog_new_game)) },
+        text = { Text(stringResource(R.string.dialog_new_game_text)) },
+        confirmButton = {
+            TextButton(onClick = {
+                onDismiss()
+                viewModel.giveUpLastGame()
+                viewModel.startGame()
+            }) {
+                Text(stringResource(R.string.dialog_new_game_positive))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.action_cancel))
+            }
+        },
+        onDismissRequest = onDismiss
+    )
+}
 
 @Composable
 fun HomeScreen(
@@ -62,7 +167,6 @@ fun HomeScreen(
 ) {
     var continueGameDialog by rememberSaveable { mutableStateOf(false) }
     Box {
-        val context = LocalContext.current
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -84,77 +188,13 @@ fun HomeScreen(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.headlineLarge
             )
-            Button(
-                onClick = {
-                    context.startActivity(
-                        Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse("https://play.google.com/store/apps/dev?id=8228670503574649511")
-                        )
-                    )
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                shape = RectangleShape,
-                modifier = Modifier
-                    .border(
-                        1.dp,
-                        LocalBoardColors.current.thinLineColor,
-                        RoundedCornerShape(8.dp)
-                    )
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Image(
-                        painter = painterResource(id = R.drawable.emberfox),
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .height(130.dp),
-                        contentDescription = stringResource(id = R.string.app_name)
-                    )
-                    Text(
-                        text = stringResource(id = R.string.more_games_like_this),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = LocalBoardColors.current.thinLineColor
-                    )
-                }
-            }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                HorizontalPicker(
-                    text = stringResource(viewModel.selectedDifficulty.resName),
-                    onLeftClick = { viewModel.changeDifficulty(-1) },
-                    onRightClick = { viewModel.changeDifficulty(1) }
-                )
-                HorizontalPicker(
-                    text = stringResource(viewModel.selectedType.resName),
-                    onLeftClick = { viewModel.changeType(-1) },
-                    onRightClick = { viewModel.changeType(1) }
-                )
-
-                Spacer(Modifier.height(12.dp))
-
-                if (lastGame != null && !lastGame!!.completed) {
-                    Button(onClick = {
-                        lastGame?.let {
-                            navigatePlayGame(Pair(it.uid, true))
-                        }
-                    }) {
-                        Text(stringResource(R.string.action_continue))
-                    }
-                    FilledTonalButton(onClick = {
-                        continueGameDialog = true
-                    }) {
-                        Text(stringResource(R.string.action_play))
-                    }
-                } else {
-                    Button(onClick = {
-                        viewModel.giveUpLastGame()
-                        viewModel.startGame()
-                    }) {
-                        Text(stringResource(R.string.action_play))
-                    }
-                }
-            }
+            HomeAdBanner()
+            HomePlayControls(
+                viewModel = viewModel,
+                lastGame = lastGame,
+                navigatePlayGame = navigatePlayGame,
+                onRequestContinueGameDialog = { continueGameDialog = true }
+            )
         }
 
         if (viewModel.isGenerating || viewModel.isSolving) {
@@ -169,27 +209,7 @@ fun HomeScreen(
         }
 
         if (continueGameDialog) {
-            AlertDialog(
-                title = { Text(stringResource(R.string.dialog_new_game)) },
-                text = { Text(stringResource(R.string.dialog_new_game_text)) },
-                confirmButton = {
-                    TextButton(onClick = {
-                        continueGameDialog = false
-                        viewModel.giveUpLastGame()
-                        viewModel.startGame()
-                    }) {
-                        Text(stringResource(R.string.dialog_new_game_positive))
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { continueGameDialog = false }) {
-                        Text(stringResource(R.string.action_cancel))
-                    }
-                },
-                onDismissRequest = {
-                    continueGameDialog = false
-                }
-            )
+            HomeContinueGameDialog(viewModel) { continueGameDialog = false }
         }
 
         LaunchedEffect(

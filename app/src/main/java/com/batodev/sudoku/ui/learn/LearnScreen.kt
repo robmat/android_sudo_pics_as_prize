@@ -8,26 +8,21 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.batodev.sudoku.R
+import com.batodev.sudoku.ui.components.PagerTab
 import com.batodev.sudoku.ui.learn.learnapp.LearnAppScreen
 import com.batodev.sudoku.ui.learn.learnapp.ToolbarTutorialScreen
 import com.batodev.sudoku.ui.learn.learnsudoku.LearnBasic
@@ -37,6 +32,7 @@ import com.batodev.sudoku.ui.learn.learnsudoku.LearnSudokuRules
 import com.batodev.sudoku.ui.learn.learnsudoku.LearnSudokuScreen
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
@@ -52,6 +48,25 @@ fun LearnScreen(
         composable("sudoku_basic") { LearnBasic(helpNavController) }
         composable("sudoku_naked_pairs") { LearnNakedPairs(helpNavController) }
         composable("sudoku_hidden_pairs") { LearnHiddenPairs(helpNavController) }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalPagerApi::class)
+private fun LearnTabRow(pages: List<String>, pagerState: PagerState) {
+    val coroutineScope = rememberCoroutineScope()
+    TabRow(selectedTabIndex = pagerState.currentPage) {
+        pages.forEachIndexed { index, title ->
+            PagerTab(
+                selected = pagerState.currentPage == index,
+                title = title,
+                onClick = {
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(index, 0f)
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -81,36 +96,12 @@ fun LearnScreenContent(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            val context = LocalContext.current
             val pagerState = rememberPagerState()
-            val pages by remember {
-                mutableStateOf(
-                    listOf(
-                        context.getString(R.string.learn_tab_sudoku),
-                        context.getString(R.string.learn_tab_app)
-                    )
-                )
-            }
-            val coroutineScope = rememberCoroutineScope()
-            TabRow(selectedTabIndex = pagerState.currentPage) {
-                pages.forEachIndexed { index, title ->
-                    Tab(
-                        selected = pagerState.currentPage == index,
-                        onClick = {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(index, 0f)
-                            }
-                        },
-                        text = {
-                            Text(
-                                text = title,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
-                    )
-                }
-            }
+            val pages = listOf(
+                stringResource(R.string.learn_tab_sudoku),
+                stringResource(R.string.learn_tab_app)
+            )
+            LearnTabRow(pages, pagerState)
             HorizontalPager(
                 modifier = Modifier
                     .fillMaxHeight(),

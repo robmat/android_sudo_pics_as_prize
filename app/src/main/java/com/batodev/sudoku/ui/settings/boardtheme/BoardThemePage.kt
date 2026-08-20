@@ -32,11 +32,38 @@ import com.batodev.sudoku.core.Cell
 import com.batodev.sudoku.core.PreferencesConstants
 import com.batodev.sudoku.core.qqwing.GameType
 import com.batodev.sudoku.core.utils.SudokuParser
+import com.batodev.sudoku.ui.components.PreferenceRowInfo
 import com.batodev.sudoku.ui.components.PreferenceRowSwitch
 import com.batodev.sudoku.ui.components.board.Board
+import com.batodev.sudoku.ui.components.board.BoardData
+import com.batodev.sudoku.ui.components.board.BoardDisplayOptions
+import com.batodev.sudoku.ui.components.board.BoardInteraction
+import com.batodev.sudoku.ui.components.board.BoardStyle
 import com.batodev.sudoku.ui.components.collapsingtopappbar.CollapsingTitle
 import com.batodev.sudoku.ui.components.collapsingtopappbar.CollapsingTopAppBar
+import com.batodev.sudoku.ui.components.collapsingtopappbar.CollapsingTopAppBarConfig
+import com.batodev.sudoku.ui.components.collapsingtopappbar.CollapsingTopAppBarContent
 import com.batodev.sudoku.ui.components.collapsingtopappbar.rememberTopAppBarScrollBehavior
+
+// Cells shown unlocked/erroring in the board theme preview, as (row, col) pairs.
+private const val UNLOCKED_ROW_1 = 1
+private const val UNLOCKED_COL_1 = 1
+private const val UNLOCKED_ROW_2 = 2
+private const val UNLOCKED_COL_2 = 0
+private const val UNLOCKED_ROW_3 = 5
+private const val UNLOCKED_COL_3 = 4
+private const val UNLOCKED_ROW_4 = 5
+private const val UNLOCKED_COL_4 = 8
+private const val ERROR_ROW_1 = 4
+private const val ERROR_COL_1 = 4
+
+private val PREVIEW_UNLOCKED_CELLS = listOf(
+    UNLOCKED_ROW_1 to UNLOCKED_COL_1,
+    UNLOCKED_ROW_2 to UNLOCKED_COL_2,
+    UNLOCKED_ROW_3 to UNLOCKED_COL_3,
+    UNLOCKED_ROW_4 to UNLOCKED_COL_4
+)
+private val PREVIEW_ERROR_CELLS = listOf(ERROR_ROW_1 to ERROR_COL_1)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,16 +76,18 @@ fun SettingsBoardTheme(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CollapsingTopAppBar(
-                collapsingTitle = CollapsingTitle.medium(titleText = stringResource(R.string.board_theme_title)),
-                navigationIcon = {
-                    IconButton(onClick = navigateBack) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_round_arrow_back_24),
-                            contentDescription = null
-                        )
+                content = CollapsingTopAppBarContent(
+                    collapsingTitle = CollapsingTitle.medium(titleText = stringResource(R.string.board_theme_title)),
+                    navigationIcon = {
+                        IconButton(onClick = navigateBack) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_round_arrow_back_24),
+                                contentDescription = null
+                            )
+                        }
                     }
-                },
-                scrollBehavior = scrollBehavior
+                ),
+                config = CollapsingTopAppBarConfig(scrollBehavior = scrollBehavior)
             )
         }
     ) { paddingValues ->
@@ -95,28 +124,34 @@ private fun BoardThemeSettingsContent(modifier: Modifier, viewModel: SettingsBoa
             PreferencesConstants.DEFAULT_MONET_SUDOKU_BOARD
         )
         PreferenceRowSwitch(
-            title = stringResource(R.string.pref_boardtheme_accent),
-            subtitle = stringResource(R.string.pref_boardtheme_accent_subtitle),
+            info = PreferenceRowInfo(
+                title = stringResource(R.string.pref_boardtheme_accent),
+                subtitle = stringResource(R.string.pref_boardtheme_accent_subtitle),
+                painter = rememberVectorPainter(Icons.Outlined.Palette)
+            ),
             checked = monetSudokuBoard,
-            painter = rememberVectorPainter(Icons.Outlined.Palette),
             onClick = {
                 viewModel.updateMonetSudokuBoardSetting(!monetSudokuBoard)
             }
         )
 
         PreferenceRowSwitch(
-            title = stringResource(R.string.pref_position_lines),
-            subtitle = stringResource(R.string.pref_position_lines_summ),
+            info = PreferenceRowInfo(
+                title = stringResource(R.string.pref_position_lines),
+                subtitle = stringResource(R.string.pref_position_lines_summ),
+                painter = rememberVectorPainter(Icons.Rounded.GridGoldenratio)
+            ),
             checked = positionLines,
-            painter = rememberVectorPainter(Icons.Rounded.GridGoldenratio),
             onClick = { viewModel.updatePositionLinesSetting(!positionLines) }
         )
 
         PreferenceRowSwitch(
-            title = stringResource(R.string.pref_cross_highlight),
-            subtitle = stringResource(R.string.pref_cross_highlight_subtitle),
+            info = PreferenceRowInfo(
+                title = stringResource(R.string.pref_cross_highlight),
+                subtitle = stringResource(R.string.pref_cross_highlight_subtitle),
+                painter = rememberVectorPainter(Icons.Rounded.GridOn)
+            ),
             checked = boardCrossHighlight,
-            painter = rememberVectorPainter(Icons.Rounded.GridOn),
             onClick = { viewModel.updateBoardCrossHighlight(!boardCrossHighlight) }
         )
     }
@@ -136,23 +171,28 @@ private fun BoardPreviewTheme(
         locked = true,
         emptySeparator = '.'
     ).also { grid ->
-        listOf(1 to 1, 2 to 0, 5 to 4, 5 to 8).forEach { (row, col) ->
+        PREVIEW_UNLOCKED_CELLS.forEach { (row, col) ->
             grid[row][col].locked = false
         }
-        listOf(4 to 4).forEach { (row, col) ->
+        PREVIEW_ERROR_CELLS.forEach { (row, col) ->
             grid[row][col].error = true
         }
     }
     var selectedCell by remember { mutableStateOf(Cell(-1, -1, 0)) }
     Board(
         modifier = modifier,
-        board = previewBoard,
-        size = 9,
-        selectedCell = selectedCell,
-        onClick = { cell -> selectedCell = if (selectedCell == cell) Cell(-1, -1, 0) else cell },
-        boardColors = LocalBoardColors.current,
-        positionLines = positionLines,
-        errorsHighlight = errosHighlight,
-        crossHighlight = crossHighlight
+        data = BoardData(board = previewBoard, size = 9),
+        interaction = BoardInteraction(
+            selectedCell = selectedCell,
+            onClick = { cell -> selectedCell = if (selectedCell == cell) Cell(-1, -1, 0) else cell }
+        ),
+        style = BoardStyle(
+            boardColors = LocalBoardColors.current,
+            displayOptions = BoardDisplayOptions(
+                positionLines = positionLines,
+                errorsHighlight = errosHighlight,
+                crossHighlight = crossHighlight
+            )
+        )
     )
 }

@@ -3,11 +3,8 @@ package com.batodev.sudoku.ui.gallery
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -56,11 +53,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.batodev.sudoku.R
 import com.batodev.sudoku.core.PreferencesConstants
-import com.batodev.sudoku.core.utils.AdHelper
+import com.batodev.sudoku.core.utils.AdSupportedActivity
 import com.batodev.sudoku.data.datastore.ThemeSettingsManager
 import com.batodev.sudoku.data.settings.SettingsHelper
-import com.batodev.sudoku.ui.theme.AppTheme
 import com.batodev.sudoku.ui.theme.SudokuTheme
+import com.batodev.sudoku.ui.theme.resolveAppTheme
+import com.batodev.sudoku.ui.theme.resolveDarkTheme
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import dagger.hilt.android.AndroidEntryPoint
@@ -79,13 +77,11 @@ private const val AD_CHECK_INTERVAL_MS = 20000L
 private const val COPY_BUFFER_SIZE = 1024
 
 @AndroidEntryPoint
-class GalleryActivity : AppCompatActivity() {
-    private val handler = Handler(Looper.getMainLooper())
-    private var isActivityVisible = true
+class GalleryActivity : AdSupportedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(GalleryActivity::class.java.simpleName, "onCreate")
         super.onCreate(savedInstanceState)
-        handlerAdPosting()
+        handlerAdPosting(AD_CHECK_INTERVAL_MS)
 
         setContent {
             val mainViewModel: GalleryActivityViewModel = hiltViewModel()
@@ -96,52 +92,16 @@ class GalleryActivity : AppCompatActivity() {
             val currentTheme by mainViewModel.currentTheme.collectAsState(PreferencesConstants.DEFAULT_SELECTED_THEME)
 
             SudokuTheme(
-                darkTheme = when (darkTheme) {
-                    1 -> false
-                    2 -> true
-                    else -> isSystemInDarkTheme()
-                },
+                darkTheme = resolveDarkTheme(darkTheme),
                 dynamicColor = dynamicColors,
                 amoled = amoledBlack,
-                appTheme = when (currentTheme) {
-                    PreferencesConstants.GREEN_THEME_KEY -> AppTheme.Green
-                    PreferencesConstants.BLUE_THEME_KEY -> AppTheme.Blue
-                    PreferencesConstants.PEACH_THEME_KEY -> AppTheme.Peach
-                    PreferencesConstants.YELLOW_THEME_KEY -> AppTheme.Yellow
-                    PreferencesConstants.LAVENDER_THEME_KEY -> AppTheme.Lavender
-                    PreferencesConstants.BLACK_AND_WHITE_THEME_KEY -> AppTheme.BlackAndWhite
-                    else -> AppTheme.Green
-                }
+                appTheme = resolveAppTheme(currentTheme)
             ) {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     ImageViewerScreen(this)
                 }
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        isActivityVisible = true
-    }
-
-    override fun onPause() {
-        super.onPause()
-        isActivityVisible = false
-    }
-
-    fun isActivityVisible(): Boolean {
-        return isActivityVisible
-    }
-
-    private fun handlerAdPosting() {
-        handler.postDelayed({
-            Log.d(GalleryActivity::class.java.simpleName, "Showing ad.")
-            if (isActivityVisible()) {
-                AdHelper.showAd(this)
-            }
-            handlerAdPosting()
-        }, AD_CHECK_INTERVAL_MS)
     }
 }
 

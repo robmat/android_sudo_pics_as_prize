@@ -21,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel
 @Inject constructor(
-    private val settingsDataManager: AppSettingsManager,
+    internal val settingsDataManager: AppSettingsManager,
     private val tipCardsDataStore: TipCardsDataStore,
     private val appDatabase: AppDatabase,
     private val acraSharedPrefs: AcraSharedPrefs,
@@ -71,63 +71,14 @@ class SettingsViewModel
         }
 
     val mistakesLimit = settingsDataManager.mistakesLimit
-    fun updateMistakesLimit(enabled: Boolean) =
-        viewModelScope.launch(Dispatchers.IO) {
-            settingsDataManager.setMistakesLimit(enabled)
-        }
-
     val timer = settingsDataManager.timerEnabled
-    fun updateTimer(enabled: Boolean) =
-        viewModelScope.launch(Dispatchers.IO) {
-            settingsDataManager.setTimer(enabled)
-        }
-
     val canResetTimer = settingsDataManager.resetTimerEnabled
-    fun updateCanResetTimer(enabled: Boolean) =
-        viewModelScope.launch(Dispatchers.IO) {
-            settingsDataManager.setResetTimer(enabled)
-        }
-
     val highlightIdentical = settingsDataManager.highlightIdentical
-    fun updateHighlightIdentical(enabled: Boolean) =
-        viewModelScope.launch(Dispatchers.IO) {
-            settingsDataManager.setSameValuesHighlight(enabled)
-        }
-
     val disableHints = settingsDataManager.hintsDisabled
-    fun updateHintDisabled(disabled: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
-            settingsDataManager.setHintsDisabled(disabled)
-        }
-    }
-
     val remainingUse = settingsDataManager.remainingUse
-    fun updateRemainingUse(enabled: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
-            settingsDataManager.setRemainingUse(enabled)
-        }
-    }
-
     val autoEraseNotes = settingsDataManager.autoEraseNotes
-    fun updateAutoEraseNotes(enabled: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
-            settingsDataManager.setAutoEraseNotes(enabled)
-        }
-    }
-
     val highlightMistakes = settingsDataManager.highlightMistakes
-    fun updateMistakesHighlight(index: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            settingsDataManager.setHighlightMistakes(index)
-        }
-    }
-
     val inputMethod = settingsDataManager.inputMethod
-    fun updateInputMethod(value: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            settingsDataManager.setInputMethod(value)
-        }
-    }
 
     fun resetTipCards() {
         viewModelScope.launch {
@@ -143,11 +94,6 @@ class SettingsViewModel
     }
 
     val fontSize = settingsDataManager.fontSize
-    fun updateFontSize(value: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            settingsDataManager.setFontSize(value)
-        }
-    }
 
     val currentTheme by lazy {
         appThemeDataStore.currentTheme
@@ -160,11 +106,6 @@ class SettingsViewModel
     }
 
     val keepScreenOn = settingsDataManager.keepScreenOn
-    fun updateKeepScreenOn(enabled: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
-            settingsDataManager.setKeepScreenOn(enabled)
-        }
-    }
 
     fun updateCrashReportingEnabled(enabled: Boolean) {
         acraSharedPrefs.setAcraEnabled(enabled)
@@ -172,30 +113,14 @@ class SettingsViewModel
     }
 
     val funKeyboardOverNum = settingsDataManager.funKeyboardOverNumbers
-    fun updateFunKeyboardOverNum(enabled: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
-            settingsDataManager.setFunKeyboardOverNum(enabled)
-        }
-    }
-
     val dateFormat = settingsDataManager.dateFormat
-    fun updateDateFormat(format: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            settingsDataManager.setDateFormat(format)
-        }
-    }
-
     val saveLastSelectedDifficultyType = settingsDataManager.saveSelectedGameDifficultyType
-    fun updateSaveLastSelectedDifficultyType(enabled: Boolean) =
-        viewModelScope.launch(Dispatchers.IO) {
-            settingsDataManager.setSaveSelectedGameDifficultyType(enabled)
-        }
 
     fun checkCustomDateFormat(pattern: String): Boolean {
         return try {
             DateTimeFormatter.ofPattern(pattern)
             true
-        } catch (e: Exception) {
+        } catch (_: IllegalArgumentException) {
             false
         }
     }

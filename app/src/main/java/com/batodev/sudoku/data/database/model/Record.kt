@@ -22,7 +22,7 @@ import java.time.ZonedDateTime
     ]
 )
 data class Record(
-    @PrimaryKey @ColumnInfo(name = "board_uid") val board_uid: Long,
+    @PrimaryKey @ColumnInfo(name = "board_uid") val boardUid: Long,
     @ColumnInfo(name = "type") val type: GameType,
     @ColumnInfo(name = "difficulty") val difficulty: GameDifficulty,
     @ColumnInfo(name = "date") val date: ZonedDateTime,

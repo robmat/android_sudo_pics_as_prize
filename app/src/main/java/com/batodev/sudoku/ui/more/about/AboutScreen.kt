@@ -24,6 +24,61 @@ import androidx.compose.ui.unit.dp
 import com.batodev.sudoku.BuildConfig
 import com.batodev.sudoku.R
 import com.batodev.sudoku.ui.components.PreferenceRow
+import com.batodev.sudoku.ui.components.PreferenceRowInfo
+import com.batodev.sudoku.ui.components.PreferenceRowInteractions
+
+@Composable
+private fun AboutAppHeader() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            modifier = Modifier.size(56.dp),
+            painter = painterResource(R.drawable.ic_launcher_foreground),
+            contentDescription = null,
+        )
+        Text(
+            text = stringResource(R.string.app_name),
+            style = MaterialTheme.typography.titleLarge
+        )
+    }
+}
+
+@Composable
+private fun AboutPreferencesList(navigateOpenSourceLicenses: () -> Unit) {
+    PreferenceRow(
+        info = PreferenceRowInfo(
+            title = stringResource(R.string.about_version),
+            subtitle = BuildConfig.VERSION_NAME,
+            painter = painterResource(R.drawable.ic_outline_info_24)
+        )
+    )
+
+    val uriHandler = LocalUriHandler.current
+    PreferenceRow(
+        info = PreferenceRowInfo(
+            title = stringResource(R.string.about_github_project),
+            painter = painterResource(R.drawable.ic_github_24dp)
+        ),
+        interactions = PreferenceRowInteractions(
+            onClick = {
+                uriHandler.openUri("https://github.com/robmat/android_sudo_pics_as_prize")
+            }
+        )
+    )
+
+    PreferenceRow(
+        info = PreferenceRowInfo(
+            title = stringResource(R.string.libraries_licenses_title),
+            painter = painterResource(R.drawable.ic_outline_info_24)
+        ),
+        interactions = PreferenceRowInteractions(onClick = navigateOpenSourceLicenses)
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,46 +106,9 @@ fun AboutScreen(
                 .padding(it)
                 .fillMaxWidth()
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    modifier = Modifier.size(56.dp),
-                    painter = painterResource(R.drawable.ic_launcher_foreground),
-                    contentDescription = null,
-                )
-                Text(
-                    text = stringResource(R.string.app_name),
-                    style = MaterialTheme.typography.titleLarge
-                )
-            }
-
+            AboutAppHeader()
             HorizontalDivider()
-
-            PreferenceRow(
-                title = stringResource(R.string.about_version),
-                subtitle = BuildConfig.VERSION_NAME,
-                painter = painterResource(R.drawable.ic_outline_info_24),
-            )
-
-            val uriHandler = LocalUriHandler.current
-            PreferenceRow(
-                title = stringResource(R.string.about_github_project),
-                painter = painterResource(R.drawable.ic_github_24dp),
-                onClick = {
-                    uriHandler.openUri("https://github.com/robmat/android_sudo_pics_as_prize")
-                }
-            )
-
-            PreferenceRow(
-                title = stringResource(R.string.libraries_licenses_title),
-                painter = painterResource(R.drawable.ic_outline_info_24),
-                onClick = navigateOpenSourceLicenses
-            )
+            AboutPreferencesList(navigateOpenSourceLicenses)
         }
     }
 }

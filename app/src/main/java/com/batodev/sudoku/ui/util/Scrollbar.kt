@@ -33,20 +33,9 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.LazyGridState
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -61,7 +50,6 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastSumBy
@@ -94,13 +82,10 @@ private fun Modifier.drawScrollbar(
         val thumbSize = canvasSize / totalSize * canvasSize
         val startOffset = state.value / totalSize * canvasSize
         drawScrollbar(
-            orientation,
-            reverseDirection,
-            atEnd,
+            ScrollbarOrientation(orientation, reverseDirection, atEnd),
             color,
             alpha,
-            thumbSize,
-            startOffset
+            ScrollbarGeometry(thumbSize, startOffset)
         )
     }
 }
@@ -140,13 +125,10 @@ private fun Modifier.drawScrollbar(
             }
         }
         drawScrollbar(
-            orientation,
-            reverseDirection,
-            atEnd,
+            ScrollbarOrientation(orientation, reverseDirection, atEnd),
             color,
             alpha,
-            thumbSize,
-            startOffset
+            ScrollbarGeometry(thumbSize, startOffset)
         )
     }
 }
@@ -182,26 +164,35 @@ fun Modifier.drawVerticalScrollbar(
             }
         }
         drawScrollbar(
-            Orientation.Vertical,
-            reverseDirection,
-            atEnd,
+            ScrollbarOrientation(Orientation.Vertical, reverseDirection, atEnd),
             color,
             alpha,
-            thumbSize,
-            startOffset
+            ScrollbarGeometry(thumbSize, startOffset)
         )
     }
 }
 
+/** The scrollbar's [orientation], and whether it's [reverseDirection]/[atEnd]. */
+private data class ScrollbarOrientation(
+    val orientation: Orientation,
+    val reverseDirection: Boolean,
+    val atEnd: Boolean
+)
+
+/** The scrollbar thumb's [thumbSize] and [startOffset] along the scroll axis. */
+private data class ScrollbarGeometry(
+    val thumbSize: Float,
+    val startOffset: Float
+)
+
 private fun DrawScope.drawScrollbar(
-    orientation: Orientation,
-    reverseDirection: Boolean,
-    atEnd: Boolean,
+    scrollbarOrientation: ScrollbarOrientation,
     color: Color,
     alpha: () -> Float,
-    thumbSize: Float,
-    startOffset: Float
+    geometry: ScrollbarGeometry
 ) {
+    val (orientation, reverseDirection, atEnd) = scrollbarOrientation
+    val (thumbSize, startOffset) = geometry
     val thicknessPx = Thickness.toPx()
     val topLeft = if (orientation == Orientation.Horizontal) {
         Offset(
@@ -285,85 +276,11 @@ private fun Modifier.drawScrollbar(
         }
 }
 
+private const val BAR_COLOR_ALPHA = 0.5f
+
 private val BarColor: Color
-    @Composable get() = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+    @Composable get() = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = BAR_COLOR_ALPHA)
 
 private val Thickness = 4.dp
 private val FadeOutAnimationSpec =
     tween<Float>(durationMillis = ViewConfiguration.getScrollBarFadeDuration())
-
-@Preview(widthDp = 400, heightDp = 400, showBackground = true)
-@Composable
-internal fun ScrollbarPreview() {
-    val state = rememberScrollState()
-    Column(
-        modifier = Modifier
-            .drawVerticalScrollbar(state)
-            .verticalScroll(state),
-    ) {
-        repeat(50) {
-            Text(
-                text = "Item ${it + 1}",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            )
-        }
-    }
-}
-
-@Preview(widthDp = 400, heightDp = 400, showBackground = true)
-@Composable
-internal fun LazyListScrollbarPreview() {
-    val state = rememberLazyListState()
-    LazyColumn(
-        modifier = Modifier.drawVerticalScrollbar(state),
-        state = state
-    ) {
-        items(50) {
-            Text(
-                text = "Item ${it + 1}",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            )
-        }
-    }
-}
-
-@Preview(widthDp = 400, showBackground = true)
-@Composable
-internal fun HorizontalScrollbarPreview() {
-    val state = rememberScrollState()
-    Row(
-        modifier = Modifier
-            .drawHorizontalScrollbar(state)
-            .horizontalScroll(state)
-    ) {
-        repeat(50) {
-            Text(
-                text = (it + 1).toString(),
-                modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 16.dp)
-            )
-        }
-    }
-}
-
-@Preview(widthDp = 400, showBackground = true)
-@Composable
-internal fun LazyListHorizontalScrollbarPreview() {
-    val state = rememberLazyListState()
-    LazyRow(
-        modifier = Modifier.drawHorizontalScrollbar(state),
-        state = state
-    ) {
-        items(50) {
-            Text(
-                text = (it + 1).toString(),
-                modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 16.dp)
-            )
-        }
-    }
-}

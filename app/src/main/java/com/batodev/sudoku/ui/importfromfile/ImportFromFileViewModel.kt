@@ -1,6 +1,7 @@
 package com.batodev.sudoku.ui.importfromfile
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -73,8 +74,8 @@ class ImportFromFileViewModel @Inject constructor(
                     _importingError.emit(!result.first)
                     isLoading = false
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
+            } catch (expectedException: Exception) {
+                Log.e("ImportFromFileViewModel", "Exception while importing file", expectedException)
                 _importingError.emit(true)
             } finally {
                 withContext(Dispatchers.IO) {

@@ -19,6 +19,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val PERCENTAGE_MULTIPLIER = 100f
+
 @HiltViewModel
 class StatisticsViewModel
 @Inject constructor(
@@ -115,7 +117,7 @@ class StatisticsViewModel
 
     fun getWinRate(savedGames: List<SavedGame>): Float {
         return savedGames
-            .count { it.completed && !it.giveUp && !it.canContinue } * 100f / savedGames.count()
+            .count { it.completed && !it.giveUp && !it.canContinue } * PERCENTAGE_MULTIPLIER / savedGames.count()
             .toFloat()
     }
 }

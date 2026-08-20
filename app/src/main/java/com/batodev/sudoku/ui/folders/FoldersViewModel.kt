@@ -7,13 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batodev.sudoku.core.parser.SdmParser
 import com.batodev.sudoku.data.database.model.Folder
-import com.batodev.sudoku.domain.usecase.board.GetGamesInFolderUseCase
-import com.batodev.sudoku.domain.usecase.folder.CountPuzzlesFolderUseCase
-import com.batodev.sudoku.domain.usecase.folder.DeleteFolderUseCase
-import com.batodev.sudoku.domain.usecase.folder.GetFoldersUseCase
-import com.batodev.sudoku.domain.usecase.folder.GetLastSavedGamesAnyFolderUseCase
-import com.batodev.sudoku.domain.usecase.folder.InsertFolderUseCase
-import com.batodev.sudoku.domain.usecase.folder.UpdateFolderUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,17 +15,13 @@ import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 import javax.inject.Inject
 
+private const val LAST_SAVED_GAMES_COUNT = 10
+
 @HiltViewModel
 class FoldersViewModel @Inject constructor(
-    getFoldersUseCase: GetFoldersUseCase,
-    private val insertFolderUseCase: InsertFolderUseCase,
-    private val updateFolderUseCase: UpdateFolderUseCase,
-    private val deleteFolderUseCase: DeleteFolderUseCase,
-    private val getGamesInFolderUseCase: GetGamesInFolderUseCase,
-    private val countPuzzlesFolderUseCase: CountPuzzlesFolderUseCase,
-    getLastSavedGamesAnyFolderUseCase: GetLastSavedGamesAnyFolderUseCase
+    private val dependencies: FoldersDependencies
 ) : ViewModel() {
-    val folders = getFoldersUseCase()
+    val folders = dependencies.getFoldersUseCase()
 
     var selectedFolder: Folder? by mutableStateOf(null)
 
@@ -41,11 +30,11 @@ class FoldersViewModel @Inject constructor(
 
     var puzzlesCountInFolder by mutableStateOf(emptyList<Pair<Long, Int>>())
 
-    val lastSavedGames = getLastSavedGamesAnyFolderUseCase(gamesCount = 10)
+    val lastSavedGames = dependencies.getLastSavedGamesAnyFolderUseCase(gamesCount = LAST_SAVED_GAMES_COUNT)
 
     fun createFolder(name: String) {
         viewModelScope.launch {
-            insertFolderUseCase(
+            dependencies.writeUseCases.insertFolderUseCase(
                 Folder(
                     uid = 0,
                     name = name.trim(),
@@ -60,7 +49,7 @@ class FoldersViewModel @Inject constructor(
             val numberPuzzles = mutableListOf<Pair<Long, Int>>()
             folders.forEach {
                 numberPuzzles.add(
-                    Pair(it.uid, countPuzzlesFolderUseCase(it.uid).toInt())
+                    Pair(it.uid, dependencies.countPuzzlesFolderUseCase(it.uid).toInt())
                 )
             }
             puzzlesCountInFolder = numberPuzzles
@@ -70,7 +59,7 @@ class FoldersViewModel @Inject constructor(
     fun renameFolder(newName: String) {
         selectedFolder?.let {
             viewModelScope.launch {
-                updateFolderUseCase(
+                dependencies.writeUseCases.updateFolderUseCase(
                     it.copy(name = newName.trim())
                 )
             }
@@ -80,13 +69,13 @@ class FoldersViewModel @Inject constructor(
     fun deleteFolder() {
         selectedFolder?.let {
             viewModelScope.launch {
-                deleteFolderUseCase(it)
+                dependencies.writeUseCases.deleteFolderUseCase(it)
             }
         }
     }
 
     fun generateFolderExportData(): ByteArray {
-        val gamesInFolder = getGamesInFolderUseCase(selectedFolder!!.uid)
+        val gamesInFolder = dependencies.getGamesInFolderUseCase(selectedFolder!!.uid)
 
         val sdmParser = SdmParser()
         return sdmParser.boardsToSdm(gamesInFolder).toByteArray()

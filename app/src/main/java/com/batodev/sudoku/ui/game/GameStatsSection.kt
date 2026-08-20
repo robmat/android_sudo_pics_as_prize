@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -25,90 +26,143 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.batodev.sudoku.R
 import com.batodev.sudoku.core.PreferencesConstants
-import com.batodev.sudoku.core.qqwing.GameDifficulty
-import com.batodev.sudoku.core.qqwing.GameType
 import com.batodev.sudoku.core.utils.toFormattedString
 import com.batodev.sudoku.data.database.model.Record
 import kotlin.time.toKotlinDuration
 
+@Composable
+private fun ColumnScope.AfterGameStatsTitle(info: AfterGameStatsInfo) {
+    Text(
+        text = if (info.giveUp) {
+            if (info.mistakesLimit && info.mistakesLimitCount >= PreferencesConstants.MISTAKES_LIMIT) {
+                stringResource(R.string.saved_game_mistakes_limit)
+            } else {
+                stringResource(R.string.saved_game_give_up)
+            }
+        } else {
+            stringResource(R.string.game_completed)
+        },
+        style = MaterialTheme.typography.titleMedium,
+        modifier = Modifier
+            .align(Alignment.CenterHorizontally)
+            .padding(bottom = 8.dp)
+    )
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
+private fun AfterGameTimeSection(timeText: String, records: List<Record>) {
+    Text(
+        text = stringResource(R.string.time),
+        style = MaterialTheme.typography.titleMedium,
+        modifier = Modifier.padding(bottom = 8.dp)
+    )
+
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        StatBoxWithBottomPadding(
+            text = {
+                Text(
+                    stringResource(
+                        R.string.stat_time_current,
+                        timeText
+                    )
+                )
+            }
+        )
+
+        if (records.isNotEmpty()) {
+            StatBoxWithBottomPadding(
+                text = {
+                    Text(
+                        text = stringResource(
+                            R.string.stat_time_average,
+                            DateUtils.formatElapsedTime(records.sumOf { it.time.seconds } / records.count())
+                        )
+                    )
+                }
+            )
+            StatBoxWithBottomPadding(
+                text = {
+                    Text(
+                        text = stringResource(
+                            R.string.stat_time_best,
+                            records.first().time
+                                .toKotlinDuration()
+                                .toFormattedString()
+                        )
+                    )
+                }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun AfterGameSummarySection(info: AfterGameStatsInfo) {
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        StatBoxWithBottomPadding(
+            text = {
+                Text(
+                    "${stringResource(info.difficulty.resName)} ${
+                        stringResource(
+                            info.type.resName
+                        )
+                    }"
+                )
+            },
+            icon = { Icon(Icons.Rounded.Grade, contentDescription = null) }
+        )
+        StatBoxWithBottomPadding(
+            text = {
+                Text(
+                    stringResource(
+                        R.string.hints_used,
+                        info.hintsUsed
+                    )
+                )
+            },
+            icon = { Icon(Icons.Rounded.Lightbulb, contentDescription = null) }
+        )
+        StatBoxWithBottomPadding(
+            text = {
+                Text(
+                    stringResource(
+                        R.string.mistakes_made,
+                        info.mistakesMade
+                    )
+                )
+            },
+            icon = { Icon(Icons.Rounded.Cancel, contentDescription = null) }
+        )
+        StatBoxWithBottomPadding(
+            text = {
+                Text(
+                    stringResource(
+                        R.string.notes_taken,
+                        info.notesTaken
+                    )
+                )
+            },
+            icon = { Icon(Icons.Rounded.Edit, contentDescription = null) }
+        )
+    }
+}
+
+@Composable
 fun AfterGameStats(
-    difficulty: GameDifficulty,
-    type: GameType,
-    hintsUsed: Int,
-    mistakesMade: Int,
-    mistakesLimit: Boolean,
-    mistakesLimitCount: Int,
-    giveUp: Boolean,
-    notesTaken: Int,
-    records: List<Record>,
-    timeText: String,
+    info: AfterGameStatsInfo,
     modifier: Modifier = Modifier
 ) {
     Column(modifier) {
-        Text(
-            text = if (giveUp) {
-                if (mistakesLimit && mistakesLimitCount >= PreferencesConstants.MISTAKES_LIMIT) {
-                    stringResource(R.string.saved_game_mistakes_limit)
-                } else {
-                    stringResource(R.string.saved_game_give_up)
-                }
-            } else {
-                stringResource(R.string.game_completed)
-            },
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom = 8.dp)
-        )
+        AfterGameStatsTitle(info)
 
-        if (!giveUp) {
-            Text(
-                text = stringResource(R.string.time),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                StatBoxWithBottomPadding(
-                    text = {
-                        Text(
-                            stringResource(
-                                R.string.stat_time_current,
-                                timeText
-                            )
-                        )
-                    }
-                )
-
-                if (records.isNotEmpty()) {
-                    StatBoxWithBottomPadding(
-                        text = {
-                            Text(
-                                text = stringResource(
-                                    R.string.stat_time_average,
-                                    DateUtils.formatElapsedTime(records.sumOf { it.time.seconds } / records.count())
-                                )
-                            )
-                        }
-                    )
-                    StatBoxWithBottomPadding(
-                        text = {
-                            Text(
-                                text = stringResource(
-                                    R.string.stat_time_best,
-                                    records.first().time
-                                        .toKotlinDuration()
-                                        .toFormattedString()
-                                )
-                            )
-                        }
-                    )
-                }
-            }
+        if (!info.giveUp) {
+            AfterGameTimeSection(info.timeText, info.records)
         }
 
         Text(
@@ -116,55 +170,7 @@ fun AfterGameStats(
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(top = 12.dp, bottom = 8.dp)
         )
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            StatBoxWithBottomPadding(
-                text = {
-                    Text(
-                        "${stringResource(difficulty.resName)} ${
-                            stringResource(
-                                type.resName
-                            )
-                        }"
-                    )
-                },
-                icon = { Icon(Icons.Rounded.Grade, contentDescription = null) }
-            )
-            StatBoxWithBottomPadding(
-                text = {
-                    Text(
-                        stringResource(
-                            R.string.hints_used,
-                            hintsUsed
-                        )
-                    )
-                },
-                icon = { Icon(Icons.Rounded.Lightbulb, contentDescription = null) }
-            )
-            StatBoxWithBottomPadding(
-                text = {
-                    Text(
-                        stringResource(
-                            R.string.mistakes_made,
-                            mistakesMade
-                        )
-                    )
-                },
-                icon = { Icon(Icons.Rounded.Cancel, contentDescription = null) }
-            )
-            StatBoxWithBottomPadding(
-                text = {
-                    Text(
-                        stringResource(
-                            R.string.notes_taken,
-                            notesTaken
-                        )
-                    )
-                },
-                icon = { Icon(Icons.Rounded.Edit, contentDescription = null) }
-            )
-        }
+        AfterGameSummarySection(info)
     }
 }
 
@@ -190,8 +196,12 @@ fun StatBox(
     }
 }
 
-// TODO: Remove this when cross-axis arrangement support is added to FlowRow
+// Workaround: FlowRow does not yet support cross-axis arrangement, so bottom padding is
+// applied manually to each item instead. Tracked upstream at:
 // https://android-review.googlesource.com/c/platform/frameworks/support/+/2478295
+// Once Compose Foundation adds cross-axis arrangement support to FlowRow, this wrapper
+// can be replaced by passing that arrangement directly to FlowRow and StatBox can be
+// used everywhere instead.
 @Composable
 fun StatBoxWithBottomPadding(
     text: @Composable () -> Unit,

@@ -12,6 +12,7 @@ import com.batodev.sudoku.core.Cell
 import com.batodev.sudoku.core.Note
 import com.batodev.sudoku.core.utils.SudokuParser
 import com.batodev.sudoku.core.utils.SudokuUtils
+import com.batodev.sudoku.core.utils.getFontSize
 import com.batodev.sudoku.data.database.model.Folder
 import com.batodev.sudoku.data.database.model.SavedGame
 import com.batodev.sudoku.data.database.model.SudokuBoard

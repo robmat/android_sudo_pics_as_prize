@@ -27,7 +27,63 @@ import com.batodev.sudoku.core.Cell
 import com.batodev.sudoku.core.qqwing.GameType
 import com.batodev.sudoku.core.utils.SudokuParser
 import com.batodev.sudoku.ui.components.board.Board
+import com.batodev.sudoku.ui.components.board.BoardData
+import com.batodev.sudoku.ui.components.board.BoardDisplayOptions
+import com.batodev.sudoku.ui.components.board.BoardInteraction
+import com.batodev.sudoku.ui.components.board.BoardStyle
 import com.batodev.sudoku.ui.learn.components.TutorialBase
+
+private data class RulesMistakeCell(val row: Int, val col: Int, val value: Int, val isError: Boolean)
+
+private val RULES_MISTAKE_CELLS = listOf(
+    RulesMistakeCell(row = 1, col = 7, value = 6, isError = true),
+    RulesMistakeCell(row = 3, col = 6, value = 2, isError = true),
+    RulesMistakeCell(row = 4, col = 7, value = 6, isError = false),
+    RulesMistakeCell(row = 4, col = 8, value = 8, isError = false)
+)
+
+private fun applyMistakeHighlights(board: List<List<Cell>>): List<List<Cell>> {
+    RULES_MISTAKE_CELLS.forEach { mistake ->
+        board[mistake.row][mistake.col].apply {
+            value = mistake.value
+            error = mistake.isError
+        }
+    }
+    return board
+}
+
+@Composable
+private fun LearnSudokuMistakesSection(previewBoard: List<List<Cell>>) {
+    var secondSelectedCell by remember { mutableStateOf(Cell(-1, -1, 0)) }
+    Text(stringResource(R.string.sudoku_rules_mistakes))
+
+    var highlightError by remember { mutableStateOf(false) }
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Checkbox(
+            checked = highlightError,
+            onCheckedChange = { highlightError = !highlightError }
+        )
+        Text(stringResource(R.string.sudoku_rules_mistakes_highlight))
+    }
+
+    val errorBoard by remember {
+        mutableStateOf(previewBoard.map { cells -> cells.map { cell -> cell.copy() } })
+    }
+    Board(
+        data = BoardData(board = applyMistakeHighlights(errorBoard), size = 9),
+        interaction = BoardInteraction(
+            selectedCell = secondSelectedCell,
+            onClick = { secondSelectedCell = it }
+        ),
+        style = BoardStyle(
+            boardColors = LocalBoardColors.current,
+            displayOptions = BoardDisplayOptions(errorsHighlight = highlightError)
+        )
+    )
+    Text(stringResource(R.string.sudoku_rules_mistakes_explanation))
+}
 
 @Composable
 fun LearnSudokuRules(
@@ -45,7 +101,6 @@ fun LearnSudokuRules(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             var selectedCell by remember { mutableStateOf(Cell(-1, -1, 0)) }
-            var secondSelectedCell by remember { mutableStateOf(Cell(-1, -1, 0)) }
 
             val sudokuParser = SudokuParser()
             val previewBoard by remember {
@@ -61,53 +116,12 @@ fun LearnSudokuRules(
             Text(stringResource(R.string.intro_what_is_sudoku))
             Text(stringResource(R.string.intro_rules))
             Board(
-                board = previewBoard,
-                size = 9,
-                selectedCell = selectedCell,
-                onClick = { selectedCell = it },
-                boardColors = LocalBoardColors.current
+                data = BoardData(board = previewBoard, size = 9),
+                interaction = BoardInteraction(selectedCell = selectedCell, onClick = { selectedCell = it }),
+                style = BoardStyle(boardColors = LocalBoardColors.current)
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(stringResource(R.string.sudoku_rules_mistakes))
-
-            var highlightError by remember { mutableStateOf(false) }
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = highlightError,
-                    onCheckedChange = { highlightError = !highlightError }
-                )
-                Text(stringResource(R.string.sudoku_rules_mistakes_highlight))
-            }
-
-            val errorBoard by remember {
-                mutableStateOf(previewBoard.map { cells -> cells.map { cell -> cell.copy() } })
-            }
-            Board(
-                board = errorBoard.also {
-                    it[1][7].apply {
-                        value = 6
-                        error = true
-                    }
-                    it[3][6].apply {
-                        value = 2
-                        error = true
-                    }
-                    it[4][7].apply {
-                        value = 6
-                    }
-                    it[4][8].apply {
-                        value = 8
-                    }
-                },
-                size = 9,
-                errorsHighlight = highlightError,
-                selectedCell = secondSelectedCell,
-                onClick = { secondSelectedCell = it },
-                boardColors = LocalBoardColors.current
-            )
-            Text(stringResource(R.string.sudoku_rules_mistakes_explanation))
+            LearnSudokuMistakesSection(previewBoard)
         }
     }
 }

@@ -3,16 +3,11 @@ package com.batodev.sudoku.ui.components.board
 import android.graphics.Paint
 import android.graphics.Rect
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -28,44 +23,100 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.batodev.sudoku.core.Cell
-import com.batodev.sudoku.ui.theme.BoardColors
 import com.batodev.sudoku.ui.theme.SudokuBoardColors
-import com.batodev.sudoku.ui.theme.SudokuBoardColorsImpl
 import com.batodev.sudoku.ui.theme.SudokuTheme
 import com.batodev.sudoku.ui.util.LightDarkPreview
-import kotlin.math.ceil
-import kotlin.math.floor
-import kotlin.math.sqrt
+
+private val TEXT_SIZE_6X6 = 16.sp
+private val TEXT_SIZE_9X9 = 11.sp
+private val TEXT_SIZE_12X12 = 9.sp
+private val TEXT_SIZE_DEFAULT = 22.sp
+private const val BOARD_CORNER_RADIUS = 10f
+private const val BOARD_STROKE_WIDTH_DP = 1.1
+private const val THIN_LINE_WIDTH_DP = 0.6
+private const val THICK_LINE_WIDTH_DP = 1.1
+private const val SINGLE_DIGIT_SAMPLE_TEXT = "1"
+
+private fun defaultMainTextSize(size: Int): TextUnit = when (size) {
+    BOARD_SIZE_6X6 -> TEXT_SIZE_6X6
+    BOARD_SIZE_9X9 -> TEXT_SIZE_9X9
+    BOARD_SIZE_12X12 -> TEXT_SIZE_12X12
+    else -> TEXT_SIZE_DEFAULT
+}
+
+/** The data a [BoardPreview] renders: either a parsed [board] or a raw [boardString]. */
+data class BoardPreviewContent(
+    val boardColors: SudokuBoardColors,
+    val size: Int = 9,
+    val boardString: String? = null,
+    val board: List<List<Cell>>? = null,
+    val mainTextSize: TextUnit? = null
+)
+
+/** Everything [drawBoardPreviewNumbers] needs to paint the digit glyphs onto the canvas. */
+private class BoardPreviewTextDrawing(
+    val canvas: android.graphics.Canvas,
+    val cellSize: Float,
+    val textWidth: Float,
+    val textPaint: Paint,
+    val textBounds: Rect
+)
+
+private fun BoardPreviewTextDrawing.drawParsedBoardNumbers(size: Int, board: List<List<Cell>>) {
+    for (i in 0 until size) {
+        for (j in 0 until size) {
+            if (board[i][j].value == 0) continue
+            canvas.drawText(
+                board[i][j].value.toString(),
+                board[i][j].col * cellSize + (cellSize - textWidth) / 2f,
+                (board[i][j].row * cellSize + cellSize) - (cellSize - textBounds.height()) / 2f,
+                textPaint
+            )
+        }
+    }
+}
+
+private fun BoardPreviewTextDrawing.drawBoardStringNumbers(size: Int, boardString: String) {
+    for (i in 0 until size) {
+        for (j in 0 until size) {
+            if (boardString[size * j + i] == '0') continue
+            canvas.drawText(
+                boardString[size * j + i].uppercase(),
+                i * cellSize + (cellSize - textWidth) / 2f,
+                j * cellSize + cellSize - (cellSize - textBounds.height()) / 2f,
+                textPaint
+            )
+        }
+    }
+}
+
+private fun drawBoardPreviewNumbers(drawing: BoardPreviewTextDrawing, content: BoardPreviewContent) {
+    val size = content.size
+    val board = content.board
+    val boardString = content.boardString
+    if (board != null) {
+        drawing.drawParsedBoardNumbers(size, board)
+    } else if (boardString != null && boardString.length == size * size) {
+        drawing.drawBoardStringNumbers(size, boardString)
+    }
+}
 
 @Composable
 fun BoardPreview(
-    modifier: Modifier = Modifier,
-    size: Int = 9,
-    boardString: String? = null,
-    board: List<List<Cell>>? = null,
-    mainTextSize: TextUnit = when (size) {
-        6 -> 16.sp
-        9 -> 11.sp
-        12 -> 9.sp
-        else -> 22.sp
-    },
-    boardColors: SudokuBoardColors
+    content: BoardPreviewContent,
+    modifier: Modifier = Modifier
 ) {
-    BoxWithConstraints(
-        modifier = modifier
-            .fillMaxWidth()
-            .aspectRatio(1f)
-            .padding(4.dp)
-    ) {
+    val size = content.size
+    val mainTextSize = content.mainTextSize ?: defaultMainTextSize(size)
+    SudokuBoardContainer(modifier = modifier) {
         val maxWidth = constraints.maxWidth.toFloat()
 
         val cellSize by remember(size) { mutableFloatStateOf(maxWidth / size.toFloat()) }
-        val foregroundColor = boardColors.altForegroundColor
-        val thickLineColor = boardColors.thickLineColor
-        val thinLineColor = boardColors.thinLineColor
+        val foregroundColor = content.boardColors.altForegroundColor
+        val thickLineColor = content.boardColors.thickLineColor
+        val thinLineColor = content.boardColors.thinLineColor
 
-        val vertThick by remember(size) { mutableIntStateOf(floor(sqrt(size.toFloat())).toInt()) }
-        val horThick by remember(size) { mutableIntStateOf(ceil(sqrt(size.toFloat())).toInt()) }
+        val (vertThick, horThick) = rememberGridThickIntervals(size)
 
         val fontSizePx = with(LocalDensity.current) { mainTextSize.toPx() }
 
@@ -78,10 +129,10 @@ fun BoardPreview(
                 }
             )
         }
-        val width by remember { mutableFloatStateOf(textPaint.measureText("1")) }
-        val boardStrokeWidth = with(LocalDensity.current) { 1.1.dp.toPx() }
-        val thinLineWidth = with(LocalDensity.current) { 0.6.dp.toPx() }
-        val thickLineWidth = with(LocalDensity.current) { 1.1.dp.toPx() }
+        val textWidth by remember { mutableFloatStateOf(textPaint.measureText(SINGLE_DIGIT_SAMPLE_TEXT)) }
+        val boardStrokeWidth = with(LocalDensity.current) { BOARD_STROKE_WIDTH_DP.dp.toPx() }
+        val thinLineWidth = with(LocalDensity.current) { THIN_LINE_WIDTH_DP.dp.toPx() }
+        val thickLineWidth = with(LocalDensity.current) { THICK_LINE_WIDTH_DP.dp.toPx() }
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
@@ -90,60 +141,21 @@ fun BoardPreview(
                 color = thickLineColor,
                 topLeft = Offset.Zero,
                 size = Size(maxWidth, maxWidth),
-                cornerRadius = CornerRadius(10f, 10f),
+                cornerRadius = CornerRadius(BOARD_CORNER_RADIUS, BOARD_CORNER_RADIUS),
                 style = Stroke(width = boardStrokeWidth)
             )
 
-            for (i in 1 until size) {
-                val isThickLine = i % horThick == 0
-                drawLine(
-                    color = if (isThickLine) thickLineColor else thinLineColor,
-                    start = Offset(cellSize * i.toFloat(), 0f),
-                    end = Offset(cellSize * i.toFloat(), maxWidth),
-                    strokeWidth = if (isThickLine) thickLineWidth else thinLineWidth
-                )
-            }
-            for (i in 1 until size) {
-                val isThickLine = i % vertThick == 0
-                drawLine(
-                    color = if (isThickLine) thickLineColor else thinLineColor,
-                    start = Offset(0f, cellSize * i.toFloat()),
-                    end = Offset(maxWidth, cellSize * i.toFloat()),
-                    strokeWidth = if (isThickLine) thickLineWidth else thinLineWidth
-                )
-            }
+            drawSudokuGridLines(
+                geometry = GridGeometry(size, cellSize, maxWidth, horThick, vertThick),
+                style = GridLineStyle(thickLineColor, thinLineColor, thickLineWidth, thinLineWidth)
+            )
 
             val textBounds = Rect()
-            textPaint.getTextBounds("1", 0, 1, textBounds)
+            textPaint.getTextBounds(SINGLE_DIGIT_SAMPLE_TEXT, 0, 1, textBounds)
 
             drawIntoCanvas { canvas ->
-                if (board != null) {
-                    for (i in 0 until size) {
-                        for (j in 0 until size) {
-                            if (board[i][j].value != 0) {
-                                canvas.nativeCanvas.drawText(
-                                    board[i][j].value.toString(),
-                                    board[i][j].col * cellSize + (cellSize - width) / 2f,
-                                    (board[i][j].row * cellSize + cellSize) - (cellSize - textBounds.height()) / 2f,
-                                    textPaint
-                                )
-                            }
-                        }
-                    }
-                } else if (boardString != null && boardString.length == size * size) {
-                    for (i in 0 until size) {
-                        for (j in 0 until size) {
-                            if (boardString[size * j + i] != '0') {
-                                canvas.nativeCanvas.drawText(
-                                    boardString[size * j + i].uppercase(),
-                                    i * cellSize + (cellSize - width) / 2f,
-                                    j * cellSize + cellSize - (cellSize - textBounds.height()) / 2f,
-                                    textPaint
-                                )
-                            }
-                        }
-                    }
-                }
+                val drawing = BoardPreviewTextDrawing(canvas.nativeCanvas, cellSize, textWidth, textPaint, textBounds)
+                drawBoardPreviewNumbers(drawing, content)
             }
         }
     }
@@ -155,15 +167,9 @@ private fun BoardPreviewPreview() {
     SudokuTheme {
         Surface {
             BoardPreview(
-                boardString = "0000100000040000000000000700000000000900000000680000000000000005000000000000000",
-                boardColors = SudokuBoardColorsImpl(
-                    foregroundColor = BoardColors.foregroundColor,
-                    notesColor = BoardColors.notesColor,
-                    altForegroundColor = BoardColors.altForegroundColor,
-                    errorColor = BoardColors.errorColor,
-                    highlightColor = BoardColors.highlightColor,
-                    thickLineColor = BoardColors.thickLineColor,
-                    thinLineColor = BoardColors.thinLineColor
+                content = BoardPreviewContent(
+                    boardString = "0000100000040000000000000700000000000900000000680000000000000005000000000000000",
+                    boardColors = previewSudokuBoardColors()
                 )
             )
         }

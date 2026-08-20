@@ -12,31 +12,40 @@ import com.batodev.sudoku.data.database.model.SudokuBoard
 class SdmParser : FileImportParser {
     private val tag = "SDMParser"
 
+    companion object {
+        private const val STANDARD_BOARD_LENGTH = 81
+    }
+
+    private fun isValidLine(line: String): Boolean =
+        line.length == STANDARD_BOARD_LENGTH && line.all { char -> char.isDigit() }
+
+    private fun processLine(line: String, toImport: MutableList<String>) {
+        val trimmed = line.trim()
+        if (isValidLine(trimmed)) {
+            toImport.add(trimmed.replace(".", "0"))
+        } else {
+            Log.i(tag, "This line was skipped: $trimmed")
+        }
+    }
+
     /**
      * @param content .sdm file content
      * @return Pair with: First - parsing success. Second - strings of parsed boards
      */
     override fun toBoards(content: String): Pair<Boolean, List<String>> {
         val toImport = mutableListOf<String>()
-        if (content.isEmpty()) return Pair(false, toImport)
+        var success = content.isNotEmpty()
 
-        try {
-            content.lines().forEach {
-                val line = it.trim()
-
-                if (line.length == 81 && line.all { char -> char.isDigit() }) {
-                    toImport.add(line.replace(".", "0"))
-                } else {
-                    Log.i(tag, "This line was skipped: $line")
-                }
+        if (success) {
+            try {
+                content.lines().forEach { processLine(it, toImport) }
+            } catch (expectedException: Exception) {
+                Log.e(tag, "Exception while parsing!", expectedException)
+                success = false
             }
-        } catch (e: Exception) {
-            Log.e(tag, "Exception while parsing!")
-            e.printStackTrace()
-            return Pair(false, toImport)
         }
 
-        return Pair(true, toImport)
+        return Pair(success, toImport)
     }
 
     fun boardsToSdm(boards: List<SudokuBoard>): String {

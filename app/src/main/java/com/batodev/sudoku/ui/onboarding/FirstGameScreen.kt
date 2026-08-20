@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.batodev.sudoku.R
 import com.batodev.sudoku.ui.game.NotesMenu
+import com.batodev.sudoku.ui.game.NotesMenuActions
 import com.batodev.sudoku.ui.game.components.ToolbarItem
 import com.batodev.sudoku.ui.theme.SudokuTheme
 
@@ -69,6 +70,8 @@ fun FirstGameDialog(
     }
 }
 
+private const val FIRST_GAME_TOOLBAR_ITEM_WEIGHT = 0.35f
+
 @Composable
 fun FirstGameScreen() {
     Column(
@@ -77,74 +80,96 @@ fun FirstGameScreen() {
             .padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val toolbarWeight by remember { mutableFloatStateOf(0.35f) }
-        ToolRow {
-            ToolbarItem(
-                modifier = Modifier.weight(toolbarWeight),
-                painter = painterResource(R.drawable.ic_round_undo_24),
-                onClick = { }
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                modifier = Modifier.weight(1f),
-                text = stringResource(R.string.toolbar_undo_description)
-            )
-        }
-        ToolRow {
-            ToolbarItem(
-                modifier = Modifier.weight(toolbarWeight),
-                painter = painterResource(R.drawable.ic_lightbulb_stars_24),
-                onClick = { }
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                modifier = Modifier.weight(1f),
-                text = stringResource(R.string.toolbar_hint_description)
-            )
-        }
-        ToolRow {
-            var notesMenu by remember { mutableStateOf(false) }
-            var noteToggled by remember { mutableStateOf(false) }
-            var renderNotes by remember { mutableStateOf(true) }
-            Box(
-                modifier = Modifier.weight(toolbarWeight)
-            ) {
-                NotesMenu(
-                    expanded = notesMenu,
+        val toolbarWeight by remember { mutableFloatStateOf(FIRST_GAME_TOOLBAR_ITEM_WEIGHT) }
+        UndoToolRow(toolbarWeight)
+        HintToolRow(toolbarWeight)
+        NotesToolRow(toolbarWeight)
+        EraseToolRow(toolbarWeight)
+        Spacer(modifier = Modifier.height(8.dp))
+    }
+}
+
+@Composable
+private fun UndoToolRow(toolbarWeight: Float) {
+    ToolRow {
+        ToolbarItem(
+            modifier = Modifier.weight(toolbarWeight),
+            painter = painterResource(R.drawable.ic_round_undo_24),
+            onClick = { }
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            modifier = Modifier.weight(1f),
+            text = stringResource(R.string.toolbar_undo_description)
+        )
+    }
+}
+
+@Composable
+private fun HintToolRow(toolbarWeight: Float) {
+    ToolRow {
+        ToolbarItem(
+            modifier = Modifier.weight(toolbarWeight),
+            painter = painterResource(R.drawable.ic_lightbulb_stars_24),
+            onClick = { }
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            modifier = Modifier.weight(1f),
+            text = stringResource(R.string.toolbar_hint_description)
+        )
+    }
+}
+
+@Composable
+private fun NotesToolRow(toolbarWeight: Float) {
+    ToolRow {
+        var notesMenu by remember { mutableStateOf(false) }
+        var noteToggled by remember { mutableStateOf(false) }
+        var renderNotes by remember { mutableStateOf(true) }
+        Box(
+            modifier = Modifier.weight(toolbarWeight)
+        ) {
+            NotesMenu(
+                expanded = notesMenu,
+                renderNotes = renderNotes,
+                actions = NotesMenuActions(
                     onDismiss = { notesMenu = false },
                     onComputeNotesClick = { },
                     onClearNotesClick = { },
-                    renderNotes = renderNotes,
                     onRenderNotesClick = { renderNotes = !renderNotes }
                 )
-                ToolbarItem(
-                    toggled = noteToggled,
-                    painter = painterResource(R.drawable.ic_round_edit_24),
-                    onClick = { noteToggled = !noteToggled },
-                    onLongClick = {
-                        notesMenu = true
-                    }
-                )
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                modifier = Modifier.weight(1f),
-                text = stringResource(R.string.toolbar_notes_description)
             )
-        }
-        ToolRow {
             ToolbarItem(
-                modifier = Modifier.weight(toolbarWeight),
-                painter = painterResource(R.drawable.ic_eraser_24),
-                onClick = { }
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                modifier = Modifier.weight(1f),
-                text = stringResource(R.string.toolbar_erase_description)
+                toggled = noteToggled,
+                painter = painterResource(R.drawable.ic_round_edit_24),
+                onClick = { noteToggled = !noteToggled },
+                onLongClick = {
+                    notesMenu = true
+                }
             )
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            modifier = Modifier.weight(1f),
+            text = stringResource(R.string.toolbar_notes_description)
+        )
+    }
+}
+
+@Composable
+private fun EraseToolRow(toolbarWeight: Float) {
+    ToolRow {
+        ToolbarItem(
+            modifier = Modifier.weight(toolbarWeight),
+            painter = painterResource(R.drawable.ic_eraser_24),
+            onClick = { }
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            modifier = Modifier.weight(1f),
+            text = stringResource(R.string.toolbar_erase_description)
+        )
     }
 }
 

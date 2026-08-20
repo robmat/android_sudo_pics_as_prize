@@ -67,7 +67,11 @@ fun ToolbarItem(
             Icon(
                 painter = painter,
                 contentDescription = null,
-                tint = if (toggled) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
+                tint = if (toggled) {
+                    MaterialTheme.colorScheme.onPrimaryContainer
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                }
             )
         }
     }

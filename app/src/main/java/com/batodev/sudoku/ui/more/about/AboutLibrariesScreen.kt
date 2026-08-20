@@ -17,8 +17,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.batodev.sudoku.R
-import com.mikepenz.aboutlibraries.ui.compose.LibrariesContainer
 import com.mikepenz.aboutlibraries.ui.compose.LibraryDefaults
+import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
+import com.mikepenz.aboutlibraries.ui.compose.m3.chipColors
+import com.mikepenz.aboutlibraries.ui.compose.m3.libraryColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,10 +49,20 @@ fun AboutLibrariesScreen(navigateBack: () -> Unit) {
                 .fillMaxSize()
                 .padding(innerPadding),
             colors = LibraryDefaults.libraryColors(
-                backgroundColor = MaterialTheme.colorScheme.background,
-                contentColor = MaterialTheme.colorScheme.onBackground,
-                badgeBackgroundColor = MaterialTheme.colorScheme.primary,
-                badgeContentColor = MaterialTheme.colorScheme.onPrimary
+                libraryBackgroundColor = MaterialTheme.colorScheme.background,
+                libraryContentColor = MaterialTheme.colorScheme.onBackground,
+                versionChipColors = LibraryDefaults.chipColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ),
+                licenseChipColors = LibraryDefaults.chipColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ),
+                fundingChipColors = LibraryDefaults.chipColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
             )
         )
     }

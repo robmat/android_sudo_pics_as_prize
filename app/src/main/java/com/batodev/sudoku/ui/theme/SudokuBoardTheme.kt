@@ -6,42 +6,52 @@ import androidx.compose.ui.graphics.Color
 import com.batodev.sudoku.ui.theme.ColorUtils.blend
 import com.batodev.sudoku.ui.theme.ColorUtils.harmonizeWithPrimary
 
+private const val FOREGROUND_BLEND_FRACTION = 0.65f
+private const val NOTES_BLEND_FRACTION = 0.4f
+private const val ALT_FOREGROUND_BLEND_FRACTION = 0.5f
+private const val ALT_FOREGROUND_ALPHA = 0.85f
+private const val ERROR_COLOR_RED = 230
+private const val ERROR_COLOR_GREEN = 67
+private const val ERROR_COLOR_BLUE = 83
+private const val THICK_LINE_ALPHA = 0.55f
+private const val THIN_LINE_ALPHA = 0.25f
+
 object BoardColors {
-    inline val foregroundColor: Color
+    val foregroundColor: Color
         @Composable
         get() = MaterialTheme.colorScheme.onSurface.blend(
             MaterialTheme.colorScheme.primary,
-            fraction = 0.65f
+            fraction = FOREGROUND_BLEND_FRACTION
         )
 
-    inline val notesColor: Color
+    val notesColor: Color
         @Composable
         get() = MaterialTheme.colorScheme.onSurfaceVariant.blend(
             MaterialTheme.colorScheme.secondary,
-            0.4f
+            NOTES_BLEND_FRACTION
         )
-    inline val altForegroundColor: Color
+    val altForegroundColor: Color
         @Composable
         get() = MaterialTheme.colorScheme.onSurfaceVariant.blend(
             MaterialTheme.colorScheme.secondary,
-            0.5f
-        ).copy(alpha = 0.85f)
+            ALT_FOREGROUND_BLEND_FRACTION
+        ).copy(alpha = ALT_FOREGROUND_ALPHA)
 
-    inline val errorColor: Color
+    val errorColor: Color
         @Composable
-        get() = Color(230, 67, 83).harmonizeWithPrimary()
+        get() = Color(ERROR_COLOR_RED, ERROR_COLOR_GREEN, ERROR_COLOR_BLUE).harmonizeWithPrimary()
 
-    inline val highlightColor: Color
+    val highlightColor: Color
         @Composable
         get() = MaterialTheme.colorScheme.secondary
 
-    inline val thickLineColor: Color
+    val thickLineColor: Color
         @Composable
-        get() = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.55f)
+        get() = MaterialTheme.colorScheme.onSurfaceVariant.copy(THICK_LINE_ALPHA)
 
-    inline val thinLineColor: Color
+    val thinLineColor: Color
         @Composable
-        get() = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.25f)
+        get() = MaterialTheme.colorScheme.onSurfaceVariant.copy(THIN_LINE_ALPHA)
 }
 
 interface SudokuBoardColors {
@@ -54,12 +64,30 @@ interface SudokuBoardColors {
     val thinLineColor: Color
 }
 
+/** The colors used to draw sudoku cells: digits, notes, and error/highlight tints. */
+data class BoardCellColors(
+    val foregroundColor: Color = Color.White,
+    val notesColor: Color = Color.White,
+    val altForegroundColor: Color = Color.White,
+    val errorColor: Color = Color.White,
+    val highlightColor: Color = Color.White
+)
+
+/** The colors used to draw the sudoku grid lines. */
+data class BoardLineColors(
+    val thickLineColor: Color = Color.White,
+    val thinLineColor: Color = Color.White
+)
+
 class SudokuBoardColorsImpl(
-    override val foregroundColor: Color = Color.White,
-    override val notesColor: Color = Color.White,
-    override val altForegroundColor: Color = Color.White,
-    override val errorColor: Color = Color.White,
-    override val highlightColor: Color = Color.White,
-    override val thickLineColor: Color = Color.White,
-    override val thinLineColor: Color = Color.White,
-) : SudokuBoardColors
+    cellColors: BoardCellColors = BoardCellColors(),
+    lineColors: BoardLineColors = BoardLineColors()
+) : SudokuBoardColors {
+    override val foregroundColor: Color = cellColors.foregroundColor
+    override val notesColor: Color = cellColors.notesColor
+    override val altForegroundColor: Color = cellColors.altForegroundColor
+    override val errorColor: Color = cellColors.errorColor
+    override val highlightColor: Color = cellColors.highlightColor
+    override val thickLineColor: Color = lineColors.thickLineColor
+    override val thinLineColor: Color = lineColors.thinLineColor
+}

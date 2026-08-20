@@ -5,8 +5,14 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.devtools.ksp")
-    // aboutlibraries isn't in the shared catalog (single-repo use).
-    id("com.mikepenz.aboutlibraries.plugin") version "10.6.1"
+    // aboutlibraries isn't in the shared catalog (single-repo use). 10.6.1's
+    // AboutLibrariesCollectorTask calls Task.project at execution time, which
+    // the configuration cache rejects outright - fixed in v13's plugin split
+    // (core manual-task plugin + this .android plugin for the automatic
+    // Android build hook this app relies on to generate the runtime resource
+    // LibrariesContainer reads).
+    id("com.mikepenz.aboutlibraries.plugin") version "13.2.1"
+    id("com.mikepenz.aboutlibraries.plugin.android") version "13.2.1"
     id("com.google.dagger.hilt.android")
     alias(libs.plugins.kotlin.compose)
     id("com.batodev.releasetools")
@@ -94,8 +100,10 @@ android {
 }
 
 aboutLibraries {
-    // Remove the "generated" timestamp to allow for reproducible builds
-    excludeFields = arrayOf("generated")
+    export {
+        // Remove the "generated" timestamp to allow for reproducible builds
+        excludeFields.addAll("generated")
+    }
 }
 
 detekt {
@@ -109,17 +117,22 @@ dependencies {
     // Behind the shared catalog's versions - still sourced from it, strictly
     // pinned to this repo's own values rather than bumped as a side effect.
     implementation(libs.androidx.core.ktx) { version { strictly("1.16.0") } }
-    implementation(libs.androidx.lifecycle.runtime.ktx) { version { strictly("2.8.7") } }
+    // Bumped from 2.8.7 - the Compose 1.10.0 bump below now transitively
+    // requires lifecycle-runtime-ktx 2.9.4 from several dependency paths.
+    implementation(libs.androidx.lifecycle.runtime.ktx) { version { strictly("2.9.4") } }
     implementation(libs.sudoku.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.activity.compose) { version { strictly("1.10.1") } }
-    implementation(libs.androidx.compose.ui) { version { strictly("1.7.8") } }
+    // Bumped from 1.7.8 - com.mikepenz:aboutlibraries-compose:13.2.1 (below)
+    // transitively requires androidx.compose.ui ~1.10.0, incompatible with the
+    // old strict pin.
+    implementation(libs.androidx.compose.ui) { version { strictly("1.10.0") } }
     implementation(libs.sudoku.androidx.compose.ui.util)
-    implementation(libs.androidx.compose.ui.graphics) { version { strictly("1.7.8") } }
-    implementation(libs.androidx.compose.ui.tooling.preview) { version { strictly("1.7.8") } }
+    implementation(libs.androidx.compose.ui.graphics) { version { strictly("1.10.0") } }
+    implementation(libs.androidx.compose.ui.tooling.preview) { version { strictly("1.10.0") } }
     implementation(libs.androidx.compose.material3) { version { strictly("1.3.2") } }
     implementation(libs.androidx.compose.material.icons.extended)
-    debugImplementation(libs.androidx.compose.ui.tooling) { version { strictly("1.7.8") } }
-    debugImplementation(libs.androidx.compose.ui.test.manifest) { version { strictly("1.7.8") } }
+    debugImplementation(libs.androidx.compose.ui.tooling) { version { strictly("1.10.0") } }
+    debugImplementation(libs.androidx.compose.ui.test.manifest) { version { strictly("1.10.0") } }
 
     implementation(libs.androidx.navigation.compose) { version { strictly("2.8.9") } }
 
@@ -142,7 +155,12 @@ dependencies {
     implementation(libs.acra.dialog)
     implementation(libs.acra.mail)
 
-    implementation(libs.mikepenz.aboutlibraries.compose)
+    // -m3 (not the base -compose artifact): 13.x moved LibrariesContainer out
+    // of the base module into the Material3-specific one - this app's UI is
+    // all Material3. Kept in lockstep with the plugin version pinned above
+    // rather than the shared catalog's 10.6.1 (which other repos still
+    // depend on unchanged).
+    implementation(libs.mikepenz.aboutlibraries.compose.m3) { version { strictly("13.2.1") } }
 
     implementation (libs.bumptech.glide.compose)
     implementation (libs.play.services.ads) { version { strictly("24.2.0") } }

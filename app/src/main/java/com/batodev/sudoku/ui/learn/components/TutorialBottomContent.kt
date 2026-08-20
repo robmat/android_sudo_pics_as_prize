@@ -22,7 +22,46 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.batodev.sudoku.LocalBoardColors
 import com.batodev.sudoku.R
+import com.batodev.sudoku.core.Cell
+import com.batodev.sudoku.ui.components.board.Board
+import com.batodev.sudoku.ui.components.board.BoardData
+import com.batodev.sudoku.ui.components.board.BoardInteraction
+import com.batodev.sudoku.ui.components.board.BoardStyle
+
+/**
+ * The board + step navigation section shared by every step-by-step sudoku tutorial screen
+ * (see the `LearnBasic`/`LearnHiddenPairs`/`LearnNakedPairs` screens): a [Board] highlighting the
+ * cells relevant to the current [step], followed by [TutorialBottomContent] for navigating steps.
+ */
+@Composable
+fun TutorialBoardStepContent(
+    data: TutorialStepData,
+    step: Int,
+    onStepChange: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.padding(horizontal = 12.dp)
+    ) {
+        Board(
+            data = BoardData(board = data.board, notes = data.notes),
+            interaction = BoardInteraction(
+                selectedCell = Cell(-1, -1),
+                onClick = { },
+                cellsToHighlight = if (step < data.stepsCell.size) data.stepsCell[step] else null
+            ),
+            style = BoardStyle(boardColors = LocalBoardColors.current)
+        )
+        TutorialBottomContent(
+            steps = data.steps,
+            step = step,
+            onPreviousClick = { if (step > 0) onStepChange(step - 1) },
+            onNextClick = { if (step < (data.steps.size - 1)) onStepChange(step + 1) }
+        )
+    }
+}
 
 @Composable
 @OptIn(ExperimentalAnimationApi::class)

@@ -29,7 +29,11 @@ import com.batodev.sudoku.core.Cell
 import com.batodev.sudoku.core.qqwing.GameType
 import com.batodev.sudoku.core.utils.SudokuParser
 import com.batodev.sudoku.data.datastore.AppSettingsManager
+import com.batodev.sudoku.data.datastore.setFirstLaunch
 import com.batodev.sudoku.ui.components.board.Board
+import com.batodev.sudoku.ui.components.board.BoardData
+import com.batodev.sudoku.ui.components.board.BoardInteraction
+import com.batodev.sudoku.ui.components.board.BoardStyle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -92,11 +96,12 @@ fun FirstPage(
             Text(stringResource(R.string.intro_what_is_sudoku))
             Text(stringResource(R.string.intro_rules))
             Board(
-                board = board,
-                size = 9,
-                selectedCell = selectedCell,
-                onClick = { cell -> selectedCellChanged(cell) },
-                boardColors = LocalBoardColors.current
+                data = BoardData(board = board, size = 9),
+                interaction = BoardInteraction(
+                    selectedCell = selectedCell,
+                    onClick = { cell -> selectedCellChanged(cell) }
+                ),
+                style = BoardStyle(boardColors = LocalBoardColors.current)
             )
             Text(stringResource(R.string.onboard_recommendation_prefs))
             FilledTonalButton(

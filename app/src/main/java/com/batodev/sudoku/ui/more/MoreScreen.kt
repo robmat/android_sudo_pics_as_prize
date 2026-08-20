@@ -20,6 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.batodev.sudoku.R
 import com.batodev.sudoku.ui.components.PreferenceRow
+import com.batodev.sudoku.ui.components.PreferenceRowInfo
+import com.batodev.sudoku.ui.components.PreferenceRowInteractions
 
 @Composable
 fun MoreScreen(
@@ -53,29 +55,39 @@ fun MoreScreen(
         )
 
         PreferenceRow(
-            title = stringResource(R.string.statistics),
-            painter = painterResource(R.drawable.ic_round_info_24),
-            onClick = navigateStatistics
+            info = PreferenceRowInfo(
+                title = stringResource(R.string.statistics),
+                painter = painterResource(R.drawable.ic_round_info_24)
+            ),
+            interactions = PreferenceRowInteractions(onClick = navigateStatistics)
         )
         PreferenceRow(
-            title = stringResource(R.string.settings_title),
-            painter = painterResource(R.drawable.ic_settings_24),
-            onClick = navigateSettings
+            info = PreferenceRowInfo(
+                title = stringResource(R.string.settings_title),
+                painter = painterResource(R.drawable.ic_settings_24)
+            ),
+            interactions = PreferenceRowInteractions(onClick = navigateSettings)
         )
         PreferenceRow(
-            title = stringResource(R.string.title_folders),
-            painter = rememberVectorPainter(Icons.Outlined.Folder),
-            onClick = navigateImport
+            info = PreferenceRowInfo(
+                title = stringResource(R.string.title_folders),
+                painter = rememberVectorPainter(Icons.Outlined.Folder)
+            ),
+            interactions = PreferenceRowInteractions(onClick = navigateImport)
         )
         PreferenceRow(
-            title = stringResource(R.string.learn_screen_title),
-            painter = painterResource(R.drawable.ic_outline_help_outline_24),
-            onClick = navigateLearn
+            info = PreferenceRowInfo(
+                title = stringResource(R.string.learn_screen_title),
+                painter = painterResource(R.drawable.ic_outline_help_outline_24)
+            ),
+            interactions = PreferenceRowInteractions(onClick = navigateLearn)
         )
         PreferenceRow(
-            title = stringResource(R.string.about_title),
-            painter = painterResource(R.drawable.ic_outline_info_24),
-            onClick = navigateAbout
+            info = PreferenceRowInfo(
+                title = stringResource(R.string.about_title),
+                painter = painterResource(R.drawable.ic_outline_info_24)
+            ),
+            interactions = PreferenceRowInteractions(onClick = navigateAbout)
         )
     }
 }

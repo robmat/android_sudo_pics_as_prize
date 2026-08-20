@@ -14,6 +14,7 @@ import com.batodev.sudoku.core.qqwing.QQWingController
 import com.batodev.sudoku.core.utils.SudokuParser
 import com.batodev.sudoku.data.database.model.SudokuBoard
 import com.batodev.sudoku.data.datastore.AppSettingsManager
+import com.batodev.sudoku.data.datastore.setLastSelectedGameDifficultyType
 import com.batodev.sudoku.data.settings.SettingsHelper
 import com.batodev.sudoku.domain.repository.BoardRepository
 import com.batodev.sudoku.domain.repository.SavedGameRepository

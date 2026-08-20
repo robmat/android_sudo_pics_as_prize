@@ -1,16 +1,14 @@
 package com.batodev.sudoku.ui.settings
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
@@ -24,9 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.batodev.sudoku.R
-import com.batodev.sudoku.ui.components.ScrollbarLazyColumn
-import com.batodev.sudoku.ui.util.isScrolledToEnd
-import com.batodev.sudoku.ui.util.isScrolledToStart
+import com.batodev.sudoku.ui.components.EdgeIndicatedLazyColumn
 
 @Composable
 fun SelectionDialog(
@@ -48,28 +44,14 @@ fun SelectionDialog(
         text = {
             Column {
                 selections.forEachIndexed { index, text ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(MaterialTheme.shapes.small)
-                            .clickable {
-                                onSelect(index)
-                                onDismiss()
-                            },
-                        verticalAlignment = CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = selected == index,
-                            onClick = {
-                                onSelect(index)
-                                onDismiss()
-                            }
-                        )
-                        Text(
-                            text = text,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    }
+                    RadioListRow(
+                        selected = selected == index,
+                        text = text,
+                        onClick = {
+                            onSelect(index)
+                            onDismiss()
+                        }
+                    )
                 }
             }
         },
@@ -90,65 +72,62 @@ fun SelectionDialog(
     onSelect: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
-    AlertDialog(
-        title = {
-            Column(Modifier.fillMaxWidth()) {
-                Text(
-                    text = title,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-            }
-        },
-        text = {
-            Box {
-                val lazyListState = rememberLazyListState()
-
-                if (!lazyListState.isScrolledToStart()) Divider(Modifier.align(Alignment.TopCenter))
-                if (!lazyListState.isScrolledToEnd()) Divider(Modifier.align(Alignment.BottomCenter))
-
-                ScrollbarLazyColumn(state = lazyListState) {
-                    items(entries.toList()) { item ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(MaterialTheme.shapes.small)
-                                .clickable {
-                                    onSelect(item.first)
-                                },
-                            verticalAlignment = CenterVertically
-                        ) {
-                            RadioButton(
-                                selected = selected == item.first,
-                                onClick = {
-                                    onSelect(item.first)
-                                }
-                            )
-                            Text(
-                                text = item.second,
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        }
-                    }
-                }
-            }
-        },
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.action_cancel))
-            }
-        }
-    )
+    EntriesListDialog(title = title, onDismiss = onDismiss) {
+        entryRadioItems(entries, selected, onSelect)
+    }
 }
+
+/** The entries and current selection shown by [DateFormatDialog]. */
+data class DateFormatDialogInfo(
+    val title: String,
+    val entries: Map<String, String>,
+    val customDateFormatText: String,
+    val selected: String
+)
 
 @Composable
 fun DateFormatDialog(
-    title: String,
-    entries: Map<String, String>,
-    customDateFormatText: String,
-    selected: String,
+    info: DateFormatDialogInfo,
     onSelect: (String) -> Unit,
     onDismiss: () -> Unit
+) {
+    EntriesListDialog(title = info.title, onDismiss = onDismiss) {
+        entryRadioItems(info.entries, info.selected, onSelect)
+        item {
+            RadioListRow(
+                selected = !info.entries.containsKey(info.selected),
+                text = info.customDateFormatText,
+                onClick = { onSelect("custom") }
+            )
+        }
+    }
+}
+
+/** A [RadioListRow] per [entries] value, shared by [SelectionDialog] and [DateFormatDialog]. */
+private fun LazyListScope.entryRadioItems(
+    entries: Map<String, String>,
+    selected: String,
+    onSelect: (String) -> Unit
+) {
+    items(entries.toList()) { item ->
+        RadioListRow(
+            selected = selected == item.first,
+            text = item.second,
+            onClick = { onSelect(item.first) }
+        )
+    }
+}
+
+/**
+ * The [AlertDialog] shell shared by [SelectionDialog] (the [Map]-based overload) and
+ * [DateFormatDialog]: a title, a scrollable [EdgeIndicatedLazyColumn] of entries, supplied via
+ * [content], and a single cancel button.
+ */
+@Composable
+private fun EntriesListDialog(
+    title: String,
+    onDismiss: () -> Unit,
+    content: LazyListScope.() -> Unit
 ) {
     AlertDialog(
         title = {
@@ -160,59 +139,7 @@ fun DateFormatDialog(
             }
         },
         text = {
-            Box {
-                val lazyListState = rememberLazyListState()
-
-                if (!lazyListState.isScrolledToStart()) Divider(Modifier.align(Alignment.TopCenter))
-                if (!lazyListState.isScrolledToEnd()) Divider(Modifier.align(Alignment.BottomCenter))
-
-                ScrollbarLazyColumn(state = lazyListState) {
-                    items(entries.toList()) { item ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(MaterialTheme.shapes.small)
-                                .clickable {
-                                    onSelect(item.first)
-                                },
-                            verticalAlignment = CenterVertically
-                        ) {
-                            RadioButton(
-                                selected = selected == item.first,
-                                onClick = {
-                                    onSelect(item.first)
-                                }
-                            )
-                            Text(
-                                text = item.second,
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        }
-                    }
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(MaterialTheme.shapes.small)
-                                .clickable {
-                                    onSelect("custom")
-                                },
-                            verticalAlignment = CenterVertically
-                        ) {
-                            RadioButton(
-                                selected = !entries.containsKey(selected),
-                                onClick = {
-                                    onSelect("custom")
-                                }
-                            )
-                            Text(
-                                text = customDateFormatText,
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        }
-                    }
-                }
-            }
+            EdgeIndicatedLazyColumn(content = content)
         },
         onDismissRequest = onDismiss,
         confirmButton = {
@@ -223,14 +150,49 @@ fun DateFormatDialog(
     )
 }
 
+/** A single selectable row: a [RadioButton] followed by [text], used inside selection dialogs. */
+@Composable
+private fun RadioListRow(
+    selected: Boolean,
+    text: String,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.small)
+            .clickable(onClick = onClick),
+        verticalAlignment = CenterVertically
+    ) {
+        RadioButton(
+            selected = selected,
+            onClick = onClick
+        )
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyLarge
+        )
+    }
+}
+
+/** The text field state shown by [SetDateFormatPatternDialog]. */
+data class CustomDateFormatState(
+    val customDateFormat: String,
+    val invalidCustomDateFormat: Boolean,
+    val datePreview: String = ""
+)
+
+/** The callbacks used by [SetDateFormatPatternDialog]. */
+data class CustomDateFormatCallbacks(
+    val onConfirm: () -> Unit,
+    val onDismissRequest: () -> Unit,
+    val onTextValueChange: (String) -> Unit
+)
+
 @Composable
 fun SetDateFormatPatternDialog(
-    onConfirm: () -> Unit,
-    onDismissRequest: () -> Unit,
-    onTextValueChange: (String) -> Unit,
-    customDateFormat: String,
-    invalidCustomDateFormat: Boolean,
-    datePreview: String = ""
+    state: CustomDateFormatState,
+    callbacks: CustomDateFormatCallbacks
 ) {
     AlertDialog(
         title = {
@@ -248,33 +210,33 @@ fun SetDateFormatPatternDialog(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
-                    text = datePreview,
+                    text = state.datePreview,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
                 OutlinedTextField(
-                    value = customDateFormat,
-                    onValueChange = onTextValueChange,
+                    value = state.customDateFormat,
+                    onValueChange = callbacks.onTextValueChange,
                     singleLine = true,
-                    isError = invalidCustomDateFormat,
+                    isError = state.invalidCustomDateFormat,
                     label = {
                         Text(stringResource(R.string.pref_date_format_custom_textfield_label))
                     },
                     keyboardActions = KeyboardActions(
-                        onDone = { onConfirm() }
+                        onDone = { callbacks.onConfirm() }
                     )
                 )
             }
         },
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = callbacks.onDismissRequest,
         confirmButton = {
             TextButton(
-                onClick = { onConfirm() }
+                onClick = { callbacks.onConfirm() }
             ) {
                 Text(stringResource(R.string.action_save))
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismissRequest) {
+            TextButton(onClick = callbacks.onDismissRequest) {
                 Text(stringResource(R.string.action_cancel))
             }
         }

@@ -16,6 +16,29 @@ class GsudokuParser : FileImportParser {
         private const val STANDARD_BOARD_LENGTH = 81
     }
 
+    private fun extractBoardData(parser: XmlPullParser): String? {
+        for (i in 0 until parser.attributeCount) {
+            if (parser.getAttributeName(i) == "data") {
+                return parser.getAttributeValue(i)
+            }
+        }
+        return null
+    }
+
+    private fun isValidBoard(boardString: String): Boolean =
+        boardString.length == STANDARD_BOARD_LENGTH && boardString.all { it.isDigit() }
+
+    private fun processSudokuTag(parser: XmlPullParser, parsedBoards: MutableList<String>): Boolean {
+        val boardString = extractBoardData(parser)
+        val success = boardString == null || isValidBoard(boardString)
+        if (success && boardString != null) {
+            parsedBoards.add(boardString)
+        } else if (!success) {
+            Log.i(tag, "Unexpected line: $boardString")
+        }
+        return success
+    }
+
     /**
      * @param content .1gsudoku file content
      * @return Pair with: First - parsing success. Second - strings of parsed boards
@@ -30,35 +53,26 @@ class GsudokuParser : FileImportParser {
         parser.setInput(input)
 
         var eventType = parser.eventType
+        var success = true
         try {
-            while (eventType != XmlPullParser.END_DOCUMENT) {
+            while (success && eventType != XmlPullParser.END_DOCUMENT) {
                 if (eventType == XmlPullParser.START_TAG && parser.name == "sudoku") {
-                    for (i in 0 until parser.attributeCount) {
-                        if (parser.getAttributeName(i) == "data") {
-                            val boardString = parser.getAttributeValue(i)
-                            val isValidBoard = boardString.length == STANDARD_BOARD_LENGTH &&
-                                boardString.all { char -> char.isDigit() }
-                            if (isValidBoard) {
-                                parsedBoards.add(boardString)
-                            } else {
-                                Log.i(tag, "Unexpected line: $boardString")
-                                return Pair(false, parsedBoards)
-                            }
-                        }
-                    }
+                    success = processSudokuTag(parser, parsedBoards)
                 }
-                eventType = parser.next()
+                if (success) {
+                    eventType = parser.next()
+                }
             }
         } catch (e: XmlPullParserException) {
             Log.e(tag, "Exception while parsing!", e)
-            return Pair(false, parsedBoards)
+            success = false
         } catch (e: IOException) {
             Log.e(tag, "Exception while parsing!", e)
-            return Pair(false, parsedBoards)
+            success = false
         }
 
         input.close()
 
-        return Pair(true, parsedBoards)
+        return Pair(success, parsedBoards)
     }
 }

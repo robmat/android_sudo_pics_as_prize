@@ -9,6 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import com.batodev.sudoku.data.datastore.AppSettingsManagerEntryPoint
+import com.batodev.sudoku.data.datastore.setFirstLaunch
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue

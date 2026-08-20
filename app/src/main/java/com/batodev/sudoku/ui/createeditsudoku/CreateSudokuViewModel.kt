@@ -13,10 +13,14 @@ import com.batodev.sudoku.core.PreferencesConstants
 import com.batodev.sudoku.core.qqwing.GameDifficulty
 import com.batodev.sudoku.core.qqwing.GameType
 import com.batodev.sudoku.core.qqwing.QQWingController
+import com.batodev.sudoku.core.utils.DigitFirstCallbacks
 import com.batodev.sudoku.core.utils.GameState
 import com.batodev.sudoku.core.utils.SudokuParser
 import com.batodev.sudoku.core.utils.SudokuUtils
 import com.batodev.sudoku.core.utils.UndoRedoManager
+import com.batodev.sudoku.core.utils.applyClearedCellBookkeeping
+import com.batodev.sudoku.core.utils.getFontSize
+import com.batodev.sudoku.core.utils.handleDigitFirstBranches
 import com.batodev.sudoku.data.database.model.SudokuBoard
 import com.batodev.sudoku.data.datastore.AppSettingsManager
 import com.batodev.sudoku.data.datastore.ThemeSettingsManager
@@ -31,6 +35,28 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+
+private const val PUZZLE_LENGTH_6X6 = 36
+private const val PUZZLE_LENGTH_9X9 = 81
+private const val PUZZLE_LENGTH_12X12 = 144
+private const val PUZZLE_CHAR_HEX_RADIX = 16
+
+private fun gameTypeForPuzzleLength(length: Int): GameType? = when (length) {
+    PUZZLE_LENGTH_6X6 -> GameType.Default6x6
+    PUZZLE_LENGTH_9X9 -> GameType.Default9x9
+    PUZZLE_LENGTH_12X12 -> GameType.Default12x12
+    else -> null
+}
+
+private fun isValidPuzzleChar(char: Char): Boolean {
+    if (char == '0' || char == '.') return true
+    return try {
+        char.digitToInt(PUZZLE_CHAR_HEX_RADIX)
+        true
+    } catch (_: IllegalArgumentException) {
+        false
+    }
+}
 
 @HiltViewModel
 class CreateSudokuViewModel @Inject constructor(
@@ -105,9 +131,6 @@ class CreateSudokuViewModel @Inject constructor(
     private var overrideInputMethodDF = false
     var digitFirstNumber = -1
 
-    private fun getBoardNoRef(): List<List<Cell>> =
-        gameBoard.map { items -> items.map { item -> item.copy() } }
-
     fun getFontSize(type: GameType = gameType, factor: Int): TextUnit =
         sudokuUtils.getFontSize(type, factor)
 
@@ -121,8 +144,10 @@ class CreateSudokuViewModel @Inject constructor(
 
         return if (currCell.row >= 0 && currCell.col >= 0) {
             if ((inputMethod.value == 1 || overrideInputMethodDF) && digitFirstNumber > 0) {
-                processNumberInput(digitFirstNumber)
-                undoRedoManager.addState(GameState(getBoardNoRef(), emptyList()))
+                gameBoard = setValueCell(
+                    if (gameBoard[currCell.row][currCell.col].value == digitFirstNumber) 0 else digitFirstNumber
+                )
+                undoRedoManager.addState(GameState(copyBoard(gameBoard), emptyList()))
             }
             true
         } else {
@@ -131,29 +156,24 @@ class CreateSudokuViewModel @Inject constructor(
     }
 
     fun processInputKeyboard(number: Int, longTap: Boolean = false) {
-        if (!longTap) {
-            if (inputMethod.value == 0) {
-                overrideInputMethodDF = false
-                digitFirstNumber = 0
-                processNumberInput(number)
-                undoRedoManager.addState(GameState(getBoardNoRef(), emptyList()))
-            } else if (inputMethod.value == 1) {
-                digitFirstNumber = if (digitFirstNumber == number) 0 else number
-                currCell = Cell(-1, -1, digitFirstNumber)
+        if (!longTap && inputMethod.value == 0) {
+            overrideInputMethodDF = false
+            digitFirstNumber = 0
+            if (currCell.row >= 0 && currCell.col >= 0) {
+                gameBoard = setValueCell(if (gameBoard[currCell.row][currCell.col].value == number) 0 else number)
             }
+            undoRedoManager.addState(GameState(copyBoard(gameBoard), emptyList()))
         } else {
-            if (inputMethod.value == 0) {
-                overrideInputMethodDF = true
-                digitFirstNumber = if (digitFirstNumber == number) 0 else number
-                currCell = Cell(-1, -1, digitFirstNumber)
-            }
-        }
-    }
-
-    private fun processNumberInput(number: Int) {
-        if (currCell.row >= 0 && currCell.col >= 0) {
-            gameBoard = setValueCell(
-                if (gameBoard[currCell.row][currCell.col].value == number) 0 else number
+            handleDigitFirstBranches(
+                longTap,
+                inputMethod.value,
+                digitFirstNumber,
+                number,
+                DigitFirstCallbacks(
+                    setOverrideInputMethodDF = { overrideInputMethodDF = true },
+                    setDigitFirstNumber = { digitFirstNumber = it },
+                    setCurrCell = { currCell = it }
+                )
             )
         }
     }
@@ -163,16 +183,12 @@ class CreateSudokuViewModel @Inject constructor(
         row: Int = currCell.row,
         col: Int = currCell.col
     ): List<List<Cell>> {
-        val new = getBoardNoRef()
+        val new = copyBoard(gameBoard)
         new[row][col].value = value
 
-        if (currCell.row == row && currCell.col == col) {
-            currCell = currCell.copy(value = new[row][col].value)
-        }
-
-        if (value == 0) {
-            new[row][col].error = false
-            currCell.error = false
+        val (updatedCurrCell, shouldReturnEarly) = applyClearedCellBookkeeping(currCell, new[row][col], value)
+        currCell = updatedCurrCell
+        if (shouldReturnEarly) {
             return new
         }
 
@@ -193,7 +209,7 @@ class CreateSudokuViewModel @Inject constructor(
             ToolBarItem.Undo -> {
                 if (undoRedoManager.canUndo()) {
                     gameBoard = undoRedoManager.undo().board
-                    checkMistakes()
+                    gameBoard = boardWithMistakesChecked(gameBoard, gameType, sudokuUtils)
                 }
             }
 
@@ -202,7 +218,7 @@ class CreateSudokuViewModel @Inject constructor(
                     undoRedoManager.redo()?.let {
                         gameBoard = it.board
                     }
-                    checkMistakes()
+                    gameBoard = boardWithMistakesChecked(gameBoard, gameType, sudokuUtils)
                 }
             }
 
@@ -211,9 +227,9 @@ class CreateSudokuViewModel @Inject constructor(
                     val prevValue = gameBoard[currCell.row][currCell.col].value
                     gameBoard = setValueCell(0)
                     if (prevValue != 0) {
-                        undoRedoManager.addState(GameState(getBoardNoRef(), emptyList()))
+                        undoRedoManager.addState(GameState(copyBoard(gameBoard), emptyList()))
                     }
-                    checkMistakes()
+                    gameBoard = boardWithMistakesChecked(gameBoard, gameType, sudokuUtils)
                 }
             }
 
@@ -232,41 +248,21 @@ class CreateSudokuViewModel @Inject constructor(
     }
 
     fun setFromString(puzzle: String): Boolean {
+        val gameTypeForPuzzle = gameTypeForPuzzleLength(puzzle.length)
+        if (gameTypeForPuzzle == null || !puzzle.all { isValidPuzzleChar(it) }) {
+            return false
+        }
         val sudokuParser = SudokuParser()
-        if (puzzle.length !in setOf(36, 81, 144)) {
-            return false
-        }
-        if (puzzle.all { char ->
-                if (char != '0' && char != '.') {
-                    try {
-                        char.digitToInt(16)
-                        true
-                    } catch (e: Exception) {
-                        false
-                    }
-                } else {
-                    true
-                }
-            }
-        ) {
-            gameType = when (puzzle.length) {
-                36 -> GameType.Default6x6
-                81 -> GameType.Default9x9
-                144 -> GameType.Default12x12
-                else -> GameType.Default9x9
-            }
-            gameBoard = sudokuParser.parseBoard(
-                board = puzzle,
-                gameType = gameType
-            )
-            return true
-        } else {
-            return false
-        }
+        gameType = gameTypeForPuzzle
+        gameBoard = sudokuParser.parseBoard(
+            board = puzzle,
+            gameType = gameType
+        )
+        return true
     }
 
     fun saveGame(): Boolean {
-        val result = checkGame()
+        val result = solvePuzzle(gameBoard, gameType)
         when (result.second) {
             0 -> noSolutionsDialog = true
             1 -> saveToDb(result.first)
@@ -316,34 +312,41 @@ class CreateSudokuViewModel @Inject constructor(
         }
     }
 
-    private fun checkGame(): Pair<IntArray, Int> {
-        val qqWingController = QQWingController()
-        val solution = qqWingController.solve(
-            gameBoard.flatten().map { cell -> cell.value }.toIntArray(),
-            gameType
-        )
-        return Pair(solution, qqWingController.solutionCount)
-    }
-
     fun changeGameDifficulty(gameDifficulty: GameDifficulty) {
         this.gameDifficulty = gameDifficulty
     }
+}
 
-    private fun checkMistakes() {
-        val new = getBoardNoRef()
-        for (i in new.indices) {
-            for (j in new.indices) {
-                if (new[i][j].value != 0) {
-                    new[i][j].error = !sudokuUtils.isValidCellDynamic(
-                        board = new,
-                        cell = new[i][j],
-                        type = gameType
-                    )
-                }
+private fun copyBoard(board: List<List<Cell>>): List<List<Cell>> =
+    board.map { items -> items.map { item -> item.copy() } }
+
+private fun solvePuzzle(gameBoard: List<List<Cell>>, gameType: GameType): Pair<IntArray, Int> {
+    val qqWingController = QQWingController()
+    val solution = qqWingController.solve(
+        gameBoard.flatten().map { cell -> cell.value }.toIntArray(),
+        gameType
+    )
+    return Pair(solution, qqWingController.solutionCount)
+}
+
+private fun boardWithMistakesChecked(
+    gameBoard: List<List<Cell>>,
+    gameType: GameType,
+    sudokuUtils: SudokuUtils
+): List<List<Cell>> {
+    val new = copyBoard(gameBoard)
+    for (i in new.indices) {
+        for (j in new.indices) {
+            if (new[i][j].value != 0) {
+                new[i][j].error = !sudokuUtils.isValidCellDynamic(
+                    board = new,
+                    cell = new[i][j],
+                    type = gameType
+                )
             }
         }
-        gameBoard = new
     }
+    return new
 }
 
 enum class GameStateFilter(val resName: Int) {

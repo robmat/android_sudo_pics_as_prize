@@ -15,9 +15,8 @@ class FolderRepositoryImpl(
 
     override fun countPuzzlesFolder(uid: Long): Long = folderDao.countPuzzlesFolder(uid)
 
-    override fun getLastSavedGamesAnyFolder(gamesCount: Int): Flow<List<SavedGame>> = folderDao.getLastSavedGamesAnyFolder(
-        gamesCount
-    )
+    override fun getLastSavedGamesAnyFolder(gamesCount: Int): Flow<List<SavedGame>> =
+        folderDao.getLastSavedGamesAnyFolder(gamesCount)
 
     override suspend fun insert(folder: Folder): Long = folderDao.insert(folder)
 

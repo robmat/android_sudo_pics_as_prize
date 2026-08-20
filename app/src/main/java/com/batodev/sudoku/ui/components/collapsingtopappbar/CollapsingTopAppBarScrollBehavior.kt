@@ -14,6 +14,9 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.unit.Velocity
 import kotlin.math.abs
 
+private const val PARTIALLY_COLLAPSED_THRESHOLD = 0.01f
+private const val FLING_ROUNDING_ERROR_TOLERANCE = 0.5f
+
 class CollapsingTopAppBarScrollBehavior(
     val state: CollapsingTopAppBarScrollState,
     val flingAnimationSpec: DecayAnimationSpec<Float>?,
@@ -43,27 +46,30 @@ class CollapsingTopAppBarScrollBehavior(
         ): Offset {
             state.contentOffset += consumed.y
 
+            val result: Offset
             if (available.y < 0f || consumed.y < 0f) {
                 // When scrolling up, just update the state's height offset.
                 val oldHeightOffset = state.heightOffset
                 state.heightOffset = state.heightOffset + consumed.y
-                return Offset(0f, state.heightOffset - oldHeightOffset)
-            }
+                result = Offset(0f, state.heightOffset - oldHeightOffset)
+            } else {
+                if (consumed.y == 0f && available.y > 0) {
+                    // Reset the total content offset to zero when scrolling all the way down.
+                    // This will eliminate some float precision inaccuracies.
+                    state.contentOffset = 0f
+                }
 
-            if (consumed.y == 0f && available.y > 0) {
-                // Reset the total content offset to zero when scrolling all the way down. This
-                // will eliminate some float precision inaccuracies.
-                state.contentOffset = 0f
+                result = if (available.y > 0f) {
+                    // Adjust the height offset in case the consumed delta Y is less than what
+                    // was recorded as available delta Y in the pre-scroll.
+                    val oldHeightOffset = state.heightOffset
+                    state.heightOffset = state.heightOffset + available.y
+                    Offset(0f, state.heightOffset - oldHeightOffset)
+                } else {
+                    Offset.Zero
+                }
             }
-
-            if (available.y > 0f) {
-                // Adjust the height offset in case the consumed delta Y is less than what was
-                // recorded as available delta Y in the pre-scroll.
-                val oldHeightOffset = state.heightOffset
-                state.heightOffset = state.heightOffset + available.y
-                return Offset(0f, state.heightOffset - oldHeightOffset)
-            }
-            return Offset.Zero
+            return result
         }
 
         override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
@@ -71,7 +77,7 @@ class CollapsingTopAppBarScrollBehavior(
             // Check if the app bar is partially collapsed/expanded.
             // Note that we don't check for 0f due to float precision with the collapsedFraction
             // calculation.
-            if (state.collapsedFraction > 0.01f && state.collapsedFraction < 1f) {
+            if (state.collapsedFraction > PARTIALLY_COLLAPSED_THRESHOLD && state.collapsedFraction < 1f) {
                 result += flingTopAppBar(
                     state = state,
                     initialVelocity = available.y,
@@ -106,7 +112,7 @@ private suspend fun flingTopAppBar(
                 lastValue = value
                 remainingVelocity = this.velocity
                 // avoid rounding errors and stop if anything is unconsumed
-                if (abs(delta - consumed) > 0.5f) {
+                if (abs(delta - consumed) > FLING_ROUNDING_ERROR_TOLERANCE) {
                     cancelAnimation()
                 }
             }
