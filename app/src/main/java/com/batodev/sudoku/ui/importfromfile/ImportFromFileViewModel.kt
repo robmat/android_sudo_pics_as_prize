@@ -53,8 +53,8 @@ class ImportFromFileViewModel
 
         var difficultyForImport by mutableStateOf(GameDifficulty.Easy)
 
-        private val _importingError = MutableStateFlow(false)
-        val importError = _importingError.asStateFlow()
+        private val _importError = MutableStateFlow(false)
+        val importError = _importError.asStateFlow()
 
         fun readData(inputStream: InputStreamReader) {
             viewModelScope.launch(Dispatchers.Default) {
@@ -71,17 +71,17 @@ class ImportFromFileViewModel
                             }
                         val result = parser.toBoards(contentText)
                         toImport = result.second
-                        _importingError.emit(!result.first)
+                        _importError.emit(!result.first)
                         isLoading = false
                     }
                 } catch (expectedException: Exception) {
                     Log.e("ImportFromFileViewModel", "Exception while importing file", expectedException)
-                    _importingError.emit(true)
+                    _importError.emit(true)
                 } finally {
                     withContext(Dispatchers.IO) {
                         inputStream.close()
                     }
-                    if (!_importingError.value) {
+                    if (!_importError.value) {
                         _sudokuListToImport.emit(toImport.toList())
                     }
                 }

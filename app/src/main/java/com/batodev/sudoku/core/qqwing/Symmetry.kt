@@ -1,6 +1,7 @@
 package com.batodev.sudoku.core.qqwing
 
 // @formatter:off
+
 /*
  * qqwing - Sudoku solver and generator
  * Copyright (C) 2014 Stephen Ostermiller
@@ -19,6 +20,7 @@ package com.batodev.sudoku.core.qqwing
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+
 // @formatter:on
 enum class Symmetry {
     NONE,

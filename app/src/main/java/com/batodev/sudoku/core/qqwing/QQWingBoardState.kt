@@ -2,7 +2,7 @@ package com.batodev.sudoku.core.qqwing
 
 import java.util.Arrays
 
-/**
+/*
  * Core board state mutation: setting/resetting the puzzle, marking a value
  * into a cell, and checking whether the current state is solved/impossible.
  */

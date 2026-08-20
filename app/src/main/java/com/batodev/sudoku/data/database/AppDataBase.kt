@@ -45,11 +45,11 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun folderDao(): FolderDao
 
     companion object {
-        private var INSTANCE: AppDatabase? = null
+        private var instance: AppDatabase? = null
 
         fun getInstance(context: Context): AppDatabase {
-            if (INSTANCE == null) {
-                INSTANCE =
+            if (instance == null) {
+                instance =
                     Room
                         .databaseBuilder(
                             context,
@@ -58,7 +58,7 @@ abstract class AppDatabase : RoomDatabase() {
                         ).build()
             }
 
-            return INSTANCE as AppDatabase
+            return instance as AppDatabase
         }
     }
 }

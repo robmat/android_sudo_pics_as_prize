@@ -1,6 +1,7 @@
 package com.batodev.sudoku.core.qqwing
 
 // @formatter:off
+
 /*
  * qqwing - Sudoku solver and generator
  * Copyright (C) 2014 Stephen Ostermiller
@@ -19,6 +20,7 @@ package com.batodev.sudoku.core.qqwing
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+
 // @formatter:on
 
 /**
@@ -33,11 +35,9 @@ class LogItem {
      */
     var round = 0
         private set
-    /**
-     * Get the type of this log item.
-     */
 
     /**
+     * Get the type of this log item.
      * The type of log message that will determine the message printed.
      */
     var type: LogType? = null
@@ -47,12 +47,10 @@ class LogItem {
      * Value that was set by the operation (or zero for no value)
      */
     private var value = 0
-    /**
-     * Get the position (0-80) on the board or -1 if no position
-     */
 
     /**
-     * position on the board at which the value (if any) was set.
+     * Get the position (0-80) on the board or -1 if no position.
+     * Position on the board at which the value (if any) was set.
      */
     var position = 0
         private set
