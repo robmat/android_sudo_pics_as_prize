@@ -38,7 +38,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.batodev.sudoku.ui.theme.SudokuTheme
-import com.batodev.sudoku.ui.util.LightDarkPreview
+import com.batodev.sudoku.ui.util.PreviewLightDark
 
 private const val UNSELECTED_BORDER_ALPHA = 0.75f
 private const val TERTIARY_BAR_WIDTH_FRACTION = 0.6f
@@ -225,7 +225,7 @@ fun AppThemePreviewItem(
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun AppThemePreviewItem_Preview() {
     SudokuTheme {

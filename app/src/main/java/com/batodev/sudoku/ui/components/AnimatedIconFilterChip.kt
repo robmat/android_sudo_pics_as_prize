@@ -8,6 +8,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -15,6 +16,7 @@ fun AnimatedIconFilterChip(
     selected: Boolean,
     label: String,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     FilterChip(
         selected = selected,
@@ -30,5 +32,6 @@ fun AnimatedIconFilterChip(
                 )
             }
         },
+        modifier = modifier,
     )
 }

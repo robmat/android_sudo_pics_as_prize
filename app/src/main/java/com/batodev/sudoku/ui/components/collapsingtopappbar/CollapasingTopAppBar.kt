@@ -97,6 +97,10 @@ private fun rememberContainerColor(
     )
 }
 
+// Both Text()s below are separate layoutId'd children measured independently by the enclosing
+// custom Layout (expanded vs. collapsed title, crossfaded by alpha) - they cannot be merged into
+// a single emitter without breaking that measurement. compose-rules' multiple-emitters-check
+// flags this; it does not apply cleanly to raw Layout-based custom layouts like this one.
 @Composable
 private fun CollapsingTitleTexts(
     collapsingTitle: CollapsingTitle,
@@ -134,6 +138,10 @@ private fun CollapsingTitleTexts(
     )
 }
 
+// Each child below carries its own layoutId and is measured/placed independently by the
+// enclosing custom Layout - they are the slots of a multi-slot app bar, not incidental sibling
+// emissions, so they cannot be wrapped into a single emitter. Same structural exception as
+// CollapsingTitleTexts above.
 @Composable
 private fun TopAppBarChildren(
     content: CollapsingTopAppBarContent,
@@ -483,9 +491,9 @@ private fun MeasureScope.measureTopAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CollapsingTopAppBar(
+    modifier: Modifier = Modifier,
     content: CollapsingTopAppBarContent = CollapsingTopAppBarContent(),
     config: CollapsingTopAppBarConfig = CollapsingTopAppBarConfig(),
-    modifier: Modifier = Modifier,
 ) {
     val hasCentralContent = content.centralContent != null
     val collapsedFraction = computeCollapsedFraction(config.scrollBehavior, hasCentralContent)
@@ -526,7 +534,7 @@ fun CollapsingTopAppBar(
         Layout(
             content = { TopAppBarChildren(content, collapsingTitleScale) },
             modifier =
-                modifier
+                Modifier
                     .windowInsetsPadding(config.windowInsets ?: TopAppBarDefaults.windowInsets)
                     .then(Modifier.heightIn(min = MinCollapsedHeight)),
         ) { measurables, constraints ->

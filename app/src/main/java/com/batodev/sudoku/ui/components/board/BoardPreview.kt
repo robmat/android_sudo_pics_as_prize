@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.batodev.sudoku.core.Cell
 import com.batodev.sudoku.ui.theme.SudokuBoardColors
 import com.batodev.sudoku.ui.theme.SudokuTheme
-import com.batodev.sudoku.ui.util.LightDarkPreview
+import com.batodev.sudoku.ui.util.PreviewLightDark
 
 private val TEXT_SIZE_6X6 = 16.sp
 private val TEXT_SIZE_9X9 = 11.sp
@@ -172,7 +172,7 @@ fun BoardPreview(
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun BoardPreviewPreview() {
     SudokuTheme {

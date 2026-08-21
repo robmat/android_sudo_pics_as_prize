@@ -175,6 +175,7 @@ fun SettingsScreen(
     navigateBack: () -> Unit,
     viewModel: SettingsViewModel,
     navigateBoardSettings: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -182,7 +183,7 @@ fun SettingsScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
         modifier =
-            Modifier
+            modifier
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = { SettingsTopBar(navigateBack, scrollBehavior) },
@@ -201,14 +202,74 @@ fun SettingsScreen(
             settingsOtherItems(viewModel, state, scope, snackbarHostState, context)
         }
 
-        SettingsDialogs(viewModel, state, scope, snackbarHostState, context)
+        SettingsDialogs(
+            visibility =
+                SettingsDialogsVisibility(
+                    mistakesDialog = viewModel.mistakesDialog,
+                    darkModeDialog = viewModel.darkModeDialog,
+                    fontSizeDialog = viewModel.fontSizeDialog,
+                    inputMethodDialog = viewModel.inputMethodDialog,
+                    resetStatsDialog = viewModel.resetStatsDialog,
+                    languagePickDialog = viewModel.languagePickDialog,
+                    dateFormatDialog = viewModel.dateFormatDialog,
+                    customFormatDialog = viewModel.customFormatDialog,
+                ),
+            actions =
+                SettingsDialogsActions(
+                    onSelectMistakesHighlight = {
+                        viewModel.updateMistakesHighlight(it)
+                        viewModel.mistakesDialog = false
+                    },
+                    onDismissMistakesDialog = { viewModel.mistakesDialog = false },
+                    onSelectDarkTheme = {
+                        viewModel.updateDarkTheme(it)
+                        viewModel.darkModeDialog = false
+                    },
+                    onDismissDarkModeDialog = { viewModel.darkModeDialog = false },
+                    onSelectFontSize = {
+                        viewModel.updateFontSize(it)
+                        viewModel.fontSizeDialog = false
+                    },
+                    onDismissFontSizeDialog = { viewModel.fontSizeDialog = false },
+                    onSelectInputMethod = {
+                        viewModel.updateInputMethod(it)
+                        viewModel.inputMethodDialog = false
+                    },
+                    onDismissInputMethodDialog = { viewModel.inputMethodDialog = false },
+                    onConfirmResetStats = {
+                        viewModel.deleteAllTables()
+                        viewModel.resetStatsDialog = false
+                    },
+                    onDismissResetStatsDialog = { viewModel.resetStatsDialog = false },
+                    onDismissLanguagePickDialog = { viewModel.languagePickDialog = false },
+                    onSelectDateFormat = { format ->
+                        if (format == "custom") {
+                            viewModel.customFormatDialog = true
+                        } else {
+                            viewModel.updateDateFormat(format)
+                        }
+                        viewModel.dateFormatDialog = false
+                    },
+                    onDismissDateFormatDialog = { viewModel.dateFormatDialog = false },
+                    onCheckCustomDateFormat = viewModel::checkCustomDateFormat,
+                    onConfirmCustomDateFormat = {
+                        viewModel.updateDateFormat(it)
+                        viewModel.customFormatDialog = false
+                    },
+                    onDismissCustomFormatDialog = { viewModel.customFormatDialog = false },
+                ),
+            state = state,
+            scope = scope,
+            snackbarHostState = snackbarHostState,
+            context = context,
+        )
     }
 }
 
 @Composable
 fun SettingsCategory(
-    modifier: Modifier = Modifier,
     title: String,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier =
@@ -245,10 +306,11 @@ private fun isForcedBlackBackground(
 fun AppThemeItem(
     info: AppThemeItemInfo,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier =
-            Modifier
+            modifier
                 .width(115.dp)
                 .padding(start = 8.dp, end = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,

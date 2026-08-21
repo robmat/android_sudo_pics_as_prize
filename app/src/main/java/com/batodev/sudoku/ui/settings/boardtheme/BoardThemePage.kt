@@ -71,10 +71,23 @@ private val PREVIEW_ERROR_CELLS = listOf(ERROR_ROW_1 to ERROR_COL_1)
 fun SettingsBoardTheme(
     viewModel: SettingsBoardThemeViewModel,
     navigateBack: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = rememberTopAppBarScrollBehavior()
+    val positionLines by viewModel.positionLines.collectAsStateWithLifecycle(
+        initialValue = PreferencesConstants.DEFAULT_POSITION_LINES,
+    )
+    val highlightMistakes by viewModel.highlightMistakes.collectAsState(
+        initial = PreferencesConstants.DEFAULT_HIGHLIGHT_MISTAKES,
+    )
+    val boardCrossHighlight by viewModel.crossHighlight.collectAsState(
+        initial = PreferencesConstants.DEFAULT_BOARD_CROSS_HIGHLIGHT,
+    )
+    val monetSudokuBoard by viewModel.monetSudokuBoard.collectAsStateWithLifecycle(
+        PreferencesConstants.DEFAULT_MONET_SUDOKU_BOARD,
+    )
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CollapsingTopAppBar(
                 content =
@@ -94,41 +107,55 @@ fun SettingsBoardTheme(
         },
     ) { paddingValues ->
         BoardThemeSettingsContent(
+            state =
+                BoardThemeSettingsState(
+                    positionLines = positionLines,
+                    highlightMistakes = highlightMistakes,
+                    boardCrossHighlight = boardCrossHighlight,
+                    monetSudokuBoard = monetSudokuBoard,
+                ),
+            actions =
+                BoardThemeSettingsActions(
+                    onUpdateMonetSudokuBoardSetting = viewModel::updateMonetSudokuBoardSetting,
+                    onUpdatePositionLinesSetting = viewModel::updatePositionLinesSetting,
+                    onUpdateBoardCrossHighlight = viewModel::updateBoardCrossHighlight,
+                ),
             modifier =
                 Modifier
                     .padding(paddingValues)
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
-            viewModel = viewModel,
         )
     }
 }
 
+internal data class BoardThemeSettingsState(
+    val positionLines: Boolean,
+    val highlightMistakes: Int,
+    val boardCrossHighlight: Boolean,
+    val monetSudokuBoard: Boolean,
+)
+
+internal data class BoardThemeSettingsActions(
+    val onUpdateMonetSudokuBoardSetting: (Boolean) -> Unit,
+    val onUpdatePositionLinesSetting: (Boolean) -> Unit,
+    val onUpdateBoardCrossHighlight: (Boolean) -> Unit,
+)
+
 @Composable
 private fun BoardThemeSettingsContent(
+    state: BoardThemeSettingsState,
+    actions: BoardThemeSettingsActions,
     modifier: Modifier = Modifier,
-    viewModel: SettingsBoardThemeViewModel,
 ) {
     Column(modifier = modifier) {
-        val positionLines by viewModel.positionLines.collectAsStateWithLifecycle(
-            initialValue = PreferencesConstants.DEFAULT_POSITION_LINES,
-        )
-        val highlightMistakes by viewModel.highlightMistakes.collectAsState(
-            initial = PreferencesConstants.DEFAULT_HIGHLIGHT_MISTAKES,
-        )
-        val boardCrossHighlight by viewModel.crossHighlight.collectAsState(
-            initial = PreferencesConstants.DEFAULT_BOARD_CROSS_HIGHLIGHT,
-        )
         BoardPreviewTheme(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 16.dp),
-            positionLines = positionLines,
-            errosHighlight = highlightMistakes != 0,
-            crossHighlight = boardCrossHighlight,
+            positionLines = state.positionLines,
+            errosHighlight = state.highlightMistakes != 0,
+            crossHighlight = state.boardCrossHighlight,
         )
 
-        val monetSudokuBoard by viewModel.monetSudokuBoard.collectAsStateWithLifecycle(
-            PreferencesConstants.DEFAULT_MONET_SUDOKU_BOARD,
-        )
         PreferenceRowSwitch(
             info =
                 PreferenceRowInfo(
@@ -136,9 +163,9 @@ private fun BoardThemeSettingsContent(
                     subtitle = stringResource(R.string.pref_boardtheme_accent_subtitle),
                     painter = rememberVectorPainter(Icons.Outlined.Palette),
                 ),
-            checked = monetSudokuBoard,
+            checked = state.monetSudokuBoard,
             onClick = {
-                viewModel.updateMonetSudokuBoardSetting(!monetSudokuBoard)
+                actions.onUpdateMonetSudokuBoardSetting(!state.monetSudokuBoard)
             },
         )
 
@@ -149,8 +176,8 @@ private fun BoardThemeSettingsContent(
                     subtitle = stringResource(R.string.pref_position_lines_summ),
                     painter = rememberVectorPainter(Icons.Rounded.GridGoldenratio),
                 ),
-            checked = positionLines,
-            onClick = { viewModel.updatePositionLinesSetting(!positionLines) },
+            checked = state.positionLines,
+            onClick = { actions.onUpdatePositionLinesSetting(!state.positionLines) },
         )
 
         PreferenceRowSwitch(
@@ -160,8 +187,8 @@ private fun BoardThemeSettingsContent(
                     subtitle = stringResource(R.string.pref_cross_highlight_subtitle),
                     painter = rememberVectorPainter(Icons.Rounded.GridOn),
                 ),
-            checked = boardCrossHighlight,
-            onClick = { viewModel.updateBoardCrossHighlight(!boardCrossHighlight) },
+            checked = state.boardCrossHighlight,
+            onClick = { actions.onUpdateBoardCrossHighlight(!state.boardCrossHighlight) },
         )
     }
 }

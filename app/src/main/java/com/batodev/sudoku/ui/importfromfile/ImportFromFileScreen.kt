@@ -1,5 +1,6 @@
 package com.batodev.sudoku.ui.importfromfile
 
+import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -52,6 +53,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -68,6 +70,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batodev.sudoku.LocalBoardColors
 import com.batodev.sudoku.R
+import com.batodev.sudoku.core.qqwing.GameDifficulty
 import com.batodev.sudoku.ui.components.DifficultyDropdownMenu
 import com.batodev.sudoku.ui.components.LazyGridBehavior
 import com.batodev.sudoku.ui.components.LazyGridScrollbarState
@@ -127,9 +130,10 @@ private fun ImportFromFileFab(lazyGridState: LazyGridState) {
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun ImportFromFileDifficultyRow(
-    viewModel: ImportFromFileViewModel,
+    difficultyRes: Int,
     gamesToImport: List<String>,
-    onRequestFolderName: () -> Unit,
+    onChangeDifficulty: (GameDifficulty) -> Unit,
+    onSaveClick: () -> Unit,
 ) {
     Row(
         modifier =
@@ -143,7 +147,7 @@ private fun ImportFromFileDifficultyRow(
                 if (gameTypeMenuExpanded) DROPDOWN_EXPANDED_ROTATION_DEGREES else 0f,
             )
             TextButton(onClick = { gameTypeMenuExpanded = !gameTypeMenuExpanded }) {
-                AnimatedContent(stringResource(viewModel.difficultyForImport.resName)) { text ->
+                AnimatedContent(stringResource(difficultyRes)) { text ->
                     Text(text)
                 }
                 Icon(
@@ -155,18 +159,12 @@ private fun ImportFromFileDifficultyRow(
             DifficultyDropdownMenu(
                 expanded = gameTypeMenuExpanded,
                 onDismissRequest = { gameTypeMenuExpanded = false },
-                onClick = { difficulty -> viewModel.setDifficulty(difficulty) },
+                onClick = onChangeDifficulty,
             )
         }
         FilledTonalButton(
             enabled = gamesToImport.isNotEmpty(),
-            onClick = {
-                if (viewModel.folderUid == -1L) {
-                    onRequestFolderName()
-                } else {
-                    viewModel.saveImported()
-                }
-            },
+            onClick = onSaveClick,
         ) {
             Text(stringResource(R.string.action_save))
         }
@@ -228,10 +226,12 @@ private fun ImportFromFileLoadingDialog() {
 @Composable
 private fun ImportFromFileContent(
     paddingValues: PaddingValues,
-    viewModel: ImportFromFileViewModel,
+    difficultyRes: Int,
+    isLoading: Boolean,
     gamesToImport: List<String>,
     lazyGridState: LazyGridState,
-    onRequestFolderName: () -> Unit,
+    onChangeDifficulty: (GameDifficulty) -> Unit,
+    onSaveClick: () -> Unit,
 ) {
     Column(Modifier.padding(paddingValues)) {
         Column(
@@ -246,11 +246,11 @@ private fun ImportFromFileContent(
                     gamesToImport.size,
                 ),
             )
-            ImportFromFileDifficultyRow(viewModel, gamesToImport, onRequestFolderName)
+            ImportFromFileDifficultyRow(difficultyRes, gamesToImport, onChangeDifficulty, onSaveClick)
         }
         HorizontalDivider()
         ImportFromFileGrid(lazyGridState, gamesToImport)
-        if (viewModel.isLoading) {
+        if (isLoading) {
             ImportFromFileLoadingDialog()
         }
     }
@@ -258,8 +258,8 @@ private fun ImportFromFileContent(
 
 @Composable
 private fun ImportFromFileFolderNameDialog(
-    viewModel: ImportFromFileViewModel,
     onDismiss: () -> Unit,
+    onSaveImport: (String) -> Unit,
 ) {
     var value by remember { mutableStateOf("") }
     var isError by rememberSaveable { mutableStateOf(false) }
@@ -287,7 +287,7 @@ private fun ImportFromFileFolderNameDialog(
             TextButton(
                 onClick = {
                     if (value.isNotEmpty() && value.length < MAX_FOLDER_NAME_LENGTH) {
-                        viewModel.saveImported(value)
+                        onSaveImport(value)
                         onDismiss()
                     } else {
                         isError = true
@@ -309,26 +309,30 @@ private fun ImportFromFileFolderNameDialog(
 
 @Composable
 private fun ImportFromFileEffects(
-    viewModel: ImportFromFileViewModel,
+    fileUri: Uri?,
+    isSaved: Boolean,
+    importError: Boolean,
+    onReadFile: (InputStreamReader) -> Unit,
     navigateBack: () -> Unit,
 ) {
+    val currentNavigateBack by rememberUpdatedState(navigateBack)
+    val currentOnReadFile by rememberUpdatedState(onReadFile)
     val context = LocalContext.current
     val importFromFileFailMessage = stringResource(R.string.import_from_file_fail)
-    LaunchedEffect(viewModel.fileUri) {
-        viewModel.fileUri?.let { fileUri ->
-            val inputStream = context.contentResolver.openInputStream(fileUri)
+    LaunchedEffect(fileUri) {
+        fileUri?.let {
+            val inputStream = context.contentResolver.openInputStream(it)
             inputStream?.let { stream ->
-                viewModel.readData(InputStreamReader(stream))
+                currentOnReadFile(InputStreamReader(stream))
             }
         }
     }
 
-    LaunchedEffect(viewModel.isSaved) {
-        if (viewModel.isSaved) {
-            navigateBack()
+    LaunchedEffect(isSaved) {
+        if (isSaved) {
+            currentNavigateBack()
         }
     }
-    val importError by viewModel.importError.collectAsStateWithLifecycle()
     LaunchedEffect(importError) {
         if (importError) {
             Toast
@@ -337,7 +341,7 @@ private fun ImportFromFileEffects(
                     importFromFileFailMessage,
                     Toast.LENGTH_SHORT,
                 ).show()
-            navigateBack()
+            currentNavigateBack()
         }
     }
 }
@@ -347,32 +351,52 @@ private fun ImportFromFileEffects(
 fun ImportFromFileScreen(
     viewModel: ImportFromFileViewModel,
     navigateBack: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     BackHandler {
         navigateBack()
     }
 
-    ImportFromFileEffects(viewModel, navigateBack)
+    val importError by viewModel.importError.collectAsStateWithLifecycle()
+    ImportFromFileEffects(
+        fileUri = viewModel.fileUri,
+        isSaved = viewModel.isSaved,
+        importError = importError,
+        onReadFile = viewModel::readData,
+        navigateBack = navigateBack,
+    )
 
     val gamesToImport by viewModel.sudokuListToImport.collectAsStateWithLifecycle(emptyList())
     var setFolderNameDialog by rememberSaveable { mutableStateOf(false) }
     val lazyGridState = rememberLazyGridState()
 
     Scaffold(
+        modifier = modifier,
         topBar = { ImportFromFileTopBar(navigateBack) },
         floatingActionButton = { ImportFromFileFab(lazyGridState) },
     ) { paddingValues ->
         ImportFromFileContent(
             paddingValues = paddingValues,
-            viewModel = viewModel,
+            difficultyRes = viewModel.difficultyForImport.resName,
+            isLoading = viewModel.isLoading,
             gamesToImport = gamesToImport,
             lazyGridState = lazyGridState,
-            onRequestFolderName = { setFolderNameDialog = true },
+            onChangeDifficulty = viewModel::setDifficulty,
+            onSaveClick = {
+                if (viewModel.folderUid == -1L) {
+                    setFolderNameDialog = true
+                } else {
+                    viewModel.saveImported()
+                }
+            },
         )
     }
 
     if (setFolderNameDialog) {
-        ImportFromFileFolderNameDialog(viewModel) { setFolderNameDialog = false }
+        ImportFromFileFolderNameDialog(
+            onDismiss = { setFolderNameDialog = false },
+            onSaveImport = { viewModel.saveImported(it) },
+        )
     }
 
     if (viewModel.isSaving) {

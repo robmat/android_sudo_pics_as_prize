@@ -59,45 +59,50 @@ private fun applyMistakeHighlights(board: List<List<Cell>>): List<List<Cell>> {
 }
 
 @Composable
-private fun LearnSudokuMistakesSection(previewBoard: List<List<Cell>>) {
-    var secondSelectedCell by remember { mutableStateOf(Cell(-1, -1, 0)) }
-    Text(stringResource(R.string.sudoku_rules_mistakes))
+private fun LearnSudokuMistakesSection(previewBoard: List<List<Cell>>) =
+    Column {
+        var secondSelectedCell by remember { mutableStateOf(Cell(-1, -1, 0)) }
+        Text(stringResource(R.string.sudoku_rules_mistakes))
 
-    var highlightError by remember { mutableStateOf(false) }
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Checkbox(
-            checked = highlightError,
-            onCheckedChange = { highlightError = !highlightError },
+        var highlightError by remember { mutableStateOf(false) }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Checkbox(
+                checked = highlightError,
+                onCheckedChange = { highlightError = !highlightError },
+            )
+            Text(stringResource(R.string.sudoku_rules_mistakes_highlight))
+        }
+
+        val errorBoard by remember {
+            mutableStateOf(previewBoard.map { cells -> cells.map { cell -> cell.copy() } })
+        }
+        Board(
+            data = BoardData(board = applyMistakeHighlights(errorBoard), size = 9),
+            interaction =
+                BoardInteraction(
+                    selectedCell = secondSelectedCell,
+                    onClick = { secondSelectedCell = it },
+                ),
+            style =
+                BoardStyle(
+                    boardColors = LocalBoardColors.current,
+                    displayOptions = BoardDisplayOptions(errorsHighlight = highlightError),
+                ),
         )
-        Text(stringResource(R.string.sudoku_rules_mistakes_highlight))
+        Text(stringResource(R.string.sudoku_rules_mistakes_explanation))
     }
-
-    val errorBoard by remember {
-        mutableStateOf(previewBoard.map { cells -> cells.map { cell -> cell.copy() } })
-    }
-    Board(
-        data = BoardData(board = applyMistakeHighlights(errorBoard), size = 9),
-        interaction =
-            BoardInteraction(
-                selectedCell = secondSelectedCell,
-                onClick = { secondSelectedCell = it },
-            ),
-        style =
-            BoardStyle(
-                boardColors = LocalBoardColors.current,
-                displayOptions = BoardDisplayOptions(errorsHighlight = highlightError),
-            ),
-    )
-    Text(stringResource(R.string.sudoku_rules_mistakes_explanation))
-}
 
 @Composable
-fun LearnSudokuRules(helpNavController: NavController) {
+fun LearnSudokuRules(
+    helpNavController: NavController,
+    modifier: Modifier = Modifier,
+) {
     TutorialBase(
         title = stringResource(R.string.learn_sudoku_rules),
         helpNavController = helpNavController,
+        modifier = modifier,
     ) {
         Column(
             modifier =

@@ -38,7 +38,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -56,16 +55,19 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 
+@Composable
 fun Modifier.drawHorizontalScrollbar(
     state: ScrollState,
     reverseScrolling: Boolean = false,
 ): Modifier = drawScrollbar(state, Orientation.Horizontal, reverseScrolling)
 
+@Composable
 fun Modifier.drawVerticalScrollbar(
     state: ScrollState,
     reverseScrolling: Boolean = false,
 ): Modifier = drawScrollbar(state, Orientation.Vertical, reverseScrolling)
 
+@Composable
 private fun Modifier.drawScrollbar(
     state: ScrollState,
     orientation: Orientation,
@@ -89,16 +91,19 @@ private fun Modifier.drawScrollbar(
         }
     }
 
+@Composable
 fun Modifier.drawHorizontalScrollbar(
     state: LazyListState,
     reverseScrolling: Boolean = false,
 ): Modifier = drawScrollbar(state, Orientation.Horizontal, reverseScrolling)
 
+@Composable
 fun Modifier.drawVerticalScrollbar(
     state: LazyListState,
     reverseScrolling: Boolean = false,
 ): Modifier = drawScrollbar(state, Orientation.Vertical, reverseScrolling)
 
+@Composable
 private fun Modifier.drawScrollbar(
     state: LazyListState,
     orientation: Orientation,
@@ -134,6 +139,7 @@ private fun Modifier.drawScrollbar(
         }
     }
 
+@Composable
 fun Modifier.drawVerticalScrollbar(
     state: LazyGridState,
     spanCount: Int,
@@ -224,6 +230,7 @@ private fun DrawScope.drawScrollbar(
     )
 }
 
+@Composable
 private fun Modifier.drawScrollbar(
     orientation: Orientation,
     reverseScrolling: Boolean,
@@ -233,57 +240,56 @@ private fun Modifier.drawScrollbar(
         color: Color,
         alpha: () -> Float,
     ) -> Unit,
-): Modifier =
-    composed {
-        val scrolled =
-            remember {
-                MutableSharedFlow<Unit>(
-                    extraBufferCapacity = 1,
-                    onBufferOverflow = BufferOverflow.DROP_OLDEST,
-                )
-            }
-        val nestedScrollConnection =
-            remember(orientation, scrolled) {
-                object : NestedScrollConnection {
-                    override fun onPostScroll(
-                        consumed: Offset,
-                        available: Offset,
-                        source: NestedScrollSource,
-                    ): Offset {
-                        val delta = if (orientation == Orientation.Horizontal) consumed.x else consumed.y
-                        if (delta != 0f) scrolled.tryEmit(Unit)
-                        return Offset.Zero
-                    }
+): Modifier {
+    val scrolled =
+        remember {
+            MutableSharedFlow<Unit>(
+                extraBufferCapacity = 1,
+                onBufferOverflow = BufferOverflow.DROP_OLDEST,
+            )
+        }
+    val nestedScrollConnection =
+        remember(orientation, scrolled) {
+            object : NestedScrollConnection {
+                override fun onPostScroll(
+                    consumed: Offset,
+                    available: Offset,
+                    source: NestedScrollSource,
+                ): Offset {
+                    val delta = if (orientation == Orientation.Horizontal) consumed.x else consumed.y
+                    if (delta != 0f) scrolled.tryEmit(Unit)
+                    return Offset.Zero
                 }
-            }
-
-        val alpha = remember { Animatable(0f) }
-        LaunchedEffect(scrolled, alpha) {
-            scrolled.collectLatest {
-                alpha.snapTo(1f)
-                delay(ViewConfiguration.getScrollDefaultDelay().toLong())
-                alpha.animateTo(0f, animationSpec = FadeOutAnimationSpec)
             }
         }
 
-        val isLtr = LocalLayoutDirection.current == LayoutDirection.Ltr
-        val reverseDirection =
-            if (orientation == Orientation.Horizontal) {
-                if (isLtr) reverseScrolling else !reverseScrolling
-            } else {
-                reverseScrolling
-            }
-        val atEnd = if (orientation == Orientation.Vertical) isLtr else true
-
-        val color = BarColor
-
-        Modifier
-            .nestedScroll(nestedScrollConnection)
-            .drawWithContent {
-                drawContent()
-                onDraw(reverseDirection, atEnd, color, alpha::value)
-            }
+    val alpha = remember { Animatable(0f) }
+    LaunchedEffect(scrolled, alpha) {
+        scrolled.collectLatest {
+            alpha.snapTo(1f)
+            delay(ViewConfiguration.getScrollDefaultDelay().toLong())
+            alpha.animateTo(0f, animationSpec = FadeOutAnimationSpec)
+        }
     }
+
+    val isLtr = LocalLayoutDirection.current == LayoutDirection.Ltr
+    val reverseDirection =
+        if (orientation == Orientation.Horizontal) {
+            if (isLtr) reverseScrolling else !reverseScrolling
+        } else {
+            reverseScrolling
+        }
+    val atEnd = if (orientation == Orientation.Vertical) isLtr else true
+
+    val color = BarColor
+
+    return Modifier
+        .nestedScroll(nestedScrollConnection)
+        .drawWithContent {
+            drawContent()
+            onDraw(reverseDirection, atEnd, color, alpha::value)
+        }
+}
 
 private const val BAR_COLOR_ALPHA = 0.5f
 

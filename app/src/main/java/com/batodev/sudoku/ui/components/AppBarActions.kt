@@ -40,9 +40,12 @@ fun BackIconButton(
  * a `closeMenu` callback that dismisses the menu, for use in each item's `onClick`.
  */
 @Composable
-fun OverflowMenuButton(menuItems: @Composable ColumnScope.(closeMenu: () -> Unit) -> Unit) {
+fun OverflowMenuButton(
+    modifier: Modifier = Modifier,
+    menuItems: @Composable ColumnScope.(closeMenu: () -> Unit) -> Unit,
+) {
     var showMenu by remember { mutableStateOf(false) }
-    Box {
+    Box(modifier = modifier) {
         IconButton(onClick = { showMenu = !showMenu }) {
             Icon(
                 Icons.Default.MoreVert,

@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.batodev.sudoku.ui.theme.SudokuTheme
-import com.batodev.sudoku.ui.util.LightDarkPreview
+import com.batodev.sudoku.ui.util.PreviewLightDark
 
 @Composable
 fun EmptyScreen(
@@ -55,7 +55,7 @@ fun EmptyScreen(
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun EmptyScreenPreview() {
     SudokuTheme {

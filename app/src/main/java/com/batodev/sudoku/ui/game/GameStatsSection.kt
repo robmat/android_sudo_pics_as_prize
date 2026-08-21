@@ -56,7 +56,7 @@ private fun ColumnScope.AfterGameStatsTitle(info: AfterGameStatsInfo) {
 private fun AfterGameTimeSection(
     timeText: String,
     records: List<Record>,
-) {
+) = Column {
     Text(
         text = stringResource(R.string.time),
         style = MaterialTheme.typography.titleMedium,

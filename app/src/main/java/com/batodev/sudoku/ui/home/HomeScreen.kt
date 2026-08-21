@@ -37,7 +37,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,12 +48,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.batodev.sudoku.LocalBoardColors
 import com.batodev.sudoku.R
 import com.batodev.sudoku.data.database.model.SavedGame
-import com.batodev.sudoku.ui.theme.SudokuBoardColorsImpl
 import kotlinx.coroutines.runBlocking
-
-val LocalBoardColors = staticCompositionLocalOf { SudokuBoardColorsImpl() }
 
 @Composable
 private fun HomeAdBanner() {
@@ -98,41 +95,40 @@ private fun HomeAdBanner() {
 
 @Composable
 private fun HomePlayControls(
-    viewModel: HomeViewModel,
+    selectedDifficultyRes: Int,
+    selectedTypeRes: Int,
     lastGame: SavedGame?,
-    navigatePlayGame: (Pair<Long, Boolean>) -> Unit,
+    onChangeDifficulty: (Int) -> Unit,
+    onChangeType: (Int) -> Unit,
+    onContinueClick: () -> Unit,
     onRequestContinueGameDialog: () -> Unit,
+    onStartNewGame: () -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         HorizontalPicker(
-            text = stringResource(viewModel.selectedDifficulty.resName),
-            onLeftClick = { viewModel.changeDifficulty(-1) },
-            onRightClick = { viewModel.changeDifficulty(1) },
+            text = stringResource(selectedDifficultyRes),
+            onLeftClick = { onChangeDifficulty(-1) },
+            onRightClick = { onChangeDifficulty(1) },
         )
         HorizontalPicker(
-            text = stringResource(viewModel.selectedType.resName),
-            onLeftClick = { viewModel.changeType(-1) },
-            onRightClick = { viewModel.changeType(1) },
+            text = stringResource(selectedTypeRes),
+            onLeftClick = { onChangeType(-1) },
+            onRightClick = { onChangeType(1) },
         )
 
         Spacer(Modifier.height(12.dp))
 
         if (lastGame != null && !lastGame.completed) {
-            Button(onClick = {
-                navigatePlayGame(Pair(lastGame.uid, true))
-            }) {
+            Button(onClick = onContinueClick) {
                 Text(stringResource(R.string.action_continue))
             }
             FilledTonalButton(onClick = onRequestContinueGameDialog) {
                 Text(stringResource(R.string.action_play))
             }
         } else {
-            Button(onClick = {
-                viewModel.giveUpLastGame()
-                viewModel.startGame()
-            }) {
+            Button(onClick = onStartNewGame) {
                 Text(stringResource(R.string.action_play))
             }
         }
@@ -141,18 +137,14 @@ private fun HomePlayControls(
 
 @Composable
 private fun HomeContinueGameDialog(
-    viewModel: HomeViewModel,
     onDismiss: () -> Unit,
+    onConfirmNewGame: () -> Unit,
 ) {
     AlertDialog(
         title = { Text(stringResource(R.string.dialog_new_game)) },
         text = { Text(stringResource(R.string.dialog_new_game_text)) },
         confirmButton = {
-            TextButton(onClick = {
-                onDismiss()
-                viewModel.giveUpLastGame()
-                viewModel.startGame()
-            }) {
+            TextButton(onClick = onConfirmNewGame) {
                 Text(stringResource(R.string.dialog_new_game_positive))
             }
         },
@@ -169,9 +161,10 @@ private fun HomeContinueGameDialog(
 fun HomeScreen(
     navigatePlayGame: (Pair<Long, Boolean>) -> Unit,
     viewModel: HomeViewModel,
+    modifier: Modifier = Modifier,
 ) {
     var continueGameDialog by rememberSaveable { mutableStateOf(false) }
-    Box {
+    Box(modifier = modifier) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -195,10 +188,19 @@ fun HomeScreen(
             )
             HomeAdBanner()
             HomePlayControls(
-                viewModel = viewModel,
+                selectedDifficultyRes = viewModel.selectedDifficulty.resName,
+                selectedTypeRes = viewModel.selectedType.resName,
                 lastGame = lastGame,
-                navigatePlayGame = navigatePlayGame,
+                onChangeDifficulty = viewModel::changeDifficulty,
+                onChangeType = viewModel::changeType,
+                onContinueClick = {
+                    lastGame?.let { navigatePlayGame(Pair(it.uid, true)) }
+                },
                 onRequestContinueGameDialog = { continueGameDialog = true },
+                onStartNewGame = {
+                    viewModel.giveUpLastGame()
+                    viewModel.startGame()
+                },
             )
         }
 
@@ -215,7 +217,14 @@ fun HomeScreen(
         }
 
         if (continueGameDialog) {
-            HomeContinueGameDialog(viewModel) { continueGameDialog = false }
+            HomeContinueGameDialog(
+                onDismiss = { continueGameDialog = false },
+                onConfirmNewGame = {
+                    continueGameDialog = false
+                    viewModel.giveUpLastGame()
+                    viewModel.startGame()
+                },
+            )
         }
 
         LaunchedEffect(
@@ -264,10 +273,10 @@ fun GeneratingDialog(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HorizontalPicker(
-    modifier: Modifier = Modifier,
     text: String,
     onLeftClick: () -> Unit,
     onRightClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier =

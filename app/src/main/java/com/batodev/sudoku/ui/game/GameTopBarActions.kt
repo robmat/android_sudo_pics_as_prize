@@ -20,27 +20,26 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.batodev.sudoku.R
-import com.batodev.sudoku.core.Cell
-import com.batodev.sudoku.core.PreferencesConstants
 
 internal const val ROTATE_ICON_FULL_DEGREES = 360f
 
 @Composable
-internal fun ShowSolutionAction(viewModel: GameViewModel) {
-    val reachedMistakesLimitOrGaveUp =
-        viewModel.mistakesCount >= PreferencesConstants.MISTAKES_LIMIT ||
-            viewModel.giveUp
+internal fun ShowSolutionAction(
+    visible: Boolean,
+    showSolution: Boolean,
+    onToggleShowSolution: () -> Unit,
+) {
     AnimatedVisibility(
-        visible = viewModel.endGame && reachedMistakesLimitOrGaveUp,
+        visible = visible,
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             FilledTonalButton(
-                onClick = { viewModel.showSolution = !viewModel.showSolution },
+                onClick = onToggleShowSolution,
             ) {
                 AnimatedContent(
-                    if (viewModel.showSolution) {
+                    if (showSolution) {
                         stringResource(R.string.action_show_mine_sudoku)
                     } else {
                         stringResource(R.string.action_show_solution)
@@ -55,21 +54,22 @@ internal fun ShowSolutionAction(viewModel: GameViewModel) {
 }
 
 @Composable
-internal fun PlayPauseAction(viewModel: GameViewModel) {
-    AnimatedVisibility(visible = !viewModel.endGame) {
+internal fun PlayPauseAction(
+    visible: Boolean,
+    gamePlaying: Boolean,
+    onPlayPauseToggle: () -> Unit,
+) {
+    AnimatedVisibility(visible = visible) {
         val rotationAngle by animateFloatAsState(
-            targetValue = if (viewModel.gamePlaying) 0f else ROTATE_ICON_FULL_DEGREES,
+            targetValue = if (gamePlaying) 0f else ROTATE_ICON_FULL_DEGREES,
             label = "this_label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning",
         )
-        IconButton(onClick = {
-            if (!viewModel.gamePlaying) viewModel.startTimer() else viewModel.pauseTimer()
-            viewModel.currCell = Cell(-1, -1, 0)
-        }) {
+        IconButton(onClick = onPlayPauseToggle) {
             Icon(
                 modifier = Modifier.rotate(rotationAngle),
                 painter =
                     painterResource(
-                        if (viewModel.gamePlaying) {
+                        if (gamePlaying) {
                             R.drawable.ic_round_pause_24
                         } else {
                             R.drawable.ic_round_play_24
@@ -83,12 +83,13 @@ internal fun PlayPauseAction(viewModel: GameViewModel) {
 
 @Composable
 internal fun RestartAction(
-    viewModel: GameViewModel,
+    visible: Boolean,
     restartButtonAnimation: Float,
+    onRestartClick: () -> Unit,
 ) {
-    AnimatedVisibility(visible = !viewModel.endGame) {
+    AnimatedVisibility(visible = visible) {
         IconButton(
-            onClick = { viewModel.restartDialog = true },
+            onClick = onRestartClick,
             modifier = Modifier.testTag("game_restart"),
         ) {
             Icon(
@@ -102,28 +103,26 @@ internal fun RestartAction(
 
 @Composable
 internal fun GameMenuAction(
-    viewModel: GameViewModel,
-    navigateSettings: () -> Unit,
+    visible: Boolean,
+    showMenu: Boolean,
+    onToggleMenu: () -> Unit,
+    onDismissMenu: () -> Unit,
+    onGiveUpClick: () -> Unit,
+    onSettingsClick: () -> Unit,
 ) {
-    AnimatedVisibility(visible = !viewModel.endGame) {
+    AnimatedVisibility(visible = visible) {
         Box {
-            IconButton(onClick = { viewModel.showMenu = !viewModel.showMenu }) {
+            IconButton(onClick = onToggleMenu) {
                 Icon(
                     Icons.Default.MoreVert,
                     contentDescription = null,
                 )
             }
             GameMenu(
-                expanded = viewModel.showMenu,
-                onDismiss = { viewModel.showMenu = false },
-                onGiveUpClick = {
-                    viewModel.pauseTimer()
-                    viewModel.giveUpDialog = true
-                },
-                onSettingsClick = {
-                    navigateSettings()
-                    viewModel.showMenu = false
-                },
+                expanded = showMenu,
+                onDismiss = onDismissMenu,
+                onGiveUpClick = onGiveUpClick,
+                onSettingsClick = onSettingsClick,
             )
         }
     }

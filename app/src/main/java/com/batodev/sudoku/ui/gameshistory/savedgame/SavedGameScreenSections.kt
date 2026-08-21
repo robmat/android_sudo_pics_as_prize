@@ -25,9 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -39,11 +37,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batodev.sudoku.LocalBoardColors
 import com.batodev.sudoku.R
 import com.batodev.sudoku.core.Cell
-import com.batodev.sudoku.core.PreferencesConstants
+import com.batodev.sudoku.core.Note
 import com.batodev.sudoku.ui.components.BackIconButton
 import com.batodev.sudoku.ui.components.OverflowMenuButton
 import com.batodev.sudoku.ui.components.PagerTab
@@ -64,11 +61,12 @@ private const val BOARD_SCALE_ANIMATION_DURATION_MS = 300
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SavedGameTopBar(
-    viewModel: SavedGameViewModel,
+    boardUid: Long?,
     navigateBack: () -> Unit,
+    onExportClick: () -> Unit,
 ) {
     TopAppBar(
-        title = { Text(stringResource(R.string.game_id, viewModel.boardUid ?: -1)) },
+        title = { Text(stringResource(R.string.game_id, boardUid ?: -1)) },
         navigationIcon = {
             BackIconButton(onClick = navigateBack)
         },
@@ -79,7 +77,7 @@ internal fun SavedGameTopBar(
                         Text(stringResource(R.string.export_string_title))
                     },
                     onClick = {
-                        viewModel.exportDialog = true
+                        onExportClick()
                         closeMenu()
                     },
                 )
@@ -88,13 +86,21 @@ internal fun SavedGameTopBar(
     )
 }
 
+internal data class SavedGameBoardState(
+    val parsedCurrentBoard: List<List<Cell>>,
+    val parsedInitialBoard: List<List<Cell>>,
+    val notes: List<Note>,
+    val crossHighlight: Boolean,
+    val fontSizeValue: TextUnit,
+)
+
 @Composable
 internal fun SavedGameContent(
-    viewModel: SavedGameViewModel,
+    boardState: SavedGameBoardState,
+    detailsState: SavedGameDetailsState,
+    detailsActions: SavedGameDetailsActions,
     innerPadding: PaddingValues,
     dateTimeFormatter: DateTimeFormatter,
-    navigateToFolder: (Long) -> Unit,
-    navigatePlayGame: (Long) -> Unit,
 ) {
     Column(
         modifier =
@@ -102,43 +108,30 @@ internal fun SavedGameContent(
                 .padding(innerPadding)
                 .fillMaxWidth(),
     ) {
-        SavedGameBoardPager(viewModel)
-        SavedGameDetails(viewModel, dateTimeFormatter, navigateToFolder, navigatePlayGame)
+        SavedGameBoardPager(boardState)
+        SavedGameDetails(detailsState, detailsActions, dateTimeFormatter)
     }
 }
 
 @Composable
-private fun SavedGameBoardPager(viewModel: SavedGameViewModel) {
-    val crossHighlight by viewModel.crossHighlight.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_BOARD_CROSS_HIGHLIGHT,
-    )
-    val fontSizeFactor by viewModel.fontSize.collectAsState(
-        initial = PreferencesConstants.DEFAULT_FONT_SIZE_FACTOR,
-    )
-    val fontSizeValue by remember(fontSizeFactor) {
-        mutableStateOf(
-            viewModel.getFontSize(factor = fontSizeFactor),
-        )
-    }
-
-    val pagerState = rememberPagerState(pageCount = { PAGE_COUNT })
-    SavedGamePagerTabs(pagerState)
-
-    val boardScale = remember { Animatable(BOARD_SCALE_INITIAL) }
-    LaunchedEffect(Unit) {
-        boardScale.animateTo(
-            targetValue = 1f,
-            animationSpec =
-                tween(
-                    durationMillis = BOARD_SCALE_ANIMATION_DURATION_MS,
-                    easing = LinearOutSlowInEasing,
-                ),
-        )
-    }
+private fun SavedGameBoardPager(boardState: SavedGameBoardState) =
     Column {
-        SavedGameBoardsPager(pagerState, viewModel, crossHighlight, fontSizeValue, boardScale.value)
+        val pagerState = rememberPagerState(pageCount = { PAGE_COUNT })
+        SavedGamePagerTabs(pagerState)
+
+        val boardScale = remember { Animatable(BOARD_SCALE_INITIAL) }
+        LaunchedEffect(Unit) {
+            boardScale.animateTo(
+                targetValue = 1f,
+                animationSpec =
+                    tween(
+                        durationMillis = BOARD_SCALE_ANIMATION_DURATION_MS,
+                        easing = LinearOutSlowInEasing,
+                    ),
+            )
+        }
+        SavedGameBoardsPager(pagerState, boardState, boardScale.value)
     }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -182,9 +175,7 @@ private fun SavedGamePagerTabs(pagerState: PagerState) {
 @Composable
 private fun SavedGameBoardsPager(
     pagerState: PagerState,
-    viewModel: SavedGameViewModel,
-    crossHighlight: Boolean,
-    fontSizeValue: TextUnit,
+    boardState: SavedGameBoardState,
     boardScale: Float,
 ) {
     val boardModifier =
@@ -195,8 +186,8 @@ private fun SavedGameBoardsPager(
     val boardStyle =
         BoardStyle(
             boardColors = LocalBoardColors.current,
-            textSizes = BoardTextSizes(mainTextSize = fontSizeValue),
-            displayOptions = BoardDisplayOptions(crossHighlight = crossHighlight),
+            textSizes = BoardTextSizes(mainTextSize = boardState.fontSizeValue),
+            displayOptions = BoardDisplayOptions(crossHighlight = boardState.crossHighlight),
         )
     HorizontalPager(
         state = pagerState,
@@ -207,8 +198,8 @@ private fun SavedGameBoardsPager(
     ) { page ->
         val boardData =
             when (page) {
-                0 -> BoardData(board = viewModel.parsedCurrentBoard, notes = viewModel.notes)
-                else -> BoardData(board = viewModel.parsedInitialBoard)
+                0 -> BoardData(board = boardState.parsedCurrentBoard, notes = boardState.notes)
+                else -> BoardData(board = boardState.parsedInitialBoard)
             }
         Board(
             data = boardData,
@@ -220,35 +211,32 @@ private fun SavedGameBoardsPager(
 }
 
 @Composable
-internal fun SavedGameExportDialogHost(viewModel: SavedGameViewModel) {
-    if (!viewModel.exportDialog) return
+internal fun SavedGameExportDialogHost(
+    exportDialog: Boolean,
+    initialBoard: String?,
+    onDismiss: () -> Unit,
+) {
+    if (!exportDialog || initialBoard == null) return
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
-    viewModel.boardEntity?.let {
-        ExportDialog(
-            onDismiss = { viewModel.exportDialog = false },
-            boardString =
-                it.initialBoard
-                    .replace('0', '.')
-                    .uppercase(),
-            onClickCopy = {
-                clipboardManager.setText(
-                    AnnotatedString(
-                        it.initialBoard
-                            .replace('0', '.')
-                            .uppercase(),
-                    ),
-                )
-                // Android 13 and higher have its own notification when copying
-                if (SDK_INT < 33) {
-                    Toast
-                        .makeText(
-                            context,
-                            R.string.export_string_state_copied,
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                }
-            },
-        )
-    }
+    val boardString =
+        initialBoard
+            .replace('0', '.')
+            .uppercase()
+    ExportDialog(
+        onDismiss = onDismiss,
+        boardString = boardString,
+        onClickCopy = {
+            clipboardManager.setText(AnnotatedString(boardString))
+            // Android 13 and higher have its own notification when copying
+            if (SDK_INT < 33) {
+                Toast
+                    .makeText(
+                        context,
+                        R.string.export_string_state_copied,
+                        Toast.LENGTH_SHORT,
+                    ).show()
+            }
+        },
+    )
 }

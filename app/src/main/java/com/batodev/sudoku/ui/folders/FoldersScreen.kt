@@ -1,6 +1,7 @@
 package com.batodev.sudoku.ui.folders
 
 import android.net.Uri
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -42,6 +43,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -217,11 +219,13 @@ private data class FoldersListActions(
 private fun FoldersFolderList(
     folders: List<Folder>,
     lastGames: List<SavedGame>,
-    viewModel: FoldersViewModel,
+    puzzlesCountInFolder: List<Pair<Long, Int>>,
+    onCountPuzzlesInFolders: (List<Folder>) -> Unit,
     actions: FoldersListActions,
 ) {
+    val currentOnCountPuzzlesInFolders by rememberUpdatedState(onCountPuzzlesInFolders)
     LaunchedEffect(folders) {
-        viewModel.countPuzzlesInFolders(folders)
+        currentOnCountPuzzlesInFolders(folders)
     }
     ScrollbarLazyColumn {
         item {
@@ -230,9 +234,9 @@ private fun FoldersFolderList(
             }
         }
         items(folders) { item ->
-            val puzzlesCount by remember(viewModel.puzzlesCountInFolder) {
+            val puzzlesCount by remember(puzzlesCountInFolder) {
                 mutableIntStateOf(
-                    viewModel.puzzlesCountInFolder
+                    puzzlesCountInFolder
                         .firstOrNull { it.first == item.uid }
                         ?.second ?: 0,
                 )
@@ -254,40 +258,34 @@ private fun FoldersFolderList(
 
 @Composable
 private fun FoldersScreenOverlays(
-    viewModel: FoldersViewModel,
-    launchers: FolderLaunchers,
-    flags: FoldersDialogFlags,
+    dialogsState: FoldersDialogsState,
+    dialogsActions: FoldersDialogsActions,
+    folderActionBottomSheetVisible: Boolean,
+    selectedFolderName: String?,
+    contentUri: Uri?,
     coroutineScope: CoroutineScope,
+    createDocumentLauncher: ManagedActivityResultLauncher<String, Uri?>,
     navigateImportSudokuFile: (String) -> Unit,
+    folderActionSheetActions: FolderActionSheetActions,
 ) {
     FoldersManagementDialogs(
-        viewModel = viewModel,
-        dialogsState =
-            FoldersDialogsState(
-                createFolderDialog = flags.createFolderDialog,
-                renameFolderDialog = flags.renameFolderDialog,
-                deleteFolderDialog = flags.deleteFolderDialog,
-                helpDialog = flags.helpDialog,
-            ),
+        state = dialogsState,
+        actions = dialogsActions,
     )
 
-    LaunchedEffect(launchers.contentUri.value) {
-        launchers.contentUri.value?.let {
-            navigateImportSudokuFile(Uri.encode(it.toString()))
+    val currentNavigateImportSudokuFile by rememberUpdatedState(navigateImportSudokuFile)
+    LaunchedEffect(contentUri) {
+        contentUri?.let {
+            currentNavigateImportSudokuFile(Uri.encode(it.toString()))
         }
     }
 
-    if (flags.folderActionBottomSheet.value) {
+    if (folderActionBottomSheetVisible) {
         FolderActionBottomSheet(
-            viewModel = viewModel,
+            selectedFolderName = selectedFolderName,
             coroutineScope = coroutineScope,
-            sheetState =
-                FolderActionSheetState(
-                    folderActionBottomSheet = flags.folderActionBottomSheet,
-                    renameFolderDialog = flags.renameFolderDialog,
-                    deleteFolderDialog = flags.deleteFolderDialog,
-                ),
-            createDocumentLauncher = launchers.createDocumentLauncher,
+            createDocumentLauncher = createDocumentLauncher,
+            actions = folderActionSheetActions,
         )
     }
 }
@@ -300,6 +298,7 @@ fun FoldersScreen(
     navigateExploreFolder: (Int) -> Unit,
     navigateImportSudokuFile: (String) -> Unit,
     navigateViewSavedGame: (Long) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -308,8 +307,16 @@ fun FoldersScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val gamesToImport by viewModel.sudokuListToImport.collectAsStateWithLifecycle()
+    val createFolderDialog by flags.createFolderDialog
+    val renameFolderDialog by flags.renameFolderDialog
+    val deleteFolderDialog by flags.deleteFolderDialog
+    val helpDialog by flags.helpDialog
+    val folderActionBottomSheet by flags.folderActionBottomSheet
+    val contentUri by launchers.contentUri
+    val selectedFolderName = viewModel.selectedFolder?.name
 
     Scaffold(
+        modifier = modifier,
         topBar = {
             FoldersTopBar(
                 gamesToImportEmpty = gamesToImport.isEmpty(),
@@ -338,7 +345,8 @@ fun FoldersScreen(
                 FoldersFolderList(
                     folders = folders,
                     lastGames = lastGames,
-                    viewModel = viewModel,
+                    puzzlesCountInFolder = viewModel.puzzlesCountInFolder,
+                    onCountPuzzlesInFolders = viewModel::countPuzzlesInFolders,
                     actions =
                         FoldersListActions(
                             navigateExploreFolder = navigateExploreFolder,
@@ -353,7 +361,38 @@ fun FoldersScreen(
         }
     }
 
-    FoldersScreenOverlays(viewModel, launchers, flags, coroutineScope, navigateImportSudokuFile)
+    FoldersScreenOverlays(
+        dialogsState =
+            FoldersDialogsState(
+                createFolderDialog = createFolderDialog,
+                renameFolderDialog = renameFolderDialog,
+                deleteFolderDialog = deleteFolderDialog,
+                helpDialog = helpDialog,
+                selectedFolderName = selectedFolderName,
+            ),
+        dialogsActions =
+            FoldersDialogsActions(
+                onCreateFolder = viewModel::createFolder,
+                onDismissCreateFolderDialog = { flags.createFolderDialog.value = false },
+                onRenameFolder = viewModel::renameFolder,
+                onDismissRenameFolderDialog = { flags.renameFolderDialog.value = false },
+                onDeleteFolder = viewModel::deleteFolder,
+                onDismissDeleteFolderDialog = { flags.deleteFolderDialog.value = false },
+                onDismissHelpDialog = { flags.helpDialog.value = false },
+            ),
+        folderActionBottomSheetVisible = folderActionBottomSheet,
+        selectedFolderName = selectedFolderName,
+        contentUri = contentUri,
+        coroutineScope = coroutineScope,
+        createDocumentLauncher = launchers.createDocumentLauncher,
+        navigateImportSudokuFile = navigateImportSudokuFile,
+        folderActionSheetActions =
+            FolderActionSheetActions(
+                onDismiss = { flags.folderActionBottomSheet.value = false },
+                onRenameClick = { flags.renameFolderDialog.value = true },
+                onDeleteClick = { flags.deleteFolderDialog.value = true },
+            ),
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)

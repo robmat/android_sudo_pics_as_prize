@@ -76,8 +76,10 @@ private fun LearnTabRow(
 fun LearnScreenContent(
     navigateBack: () -> Unit,
     helpNavController: NavController,
+    modifier: Modifier = Modifier,
 ) {
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.learn_screen_title)) },

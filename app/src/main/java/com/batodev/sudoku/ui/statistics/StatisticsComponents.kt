@@ -47,8 +47,10 @@ import java.time.format.DateTimeFormatter
 fun StatisticsTopBar(
     scrollBehavior: TopAppBarScrollBehavior,
     navigateHistory: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     TopAppBar(
+        modifier = modifier,
         title = { Text(stringResource(R.string.statistics)) },
         scrollBehavior = scrollBehavior,
         actions = {
@@ -82,10 +84,10 @@ fun statisticsTypeFilters(): List<Pair<GameType, String>> =
 
 @Composable
 fun ShowDeleteDialog(
-    modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
     onConfirm: () -> Unit,
     index: Int,
+    modifier: Modifier = Modifier,
 ) {
     AlertDialog(
         modifier = modifier,
@@ -117,10 +119,10 @@ fun ShowDeleteDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChipRowType(
-    modifier: Modifier = Modifier,
     types: List<Pair<GameType, String>>,
     selected: GameType,
-    onSelected: (GameType) -> Unit,
+    onSelect: (GameType) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     LazyRow(
         modifier = modifier,
@@ -138,7 +140,7 @@ fun ChipRowType(
             ElevatedFilterChip(
                 modifier = Modifier.padding(horizontal = 2.dp),
                 selected = type.first == selected,
-                onClick = { onSelected(type.first) },
+                onClick = { onSelect(type.first) },
                 label = { Text(type.second) },
                 shape = RoundedCornerShape(16.dp),
                 colors =
@@ -157,7 +159,7 @@ fun ChipRowType(
 fun ChipRowDifficulty(
     items: List<GameDifficulty>,
     selected: GameDifficulty,
-    onSelected: (GameDifficulty) -> Unit,
+    onSelect: (GameDifficulty) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyRow(
@@ -176,7 +178,7 @@ fun ChipRowDifficulty(
             )
             ElevatedFilterChip(
                 selected = selected == item,
-                onClick = { onSelected(item) },
+                onClick = { onSelect(item) },
                 label = {
                     Text(
                         if (item != GameDifficulty.Unspecified) {

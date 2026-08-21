@@ -41,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -65,20 +66,22 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 internal fun ExploreFolderTopBar(
-    viewModel: ExploreFolderViewModel,
+    inSelectionMode: Boolean,
+    selectedCount: Int,
     folder: Folder?,
-    games: Map<SudokuBoard, SavedGame?>,
     navigateBack: () -> Unit,
     dialogState: ExploreFolderDialogState,
+    onCloseSelectionMode: () -> Unit,
+    onSelectAllClick: () -> Unit,
 ) {
-    AnimatedContent(viewModel.inSelectionMode) { inSelectionMode ->
-        if (inSelectionMode) {
+    AnimatedContent(inSelectionMode) { inSelection ->
+        if (inSelection) {
             SelectionTopAppbar(
-                title = { Text(viewModel.selectedBoardsList.size.toString()) },
-                onCloseClick = { viewModel.inSelectionMode = false },
-                onClickMoveSelected = { dialogState.moveSelectedDialog.value = true },
-                onClickDeleteSelected = { dialogState.deleteBoardDialog.value = true },
-                onClickSelectAll = { viewModel.addAllToSelection(games.map { it.key }) },
+                title = { Text(selectedCount.toString()) },
+                onCloseClick = onCloseSelectionMode,
+                onClickMoveSelectedItems = { dialogState.moveSelectedDialog.value = true },
+                onClickDeleteSelectedItems = { dialogState.deleteBoardDialog.value = true },
+                onClickSelectAll = onSelectAllClick,
             )
         } else {
             DefaultTopAppBar(
@@ -119,11 +122,25 @@ internal fun ExploreFolderFab(
     }
 }
 
+/** The values [ExploreFolderGamesList] needs; read once from [ExploreFolderViewModel] by [ExploreFolderScreen]. */
+internal data class ExploreFolderSelectionState(
+    val inSelectionMode: Boolean,
+    val selectedBoardsList: List<SudokuBoard>,
+)
+
+/** The callbacks [ExploreFolderGamesList] needs; constructed once by [ExploreFolderScreen]. */
+internal data class ExploreFolderGamesListActions(
+    val onEnterSelectionMode: (SudokuBoard) -> Unit,
+    val onAddToSelection: (SudokuBoard) -> Unit,
+    val onPrepareSudokuToPlay: (SudokuBoard) -> Unit,
+)
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun ExploreFolderBody(
-    viewModel: ExploreFolderViewModel,
     listState: ExploreFolderListState,
+    selectionState: ExploreFolderSelectionState,
+    gamesListActions: ExploreFolderGamesListActions,
     paddingValues: PaddingValues,
     navigation: ExploreFolderNavigation,
     dialogState: ExploreFolderDialogState,
@@ -131,7 +148,7 @@ internal fun ExploreFolderBody(
     val folder = listState.folder
     Column(Modifier.padding(paddingValues)) {
         if (folder != null && listState.games.isNotEmpty()) {
-            ExploreFolderGamesList(viewModel, listState, navigation, dialogState)
+            ExploreFolderGamesList(listState, selectionState, gamesListActions, navigation, dialogState)
         } else if (folder != null) {
             EmptyScreen(
                 text = stringResource(R.string.folder_empty_label),
@@ -152,16 +169,17 @@ internal fun ExploreFolderBody(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ExploreFolderGamesList(
-    viewModel: ExploreFolderViewModel,
     listState: ExploreFolderListState,
+    selectionState: ExploreFolderSelectionState,
+    actions: ExploreFolderGamesListActions,
     navigation: ExploreFolderNavigation,
     dialogState: ExploreFolderDialogState,
 ) {
     val folder = requireNotNull(listState.folder)
     var expandedGameUid by rememberSaveable { mutableLongStateOf(-1L) }
 
-    LaunchedEffect(viewModel.inSelectionMode) {
-        if (viewModel.inSelectionMode) expandedGameUid = -1L
+    LaunchedEffect(selectionState.inSelectionMode) {
+        if (selectionState.inSelectionMode) expandedGameUid = -1L
     }
 
     ScrollbarLazyColumn(
@@ -186,22 +204,21 @@ private fun ExploreFolderGamesList(
                         savedGame = game.second,
                     ),
                 expanded = expandedGameUid == game.first.uid,
-                selected = viewModel.selectedBoardsList.contains(game.first),
+                selected = selectionState.selectedBoardsList.contains(game.first),
                 actions =
                     GameInFolderActions(
                         onClick = {
-                            if (!viewModel.inSelectionMode) {
+                            if (!selectionState.inSelectionMode) {
                                 expandedGameUid =
                                     if (expandedGameUid != game.first.uid) game.first.uid else -1L
                             } else {
-                                viewModel.addToSelection(game.first)
+                                actions.onAddToSelection(game.first)
                             }
                         },
                         onLongClick = {
-                            viewModel.inSelectionMode = true
-                            viewModel.addToSelection(game.first)
+                            actions.onEnterSelectionMode(game.first)
                         },
-                        onPlayClick = { viewModel.prepareSudokuToPlay(game.first) },
+                        onPlayClick = { actions.onPrepareSudokuToPlay(game.first) },
                         onEditClick = {
                             navigation.navigateEditGame(Pair(game.first.uid, folder.uid))
                         },
@@ -215,38 +232,56 @@ private fun ExploreFolderGamesList(
     }
 }
 
+internal data class ExploreFolderEffectsState(
+    val readyToPlay: Boolean,
+    val gameUidToPlay: Long?,
+    val isPlayedBefore: Boolean,
+    val folder: Folder?,
+    val inSelectionMode: Boolean,
+    val selectedBoardsList: List<SudokuBoard>,
+)
+
+internal data class ExploreFolderEffectsActions(
+    val navigatePlayGame: (Triple<Long, Boolean, Long>) -> Unit,
+    val onReadyToPlayHandled: () -> Unit,
+    val onExitSelectionMode: () -> Unit,
+    val onClearSelection: () -> Unit,
+)
+
 @Composable
 internal fun ExploreFolderEffects(
-    viewModel: ExploreFolderViewModel,
-    folder: Folder?,
-    navigatePlayGame: (Triple<Long, Boolean, Long>) -> Unit,
+    state: ExploreFolderEffectsState,
+    actions: ExploreFolderEffectsActions,
 ) {
-    LaunchedEffect(viewModel.readyToPlay, viewModel.gameUidToPlay) {
-        if (viewModel.readyToPlay) {
-            viewModel.gameUidToPlay?.let {
-                navigatePlayGame(Triple(it, viewModel.isPlayedBefore, folder!!.uid))
-                viewModel.readyToPlay = false
+    val currentActions by rememberUpdatedState(actions)
+    LaunchedEffect(state.readyToPlay, state.gameUidToPlay) {
+        if (state.readyToPlay) {
+            state.gameUidToPlay?.let {
+                currentActions.navigatePlayGame(Triple(it, state.isPlayedBefore, state.folder!!.uid))
+                currentActions.onReadyToPlayHandled()
             }
         }
     }
 
-    LaunchedEffect(viewModel.selectedBoardsList) {
-        if (viewModel.selectedBoardsList.isEmpty()) {
-            viewModel.inSelectionMode = false
+    LaunchedEffect(state.selectedBoardsList) {
+        if (state.selectedBoardsList.isEmpty()) {
+            currentActions.onExitSelectionMode()
         }
     }
 
-    LaunchedEffect(viewModel.inSelectionMode) {
-        if (!viewModel.inSelectionMode) {
-            viewModel.selectedBoardsList = emptyList()
+    LaunchedEffect(state.inSelectionMode) {
+        if (!state.inSelectionMode) {
+            currentActions.onClearSelection()
         }
     }
 }
 
 @Composable
 internal fun ExploreFolderDeleteDialog(
-    viewModel: ExploreFolderViewModel,
+    selectedCount: Int,
     dialogState: ExploreFolderDialogState,
+    onDeleteGame: (SudokuBoard) -> Unit,
+    onDeleteSelectedItems: () -> Unit,
 ) {
     if (!dialogState.deleteBoardDialog.value) return
     val deleteBoardDialogBoard = dialogState.deleteBoardDialogBoard
@@ -258,8 +293,8 @@ internal fun ExploreFolderDeleteDialog(
                 text =
                     pluralStringResource(
                         id = R.plurals.delete_selected_in_folder,
-                        count = if (deleteBoardDialogBoard.value != null) 1 else viewModel.selectedBoardsList.size,
-                        if (deleteBoardDialogBoard.value != null) 1 else viewModel.selectedBoardsList.size,
+                        count = if (deleteBoardDialogBoard.value != null) 1 else selectedCount,
+                        if (deleteBoardDialogBoard.value != null) 1 else selectedCount,
                     ),
             )
         },
@@ -273,11 +308,11 @@ internal fun ExploreFolderDeleteDialog(
             TextButton(onClick = {
                 if (deleteBoardDialogBoard.value != null) {
                     deleteBoardDialogBoard.value?.let { gameToDelete ->
-                        viewModel.deleteGame(gameToDelete)
+                        onDeleteGame(gameToDelete)
                         deleteBoardDialogBoard.value = null
                     }
                 } else {
-                    viewModel.deleteSelected()
+                    onDeleteSelectedItems()
                 }
                 dialogState.deleteBoardDialog.value = false
             }) {
@@ -336,7 +371,7 @@ private data class AddSheetOption(
 @Composable
 private fun ExploreFolderAddSheetItem(
     option: AddSheetOption,
-    onSelected: () -> Unit,
+    onDismiss: () -> Unit,
 ) {
     Row(
         modifier =
@@ -345,7 +380,7 @@ private fun ExploreFolderAddSheetItem(
                 .clip(MaterialTheme.shapes.small)
                 .clickable {
                     option.onSelect()
-                    onSelected()
+                    onDismiss()
                 },
         verticalAlignment = Alignment.CenterVertically,
     ) {

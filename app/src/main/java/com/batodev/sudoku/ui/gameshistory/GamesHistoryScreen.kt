@@ -41,6 +41,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -101,11 +102,21 @@ private fun GamesHistoryTopBar(
     )
 }
 
+/** The sort/filter selections [GamesHistoryList] restarts its filtering effect on. */
+internal data class GamesHistoryListFilterKeys(
+    val sortType: SortType,
+    val sortEntry: SortEntry,
+    val filterDifficulties: List<GameDifficulty>,
+    val filterGameTypes: List<GameType>,
+    val filterByGameState: GameStateFilter,
+)
+
 @Composable
 private fun GamesHistoryList(
     games: Map<SavedGame, SudokuBoard>,
     dateFormat: String,
-    viewModel: HistoryViewModel,
+    filterKeys: GamesHistoryListFilterKeys,
+    onApplySortAndFilter: (List<Pair<SavedGame, SudokuBoard>>) -> List<Pair<SavedGame, SudokuBoard>>,
     navigateSavedGame: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -115,14 +126,15 @@ private fun GamesHistoryList(
             emptyList<Pair<SavedGame, SudokuBoard>>(),
         )
     }
+    val currentOnApplySortAndFilter by rememberUpdatedState(onApplySortAndFilter)
     LaunchedEffect(
-        viewModel.sortType,
-        viewModel.sortEntry,
-        viewModel.filterDifficulties,
-        viewModel.filterGameTypes,
-        viewModel.filterByGameState,
+        filterKeys.sortType,
+        filterKeys.sortEntry,
+        filterKeys.filterDifficulties,
+        filterKeys.filterGameTypes,
+        filterKeys.filterByGameState,
     ) {
-        filteredAndSortedBoards = viewModel.applySortAndFilter(games.toList())
+        filteredAndSortedBoards = currentOnApplySortAndFilter(games.toList())
         lazyListState.animateScrollToItem(0)
     }
 
@@ -162,8 +174,21 @@ private fun GamesHistoryList(
     }
 }
 
+internal data class GamesHistorySortState(
+    val sortType: SortType,
+    val sortEntry: SortEntry,
+)
+
+internal data class GamesHistorySortActions(
+    val onSwitchSortType: () -> Unit,
+    val onSelectSortEntry: (SortEntry) -> Unit,
+)
+
 @Composable
-private fun GamesHistorySortFilterRow(viewModel: HistoryViewModel) {
+private fun GamesHistorySortFilterRow(
+    state: GamesHistorySortState,
+    actions: GamesHistorySortActions,
+) = Column {
     Text(
         text = stringResource(R.string.sort_label),
         color = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -172,27 +197,40 @@ private fun GamesHistorySortFilterRow(viewModel: HistoryViewModel) {
     FilterOptionsRow {
         item {
             FilterChip(
-                selected = viewModel.sortType == SortType.Ascending,
+                selected = state.sortType == SortType.Ascending,
                 label = { Text(stringResource(R.string.sort_ascending)) },
-                onClick = {
-                    viewModel.switchSortType()
-                },
+                onClick = actions.onSwitchSortType,
             )
         }
         items(enumValues<SortEntry>().toList()) {
             FilterChip(
-                selected = it == viewModel.sortEntry,
+                selected = it == state.sortEntry,
                 label = { Text(stringResource(it.resName)) },
                 onClick = {
-                    viewModel.selectSortEntry(it)
+                    actions.onSelectSortEntry(it)
                 },
             )
         }
     }
 }
 
+internal data class GamesHistoryFilterChipsState(
+    val filterDifficulties: List<GameDifficulty>,
+    val filterGameTypes: List<GameType>,
+    val filterByGameState: GameStateFilter,
+)
+
+internal data class GamesHistoryFilterChipsActions(
+    val onSelectDifficultyFilter: (GameDifficulty) -> Unit,
+    val onSelectGameTypeFilter: (GameType) -> Unit,
+    val onSelectGameStateFilter: (GameStateFilter) -> Unit,
+)
+
 @Composable
-private fun GamesHistoryFilterChipsRows(viewModel: HistoryViewModel) {
+private fun GamesHistoryFilterChipsRows(
+    state: GamesHistoryFilterChipsState,
+    actions: GamesHistoryFilterChipsActions,
+) = Column {
     FilterOptionsRow {
         items(
             listOf(
@@ -204,10 +242,10 @@ private fun GamesHistoryFilterChipsRows(viewModel: HistoryViewModel) {
             ),
         ) {
             AnimatedIconFilterChip(
-                selected = viewModel.filterDifficulties.contains(it),
+                selected = state.filterDifficulties.contains(it),
                 label = stringResource(it.resName),
                 onClick = {
-                    viewModel.selectFilter(it)
+                    actions.onSelectDifficultyFilter(it)
                 },
             )
         }
@@ -221,10 +259,10 @@ private fun GamesHistoryFilterChipsRows(viewModel: HistoryViewModel) {
             ),
         ) {
             AnimatedIconFilterChip(
-                selected = viewModel.filterGameTypes.contains(it),
+                selected = state.filterGameTypes.contains(it),
                 label = stringResource(it.resName),
                 onClick = {
-                    viewModel.selectFilter(it)
+                    actions.onSelectGameTypeFilter(it)
                 },
             )
         }
@@ -238,10 +276,10 @@ private fun GamesHistoryFilterChipsRows(viewModel: HistoryViewModel) {
             ),
         ) {
             FilterChip(
-                selected = it == viewModel.filterByGameState,
+                selected = it == state.filterByGameState,
                 label = { Text(stringResource(it.resName)) },
                 onClick = {
-                    viewModel.selectFilter(it)
+                    actions.onSelectGameStateFilter(it)
                 },
             )
         }
@@ -251,18 +289,21 @@ private fun GamesHistoryFilterChipsRows(viewModel: HistoryViewModel) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun GamesHistoryFilterSheet(
-    viewModel: HistoryViewModel,
+    sortState: GamesHistorySortState,
+    sortActions: GamesHistorySortActions,
+    filterChipsState: GamesHistoryFilterChipsState,
+    filterChipsActions: GamesHistoryFilterChipsActions,
     onDismissRequest: () -> Unit,
 ) {
     ModalBottomSheet(onDismissRequest = onDismissRequest) {
         Column(Modifier.padding(vertical = 12.dp)) {
-            GamesHistorySortFilterRow(viewModel)
+            GamesHistorySortFilterRow(sortState, sortActions)
             Text(
                 text = stringResource(R.string.filter_label),
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier.padding(start = 12.dp),
             )
-            GamesHistoryFilterChipsRows(viewModel)
+            GamesHistoryFilterChipsRows(filterChipsState, filterChipsActions)
         }
     }
 }
@@ -273,6 +314,7 @@ fun GamesHistoryScreen(
     navigateBack: () -> Unit,
     navigateSavedGame: (Long) -> Unit,
     viewModel: HistoryViewModel,
+    modifier: Modifier = Modifier,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
@@ -280,7 +322,7 @@ fun GamesHistoryScreen(
 
     Scaffold(
         modifier =
-            Modifier
+            modifier
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             GamesHistoryTopBar(
@@ -297,7 +339,20 @@ fun GamesHistoryScreen(
             Column(
                 modifier = Modifier.padding(innerPadding),
             ) {
-                GamesHistoryList(games, dateFormat, viewModel, navigateSavedGame)
+                GamesHistoryList(
+                    games = games,
+                    dateFormat = dateFormat,
+                    filterKeys =
+                        GamesHistoryListFilterKeys(
+                            sortType = viewModel.sortType,
+                            sortEntry = viewModel.sortEntry,
+                            filterDifficulties = viewModel.filterDifficulties,
+                            filterGameTypes = viewModel.filterGameTypes,
+                            filterByGameState = viewModel.filterByGameState,
+                        ),
+                    onApplySortAndFilter = viewModel::applySortAndFilter,
+                    navigateSavedGame = navigateSavedGame,
+                )
             }
         } else {
             EmptyScreen(stringResource(R.string.history_no_games))
@@ -305,7 +360,27 @@ fun GamesHistoryScreen(
     }
 
     if (filterBottomSheet) {
-        GamesHistoryFilterSheet(viewModel) { filterBottomSheet = false }
+        GamesHistoryFilterSheet(
+            sortState = GamesHistorySortState(sortType = viewModel.sortType, sortEntry = viewModel.sortEntry),
+            sortActions =
+                GamesHistorySortActions(
+                    onSwitchSortType = viewModel::switchSortType,
+                    onSelectSortEntry = viewModel::selectSortEntry,
+                ),
+            filterChipsState =
+                GamesHistoryFilterChipsState(
+                    filterDifficulties = viewModel.filterDifficulties,
+                    filterGameTypes = viewModel.filterGameTypes,
+                    filterByGameState = viewModel.filterByGameState,
+                ),
+            filterChipsActions =
+                GamesHistoryFilterChipsActions(
+                    onSelectDifficultyFilter = { viewModel.selectFilter(it) },
+                    onSelectGameTypeFilter = { viewModel.selectFilter(it) },
+                    onSelectGameStateFilter = { viewModel.selectFilter(it) },
+                ),
+            onDismissRequest = { filterBottomSheet = false },
+        )
     }
 }
 

@@ -126,9 +126,10 @@ fun ImageViewerScreen(galleryActivity: GalleryActivity) {
 fun ImageListScreen(
     navController: NavController,
     galleryActivity: GalleryActivity,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         TopAppBar(
             title = { Text(text = stringResource(id = R.string.uncovered_images)) },
             navigationIcon = {
@@ -152,10 +153,11 @@ fun ImageListScreen(
 fun ImageListItem(
     imageResId: String,
     navController: NavController,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .padding(16.dp)
                 .clickable { navController.navigate("imageDetail/$imageResId") },
@@ -255,6 +257,7 @@ private fun ImageDetailNavigationRow(
 fun ImageDetailScreen(
     resId: String,
     navController: NavController,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val currentPicture =
@@ -263,7 +266,7 @@ fun ImageDetailScreen(
         }
     Column(
         modifier =
-            Modifier
+            modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface),
     ) {

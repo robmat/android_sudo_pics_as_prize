@@ -39,7 +39,7 @@ import com.batodev.sudoku.ui.theme.SudokuTheme
 
 @Composable
 fun FirstGameDialog(
-    onFinished: () -> Unit,
+    onFinish: () -> Unit,
     onDismiss: () -> Unit = { },
 ) {
     Dialog(onDismissRequest = onDismiss) {
@@ -62,7 +62,7 @@ fun FirstGameDialog(
                 FirstGameScreen()
                 FilledTonalButton(
                     modifier = Modifier.padding(bottom = 12.dp),
-                    onClick = onFinished,
+                    onClick = onFinish,
                 ) {
                     Text(stringResource(R.string.first_game_dialog_got_it))
                 }
@@ -74,10 +74,10 @@ fun FirstGameDialog(
 private const val FIRST_GAME_TOOLBAR_ITEM_WEIGHT = 0.35f
 
 @Composable
-fun FirstGameScreen() {
+fun FirstGameScreen(modifier: Modifier = Modifier) {
     Column(
         modifier =
-            Modifier
+            modifier
                 .verticalScroll(rememberScrollState())
                 .padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -198,7 +198,7 @@ private fun ToolRow(
 private fun ScreenPreview() {
     SudokuTheme {
         FirstGameDialog(
-            onFinished = { },
+            onFinish = { },
         )
     }
 }

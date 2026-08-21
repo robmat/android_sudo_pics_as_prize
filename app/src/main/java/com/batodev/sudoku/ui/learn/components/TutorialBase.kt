@@ -33,6 +33,7 @@ fun TutorialBase(
     content: @Composable () -> Unit,
 ) {
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = { Text(title) },
@@ -41,7 +42,7 @@ fun TutorialBase(
         },
     ) { innerPadding ->
         Column(
-            modifier = modifier.padding(innerPadding),
+            modifier = Modifier.padding(innerPadding),
         ) {
             content()
         }

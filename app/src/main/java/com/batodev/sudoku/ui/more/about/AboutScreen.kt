@@ -90,8 +90,10 @@ private fun AboutPreferencesList(navigateOpenSourceLicenses: () -> Unit) {
 fun AboutScreen(
     navigateBack: () -> Unit,
     navigateOpenSourceLicenses: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.about_title)) },

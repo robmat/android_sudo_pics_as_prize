@@ -18,15 +18,19 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batodev.sudoku.R
+import com.batodev.sudoku.core.Cell
 import com.batodev.sudoku.core.PreferencesConstants
 import com.batodev.sudoku.core.utils.toFormattedString
+import com.batodev.sudoku.data.database.model.Folder
+import com.batodev.sudoku.data.database.model.SavedGame
+import com.batodev.sudoku.data.database.model.SudokuBoard
 import java.time.format.DateTimeFormatter
 import kotlin.time.toKotlinDuration
 
@@ -45,12 +49,27 @@ private fun savedGameStatusStringRes(
     }
 }
 
+/** The values [SavedGameDetails] and its sub-sections need; read once from [SavedGameViewModel] by [SavedGameScreen]. */
+internal data class SavedGameDetailsState(
+    val savedGame: SavedGame?,
+    val boardEntity: SudokuBoard?,
+    val parsedCurrentBoard: List<List<Cell>>,
+    val gameFolder: Folder?,
+    val gameProgressPercentage: Int,
+)
+
+/** The callbacks [SavedGameDetails] needs; constructed once by [SavedGameScreen]. */
+internal data class SavedGameDetailsActions(
+    val onCountProgressFill: () -> Unit,
+    val navigateToFolder: (Long) -> Unit,
+    val navigatePlayGame: (Long) -> Unit,
+)
+
 @Composable
 internal fun SavedGameDetails(
-    viewModel: SavedGameViewModel,
+    state: SavedGameDetailsState,
+    actions: SavedGameDetailsActions,
     dateTimeFormatter: DateTimeFormatter,
-    navigateToFolder: (Long) -> Unit,
-    navigatePlayGame: (Long) -> Unit,
 ) {
     Column(
         modifier =
@@ -58,23 +77,27 @@ internal fun SavedGameDetails(
                 .padding(horizontal = 12.dp)
                 .fillMaxWidth(),
     ) {
-        SavedGameFolderChip(viewModel, navigateToFolder)
+        SavedGameFolderChip(state.gameFolder, actions.navigateToFolder)
 
         val textStyle = MaterialTheme.typography.bodyLarge
-        SavedGameProgressText(viewModel, textStyle)
-        SavedGameStartedRow(viewModel, dateTimeFormatter)
-        SavedGameStatusText(viewModel)
-        SavedGameSummaryTexts(viewModel, textStyle)
-        SavedGameContinueButton(viewModel, navigatePlayGame)
+        SavedGameProgressText(
+            state.gameProgressPercentage,
+            state.parsedCurrentBoard,
+            actions.onCountProgressFill,
+            textStyle,
+        )
+        SavedGameStartedRow(state.savedGame, dateTimeFormatter)
+        SavedGameStatusText(state.savedGame)
+        SavedGameSummaryTexts(state.savedGame, state.boardEntity, textStyle)
+        SavedGameContinueButton(state.savedGame, actions.navigatePlayGame)
     }
 }
 
 @Composable
 private fun SavedGameFolderChip(
-    viewModel: SavedGameViewModel,
+    gameFolder: Folder?,
     navigateToFolder: (Long) -> Unit,
 ) {
-    val gameFolder by viewModel.gameFolder.collectAsStateWithLifecycle()
     gameFolder?.let {
         AssistChip(
             leadingIcon = {
@@ -91,11 +114,13 @@ private fun SavedGameFolderChip(
 
 @Composable
 private fun SavedGameProgressText(
-    viewModel: SavedGameViewModel,
+    progressPercentage: Int,
+    parsedCurrentBoard: List<List<Cell>>,
+    onCountProgressFill: () -> Unit,
     textStyle: TextStyle,
 ) {
-    val progressPercentage by viewModel.gameProgressPercentage.collectAsStateWithLifecycle()
-    LaunchedEffect(viewModel.parsedCurrentBoard) { viewModel.countProgressFilled() }
+    val currentOnCountProgressFill by rememberUpdatedState(onCountProgressFill)
+    LaunchedEffect(parsedCurrentBoard) { currentOnCountProgressFill() }
 
     Text(
         text =
@@ -109,20 +134,20 @@ private fun SavedGameProgressText(
 
 @Composable
 private fun SavedGameStartedRow(
-    viewModel: SavedGameViewModel,
+    savedGame: SavedGame?,
     dateTimeFormatter: DateTimeFormatter,
 ) {
-    viewModel.savedGame?.let { savedGame ->
-        if (savedGame.startedAt != null) {
+    savedGame?.let {
+        if (it.startedAt != null) {
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                val startedAtDate by remember(savedGame) {
+                val startedAtDate by remember(it) {
                     mutableStateOf(
-                        savedGame.startedAt.format(dateTimeFormatter),
+                        it.startedAt.format(dateTimeFormatter),
                     )
                 }
-                val startedAtTime by remember(savedGame) {
+                val startedAtTime by remember(it) {
                     mutableStateOf(
-                        savedGame.startedAt.format(DateTimeFormatter.ofPattern("HH:mm")),
+                        it.startedAt.format(DateTimeFormatter.ofPattern("HH:mm")),
                     )
                 }
                 Text(startedAtDate)
@@ -133,10 +158,10 @@ private fun SavedGameStartedRow(
 }
 
 @Composable
-private fun SavedGameStatusText(viewModel: SavedGameViewModel) {
+private fun SavedGameStatusText(savedGame: SavedGame?) {
     Text(
         text =
-            viewModel.savedGame?.let {
+            savedGame?.let {
                 stringResource(savedGameStatusStringRes(it.mistakes, it.giveUp, it.completed, it.canContinue))
             } ?: "",
     )
@@ -144,14 +169,15 @@ private fun SavedGameStatusText(viewModel: SavedGameViewModel) {
 
 @Composable
 private fun SavedGameSummaryTexts(
-    viewModel: SavedGameViewModel,
+    savedGame: SavedGame?,
+    boardEntity: SudokuBoard?,
     textStyle: TextStyle,
-) {
+) = Column {
     Text(
         text =
             stringResource(
                 R.string.saved_game_difficulty,
-                stringResource(viewModel.boardEntity!!.difficulty.resName),
+                stringResource(boardEntity!!.difficulty.resName),
             ),
         style = textStyle,
     )
@@ -159,7 +185,7 @@ private fun SavedGameSummaryTexts(
         text =
             stringResource(
                 R.string.saved_game_type,
-                stringResource(viewModel.boardEntity!!.type.resName),
+                stringResource(boardEntity.type.resName),
             ),
         style = textStyle,
     )
@@ -167,7 +193,7 @@ private fun SavedGameSummaryTexts(
         text =
             stringResource(
                 R.string.saved_game_time,
-                viewModel.savedGame!!
+                savedGame!!
                     .timer
                     .toKotlinDuration()
                     .toFormattedString(),
@@ -177,13 +203,13 @@ private fun SavedGameSummaryTexts(
 
 @Composable
 private fun ColumnScope.SavedGameContinueButton(
-    viewModel: SavedGameViewModel,
+    savedGame: SavedGame?,
     navigatePlayGame: (Long) -> Unit,
 ) {
-    if (viewModel.savedGame!!.canContinue) {
+    if (savedGame!!.canContinue) {
         FilledTonalButton(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            onClick = { navigatePlayGame(viewModel.savedGame!!.uid) },
+            onClick = { navigatePlayGame(savedGame.uid) },
         ) {
             Text(stringResource(R.string.action_continue))
         }

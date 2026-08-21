@@ -30,10 +30,11 @@ fun MoreScreen(
     navigateAbout: () -> Unit,
     navigateImport: () -> Unit,
     navigateStatistics: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
     ) {

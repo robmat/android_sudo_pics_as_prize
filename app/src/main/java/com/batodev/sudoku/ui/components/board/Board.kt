@@ -20,7 +20,7 @@ import com.batodev.sudoku.core.qqwing.GameType
 import com.batodev.sudoku.core.utils.SudokuParser
 import com.batodev.sudoku.ui.theme.SudokuBoardColors
 import com.batodev.sudoku.ui.theme.SudokuTheme
-import com.batodev.sudoku.ui.util.LightDarkPreview
+import com.batodev.sudoku.ui.util.PreviewLightDark
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.sqrt
@@ -233,7 +233,7 @@ fun Board(
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun BoardPreviewLight() {
     SudokuTheme {

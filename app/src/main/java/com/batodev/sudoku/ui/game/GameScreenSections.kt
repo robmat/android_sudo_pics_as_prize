@@ -2,8 +2,6 @@ package com.batodev.sudoku.ui.game
 
 import android.graphics.BitmapFactory
 import android.os.Build
-import android.view.HapticFeedbackConstants
-import android.view.View
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
@@ -24,12 +22,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableFloatState
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -48,6 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batodev.sudoku.LocalBoardColors
 import com.batodev.sudoku.R
+import com.batodev.sudoku.core.Cell
+import com.batodev.sudoku.core.Note
 import com.batodev.sudoku.core.PreferencesConstants
 import com.batodev.sudoku.core.qqwing.GameType
 import com.batodev.sudoku.ui.components.board.Board
@@ -62,13 +59,33 @@ private const val PRIZE_IMAGE_PADDING_TOP = 105
 private const val PRIZE_IMAGE_BACKGROUND_ALPHA = 0.2f
 private const val BOARD_DIM_SCALE = 0.90f
 
+/** The values [GameTopBar] needs to render; read once from [GameViewModel] by [GameScreen]. */
+internal data class GameTopBarState(
+    val endGame: Boolean,
+    val reachedMistakesLimitOrGaveUp: Boolean,
+    val showSolution: Boolean,
+    val gamePlaying: Boolean,
+    val showMenu: Boolean,
+    val restartButtonAnimation: Float,
+)
+
+/** The callbacks [GameTopBar] needs; constructed once by [GameScreen] from [GameViewModel]. */
+internal data class GameTopBarActions(
+    val onToggleShowSolution: () -> Unit,
+    val onPlayPauseToggle: () -> Unit,
+    val onRestartClick: () -> Unit,
+    val onToggleMenu: () -> Unit,
+    val onDismissMenu: () -> Unit,
+    val onGiveUpClick: () -> Unit,
+    val onSettingsClick: () -> Unit,
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun GameTopBar(
-    viewModel: GameViewModel,
+    state: GameTopBarState,
+    actions: GameTopBarActions,
     navigateBack: () -> Unit,
-    navigateSettings: () -> Unit,
-    restartButtonAnimation: Float,
 ) {
     TopAppBar(
         title = { },
@@ -81,23 +98,45 @@ internal fun GameTopBar(
             }
         },
         actions = {
-            ShowSolutionAction(viewModel)
-            PlayPauseAction(viewModel)
-            RestartAction(viewModel, restartButtonAnimation)
-            GameMenuAction(viewModel, navigateSettings)
+            ShowSolutionAction(
+                visible = state.endGame && state.reachedMistakesLimitOrGaveUp,
+                showSolution = state.showSolution,
+                onToggleShowSolution = actions.onToggleShowSolution,
+            )
+            PlayPauseAction(
+                visible = !state.endGame,
+                gamePlaying = state.gamePlaying,
+                onPlayPauseToggle = actions.onPlayPauseToggle,
+            )
+            RestartAction(
+                visible = !state.endGame,
+                restartButtonAnimation = state.restartButtonAnimation,
+                onRestartClick = actions.onRestartClick,
+            )
+            GameMenuAction(
+                visible = !state.endGame,
+                showMenu = state.showMenu,
+                onToggleMenu = actions.onToggleMenu,
+                onDismissMenu = actions.onDismissMenu,
+                onGiveUpClick = actions.onGiveUpClick,
+                onSettingsClick = actions.onSettingsClick,
+            )
         },
     )
 }
 
 @Composable
-internal fun GamePrizeImage(viewModel: GameViewModel) {
-    if (viewModel.endGame) return
+internal fun GamePrizeImage(
+    endGame: Boolean,
+    prizeImageName: String?,
+) {
+    if (endGame || prizeImageName == null) return
     val context = LocalContext.current
     Image(
         bitmap =
             BitmapFactory
                 .decodeStream(
-                    context.assets.open("$PRIZE_IMAGES/${viewModel.prizeImageName()}"),
+                    context.assets.open("$PRIZE_IMAGES/$prizeImageName"),
                 )!!
                 .asImageBitmap(),
         contentScale = ContentScale.FillWidth,
@@ -117,13 +156,15 @@ internal fun GamePrizeImage(viewModel: GameViewModel) {
 
 @Composable
 internal fun GameStatsRow(
-    viewModel: GameViewModel,
+    endGame: Boolean,
+    gameDifficultyRes: Int,
     mistakesLimit: Boolean,
+    errorHighlight: Int,
+    mistakesCount: Int,
+    timerEnabled: Boolean,
+    timeText: String,
 ) {
-    val errorHighlight by viewModel.mistakesMethod.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_HIGHLIGHT_MISTAKES,
-    )
-    AnimatedVisibility(visible = !viewModel.endGame) {
+    AnimatedVisibility(visible = !endGame) {
         Row(
             modifier =
                 Modifier
@@ -132,29 +173,26 @@ internal fun GameStatsRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            TopBoardSection(stringResource(viewModel.gameDifficulty.resName))
+            TopBoardSection(stringResource(gameDifficultyRes))
 
             if (mistakesLimit && errorHighlight != 0) {
                 TopBoardSection(
                     stringResource(
                         R.string.mistakes_number_out_of,
-                        viewModel.mistakesCount,
+                        mistakesCount,
                         PreferencesConstants.MISTAKES_LIMIT,
                     ),
                 )
             }
 
-            val timerEnabled by viewModel.timerEnabled.collectAsStateWithLifecycle(
-                initialValue = PreferencesConstants.DEFAULT_SHOW_TIMER,
-            )
-            AnimatedVisibility(visible = timerEnabled || viewModel.endGame) {
-                TopBoardSection(viewModel.timeText)
+            AnimatedVisibility(visible = timerEnabled || endGame) {
+                TopBoardSection(timeText)
             }
         }
     }
 }
 
-private data class GameBoardPrefs(
+internal data class GameBoardPrefs(
     val remainingUse: Boolean,
     val highlightIdentical: Boolean,
     val positionLines: Boolean,
@@ -166,7 +204,7 @@ private data class GameBoardPrefs(
 )
 
 @Composable
-private fun rememberGameBoardPrefs(viewModel: GameViewModel): GameBoardPrefs {
+internal fun rememberGameBoardPrefs(viewModel: GameViewModel): GameBoardPrefs {
     val remainingUse by viewModel.remainingUse.collectAsStateWithLifecycle(
         initialValue = PreferencesConstants.DEFAULT_REMAINING_USES,
     )
@@ -208,31 +246,49 @@ private fun rememberGameBoardPrefs(viewModel: GameViewModel): GameBoardPrefs {
     )
 }
 
+/** The values [GameBoardArea]/[GameSudokuBoard] need; read once from [GameViewModel] by [GameScreen]. */
+internal data class GameBoardState(
+    val gameBoard: List<List<Cell>>,
+    val solvedBoard: List<List<Cell>>,
+    val showSolution: Boolean,
+    val size: Int,
+    val notes: List<Note>,
+    val currCell: Cell,
+    val gameType: GameType,
+    val gamePlaying: Boolean,
+    val endGame: Boolean,
+)
+
+/** The callbacks [GameBoardArea]/[GameSudokuBoard] need; constructed once by [GameScreen]. */
+internal data class GameBoardActions(
+    val onCellClick: (Cell) -> Unit,
+    val onCellLongClick: (Cell) -> Unit,
+)
+
 @Composable
 internal fun GameBoardArea(
-    viewModel: GameViewModel,
-    renderNotesState: MutableState<Boolean>,
-    localView: View,
+    boardState: GameBoardState,
+    boardActions: GameBoardActions,
+    prefs: GameBoardPrefs,
+    renderNotes: Boolean,
 ) {
-    val prefs = rememberGameBoardPrefs(viewModel)
     Box(
         modifier =
             Modifier
                 .fillMaxWidth()
                 .padding(vertical = 12.dp),
     ) {
-        GameSudokuBoard(viewModel, prefs, renderNotesState, localView)
+        GameSudokuBoard(boardState, boardActions, prefs, renderNotes)
     }
 }
 
 @Composable
 private fun GameSudokuBoard(
-    viewModel: GameViewModel,
+    boardState: GameBoardState,
+    boardActions: GameBoardActions,
     prefs: GameBoardPrefs,
-    renderNotesState: MutableState<Boolean>,
-    localView: View,
+    renderNotes: Boolean,
 ) {
-    val renderNotes = renderNotesState.value
     Board(
         modifier =
             Modifier
@@ -241,24 +297,15 @@ private fun GameSudokuBoard(
                 .scale(prefs.scale, prefs.scale),
         data =
             BoardData(
-                board = if (!viewModel.showSolution) viewModel.gameBoard else viewModel.solvedBoard,
-                size = viewModel.size,
-                notes = viewModel.notes,
+                board = if (!boardState.showSolution) boardState.gameBoard else boardState.solvedBoard,
+                size = boardState.size,
+                notes = boardState.notes,
             ),
         interaction =
             BoardInteraction(
-                selectedCell = viewModel.currCell,
-                onClick = { cell ->
-                    viewModel.processInput(
-                        cell = cell,
-                        remainingUse = prefs.remainingUse,
-                    )
-                },
-                onLongClick = { cell ->
-                    if (viewModel.processInput(cell, prefs.remainingUse, longTap = true)) {
-                        localView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                    }
-                },
+                selectedCell = boardState.currCell,
+                onClick = boardActions.onCellClick,
+                onLongClick = boardActions.onCellLongClick,
             ),
         style =
             BoardStyle(
@@ -269,12 +316,12 @@ private fun GameSudokuBoard(
                         identicalNumbersHighlight = prefs.highlightIdentical,
                         errorsHighlight = prefs.errorHighlight != 0,
                         positionLines = prefs.positionLines,
-                        enabled = viewModel.gamePlaying && !viewModel.endGame,
+                        enabled = boardState.gamePlaying && !boardState.endGame,
                         questions =
-                            !(viewModel.gamePlaying || viewModel.endGame) &&
+                            !(boardState.gamePlaying || boardState.endGame) &&
                                 Build.VERSION.SDK_INT < Build.VERSION_CODES.R,
-                        renderNotes = renderNotes && !viewModel.showSolution,
-                        zoomable = viewModel.gameType == GameType.Default12x12,
+                        renderNotes = renderNotes && !boardState.showSolution,
+                        zoomable = boardState.gameType == GameType.Default12x12,
                         crossHighlight = prefs.crossHighlight,
                     ),
             ),
@@ -283,83 +330,81 @@ private fun GameSudokuBoard(
 
 @Composable
 internal fun GameBottomContent(
-    viewModel: GameViewModel,
-    renderNotesState: MutableState<Boolean>,
-    localView: View,
-    mistakesLimit: Boolean,
+    endGame: Boolean,
+    playingContentParams: GamePlayingContentParams,
+    completedStatsInfo: @Composable () -> AfterGameStatsInfo,
 ) {
     AnimatedContent(
-        !viewModel.endGame,
+        !endGame,
         label = "this_label_makes_no_sense_to_me_but_i_added_to_overcome_a_warning",
     ) { contentState ->
         if (contentState) {
-            GamePlayingContent(viewModel, renderNotesState, localView)
+            GamePlayingContent(playingContentParams)
         } else {
-            GameCompletedStats(viewModel, mistakesLimit)
+            GameCompletedStats(completedStatsInfo())
         }
     }
 }
 
+internal data class GameDialogsState(
+    val restartDialog: Boolean,
+    val giveUpDialog: Boolean,
+    val resetTimer: Boolean,
+)
+
+internal data class GameDialogsActions(
+    val onDismissRestartDialog: () -> Unit,
+    val onConfirmRestart: () -> Unit,
+    val onDismissGiveUpDialog: () -> Unit,
+    val onConfirmGiveUp: () -> Unit,
+)
+
 @Composable
 internal fun GameDialogs(
-    viewModel: GameViewModel,
-    resetTimer: Boolean,
-    restartButtonAngleState: MutableFloatState,
+    state: GameDialogsState,
+    actions: GameDialogsActions,
 ) {
-    if (viewModel.restartDialog) {
-        viewModel.pauseTimer()
-        AlertDialog(
-            title = { Text(stringResource(R.string.action_reset_game)) },
-            text = { Text(stringResource(R.string.reset_game_text)) },
-            dismissButton = {
-                TextButton(onClick = {
-                    viewModel.restartDialog = false
-                    viewModel.startTimer()
-                }) {
-                    Text(stringResource(R.string.dialog_no))
-                }
-            },
-            confirmButton = {
-                TextButton(onClick = {
-                    restartButtonAngleState.floatValue -= ROTATE_ICON_FULL_DEGREES
-                    viewModel.resetGame(resetTimer)
-                    viewModel.restartDialog = false
-                    viewModel.startTimer()
-                }) {
-                    Text(stringResource(R.string.dialog_yes))
-                }
-            },
-            onDismissRequest = {
-                viewModel.restartDialog = false
-                viewModel.startTimer()
-            },
-        )
-    } else if (viewModel.giveUpDialog) {
-        viewModel.pauseTimer()
-        AlertDialog(
-            title = { Text(stringResource(R.string.action_give_up)) },
-            text = { Text(stringResource(R.string.give_up_text)) },
-            dismissButton = {
-                TextButton(onClick = {
-                    viewModel.giveUpDialog = false
-                    viewModel.startTimer()
-                }) {
-                    Text(stringResource(R.string.dialog_no))
-                }
-            },
-            confirmButton = {
-                TextButton(onClick = {
-                    viewModel.giveUp()
-                    viewModel.giveUpDialog = false
-                    viewModel.pauseTimer()
-                }) {
-                    Text(stringResource(R.string.dialog_yes))
-                }
-            },
-            onDismissRequest = {
-                viewModel.giveUpDialog = false
-                viewModel.startTimer()
-            },
-        )
+    if (state.restartDialog) {
+        AlertDialogRestart(actions)
+    } else if (state.giveUpDialog) {
+        AlertDialogGiveUp(actions)
     }
+}
+
+@Composable
+private fun AlertDialogRestart(actions: GameDialogsActions) {
+    AlertDialog(
+        title = { Text(stringResource(R.string.action_reset_game)) },
+        text = { Text(stringResource(R.string.reset_game_text)) },
+        dismissButton = {
+            TextButton(onClick = actions.onDismissRestartDialog) {
+                Text(stringResource(R.string.dialog_no))
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = actions.onConfirmRestart) {
+                Text(stringResource(R.string.dialog_yes))
+            }
+        },
+        onDismissRequest = actions.onDismissRestartDialog,
+    )
+}
+
+@Composable
+private fun AlertDialogGiveUp(actions: GameDialogsActions) {
+    AlertDialog(
+        title = { Text(stringResource(R.string.action_give_up)) },
+        text = { Text(stringResource(R.string.give_up_text)) },
+        dismissButton = {
+            TextButton(onClick = actions.onDismissGiveUpDialog) {
+                Text(stringResource(R.string.dialog_no))
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = actions.onConfirmGiveUp) {
+                Text(stringResource(R.string.dialog_yes))
+            }
+        },
+        onDismissRequest = actions.onDismissGiveUpDialog,
+    )
 }

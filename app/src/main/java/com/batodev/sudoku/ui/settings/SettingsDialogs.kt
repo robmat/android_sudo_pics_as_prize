@@ -28,9 +28,9 @@ import com.batodev.sudoku.ui.components.EdgeIndicatedLazyColumn
 fun SelectionDialog(
     title: String,
     selections: List<String>,
-    selected: Int = 0,
     onSelect: (Int) -> Unit,
     onDismiss: () -> Unit,
+    selected: Int = 0,
 ) {
     AlertDialog(
         title = {

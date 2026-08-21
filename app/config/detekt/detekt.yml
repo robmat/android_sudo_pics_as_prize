@@ -3,4 +3,4 @@ naming:
     ignoreAnnotated: ['Composable']
 style:
   UnusedPrivateMember:
-    ignoreAnnotated: ['Preview', 'LightDarkPreview']
+    ignoreAnnotated: ['Preview', 'PreviewLightDark']

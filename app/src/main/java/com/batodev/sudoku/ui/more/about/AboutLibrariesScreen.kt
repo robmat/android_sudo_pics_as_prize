@@ -24,11 +24,14 @@ import com.mikepenz.aboutlibraries.ui.compose.m3.libraryColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutLibrariesScreen(navigateBack: () -> Unit) {
+fun AboutLibrariesScreen(
+    modifier: Modifier = Modifier,
+    navigateBack: () -> Unit,
+) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     Scaffold(
         modifier =
-            Modifier
+            modifier
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(

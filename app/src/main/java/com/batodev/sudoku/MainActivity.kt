@@ -21,6 +21,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -112,12 +113,13 @@ private fun rememberBoardColors(monetSudokuBoard: Boolean): SudokuBoardColorsImp
 private fun MainActivityNavEffects(
     navController: NavController,
     firstLaunch: Boolean,
-    onBottomBarStateChanged: (Boolean) -> Unit,
+    onBottomBarStateChange: (Boolean) -> Unit,
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentOnBottomBarStateChange by rememberUpdatedState(onBottomBarStateChange)
 
     LaunchedEffect(navBackStackEntry) {
-        onBottomBarStateChanged(
+        currentOnBottomBarStateChange(
             when (navBackStackEntry?.destination?.route) {
                 Route.STATISTICS, Route.HOME, Route.MORE -> true
                 else -> false
@@ -183,7 +185,7 @@ private fun MainActivityRoot(mainViewModel: MainActivityViewModel) {
         MainActivityNavEffects(
             navController = navController,
             firstLaunch = firstLaunch,
-            onBottomBarStateChanged = { bottomBarState = it },
+            onBottomBarStateChange = { bottomBarState = it },
         )
 
         val monetSudokuBoard by mainViewModel.monetSudokuBoard.collectAsStateWithLifecycle(

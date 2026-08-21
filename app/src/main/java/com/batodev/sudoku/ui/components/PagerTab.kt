@@ -3,6 +3,7 @@ package com.batodev.sudoku.ui.components
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 
 /**
@@ -15,6 +16,7 @@ fun PagerTab(
     selected: Boolean,
     title: String,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Tab(
         selected = selected,
@@ -26,5 +28,6 @@ fun PagerTab(
                 overflow = TextOverflow.Ellipsis,
             )
         },
+        modifier = modifier,
     )
 }

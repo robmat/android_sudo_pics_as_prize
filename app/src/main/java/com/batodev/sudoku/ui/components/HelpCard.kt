@@ -18,15 +18,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.batodev.sudoku.R
 import com.batodev.sudoku.ui.theme.SudokuTheme
-import com.batodev.sudoku.ui.util.LightDarkPreview
+import com.batodev.sudoku.ui.util.PreviewLightDark
 
 @Composable
 fun HelpCard(
-    modifier: Modifier = Modifier,
     title: String,
     details: String,
     painter: Painter?,
-    onCloseClicked: () -> Unit,
+    onClose: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier,
@@ -57,7 +57,7 @@ fun HelpCard(
                         style = MaterialTheme.typography.titleMedium,
                     )
                 }
-                IconButton(onClick = onCloseClicked) {
+                IconButton(onClick = onClose) {
                     Icon(
                         painter = painterResource(R.drawable.ic_round_close_24),
                         contentDescription = null,
@@ -72,7 +72,7 @@ fun HelpCard(
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun HelpCardPreview() {
     SudokuTheme {
@@ -83,7 +83,7 @@ private fun HelpCardPreview() {
                     "vitae elit congue scelerisque. Sed a vestibulum tellus. Suspendisse tristique dui " +
                     "eget nisi dictum tempus",
             painter = painterResource(R.drawable.ic_outline_verified_24),
-            onCloseClicked = {},
+            onClose = {},
         )
     }
 }

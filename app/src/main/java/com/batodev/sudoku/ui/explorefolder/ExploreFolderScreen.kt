@@ -105,6 +105,7 @@ data class ExploreFolderNavigation(
 fun ExploreFolderScreen(
     viewModel: ExploreFolderViewModel,
     navigation: ExploreFolderNavigation,
+    modifier: Modifier = Modifier,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
@@ -144,21 +145,67 @@ fun ExploreFolderScreen(
     }
 
     Scaffold(
-        topBar = { ExploreFolderTopBar(viewModel, folder, games, navigation.navigateBack, dialogState) },
+        modifier = modifier,
+        topBar = {
+            ExploreFolderTopBar(
+                inSelectionMode = viewModel.inSelectionMode,
+                selectedCount = viewModel.selectedBoardsList.size,
+                folder = folder,
+                navigateBack = navigation.navigateBack,
+                dialogState = dialogState,
+                onCloseSelectionMode = { viewModel.inSelectionMode = false },
+                onSelectAllClick = { viewModel.addAllToSelection(games.map { it.key }) },
+            )
+        },
         floatingActionButton = { ExploreFolderFab(lazyListState, coroutineScope) },
     ) { paddingValues ->
         ExploreFolderBody(
-            viewModel,
-            ExploreFolderListState(folder, games, lazyListState),
-            paddingValues,
-            navigation,
-            dialogState,
+            listState = ExploreFolderListState(folder, games, lazyListState),
+            selectionState =
+                ExploreFolderSelectionState(
+                    inSelectionMode = viewModel.inSelectionMode,
+                    selectedBoardsList = viewModel.selectedBoardsList,
+                ),
+            gamesListActions =
+                ExploreFolderGamesListActions(
+                    onEnterSelectionMode = {
+                        viewModel.inSelectionMode = true
+                        viewModel.addToSelection(it)
+                    },
+                    onAddToSelection = viewModel::addToSelection,
+                    onPrepareSudokuToPlay = viewModel::prepareSudokuToPlay,
+                ),
+            paddingValues = paddingValues,
+            navigation = navigation,
+            dialogState = dialogState,
         )
     }
 
-    ExploreFolderEffects(viewModel, folder, navigation.navigatePlayGame)
+    ExploreFolderEffects(
+        state =
+            ExploreFolderEffectsState(
+                readyToPlay = viewModel.readyToPlay,
+                gameUidToPlay = viewModel.gameUidToPlay,
+                isPlayedBefore = viewModel.isPlayedBefore,
+                folder = folder,
+                inSelectionMode = viewModel.inSelectionMode,
+                selectedBoardsList = viewModel.selectedBoardsList,
+            ),
+        actions =
+            ExploreFolderEffectsActions(
+                navigatePlayGame = navigation.navigatePlayGame,
+                onReadyToPlayHandled = { viewModel.readyToPlay = false },
+                onExitSelectionMode = { viewModel.inSelectionMode = false },
+                onClearSelection = { viewModel.selectedBoardsList = emptyList() },
+            ),
+    )
 
-    ExploreFolderDeleteDialog(viewModel, dialogState)
+    ExploreFolderDeleteDialog(
+        selectedCount = viewModel.selectedBoardsList.size,
+        dialogState = dialogState,
+        onDeleteGame = viewModel::deleteGame,
+        onDeleteSelectedItems = viewModel::deleteSelected,
+    )
     if (!dialogState.deleteBoardDialog.value && dialogState.moveSelectedDialog.value) {
         MoveSudokuToFolderDialog(
             availableFolders = folders.filter { it != folder },
@@ -386,8 +433,8 @@ internal fun DefaultTopAppBar(
 internal fun SelectionTopAppbar(
     title: @Composable () -> Unit,
     onCloseClick: () -> Unit,
-    onClickMoveSelected: () -> Unit,
-    onClickDeleteSelected: () -> Unit,
+    onClickMoveSelectedItems: () -> Unit,
+    onClickDeleteSelectedItems: () -> Unit,
     onClickSelectAll: () -> Unit,
 ) {
     TopAppBar(
@@ -398,13 +445,13 @@ internal fun SelectionTopAppbar(
             }
         },
         actions = {
-            IconButton(onClick = onClickMoveSelected) {
+            IconButton(onClick = onClickMoveSelectedItems) {
                 Icon(
                     imageVector = Icons.Outlined.DriveFileMove,
                     contentDescription = null,
                 )
             }
-            IconButton(onClick = onClickDeleteSelected) {
+            IconButton(onClick = onClickDeleteSelectedItems) {
                 Icon(
                     imageVector = Icons.Rounded.Delete,
                     contentDescription = null,

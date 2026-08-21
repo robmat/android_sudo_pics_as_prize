@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.batodev.sudoku.core.qqwing.GameType
 import com.batodev.sudoku.ui.theme.SudokuTheme
-import com.batodev.sudoku.ui.util.LightDarkPreview
+import com.batodev.sudoku.ui.util.PreviewLightDark
 
 private const val KEYBOARD_NUMBER_FONT_SIZE_SP = 25
 private const val KEYBOARD_NUMBER_FONT_SIZE_NO_USES_SP = 36
@@ -149,6 +149,7 @@ fun DefaultGameKeyboard(
     val remainingUses = state.remainingUses
 
     Column(
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         if (size == GameType.Default12x12.size) {
@@ -166,8 +167,8 @@ fun DefaultGameKeyboard(
                     ) {
                         NumbersKeyboardRow(
                             numbers = chunked,
-                            itemModifier = itemModifier,
                             state = state,
+                            itemModifier = itemModifier,
                         )
                     }
                 }
@@ -175,9 +176,8 @@ fun DefaultGameKeyboard(
         } else {
             NumbersKeyboardRow(
                 numbers = numbers,
-                itemModifier = itemModifier,
                 state = state,
-                modifier = modifier,
+                itemModifier = itemModifier,
             )
         }
     }
@@ -187,9 +187,9 @@ fun DefaultGameKeyboard(
 @Composable
 private fun NumbersKeyboardRow(
     numbers: List<Int>,
-    itemModifier: Modifier = Modifier,
     state: KeyboardState,
     modifier: Modifier = Modifier,
+    itemModifier: Modifier = Modifier,
 ) {
     val remainingUses = state.remainingUses
     KeyboardRow(modifier = modifier) {
@@ -244,7 +244,7 @@ private fun KeyboardRow(
     )
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun KeyboardItemPreview() {
     SudokuTheme {
@@ -277,7 +277,7 @@ private fun KeyboardItemPreview() {
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun KeyboardPreview9x9() {
     SudokuTheme {
@@ -294,7 +294,7 @@ private fun KeyboardPreview9x9() {
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun KeyboardPreview12x12() {
     SudokuTheme {

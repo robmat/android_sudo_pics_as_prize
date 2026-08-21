@@ -11,9 +11,12 @@ import com.batodev.sudoku.R
 import com.batodev.sudoku.ui.learn.components.LearnRowItem
 
 @Composable
-fun LearnAppScreen(helpNavController: NavController) {
+fun LearnAppScreen(
+    helpNavController: NavController,
+    modifier: Modifier = Modifier,
+) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
     ) {
         LazyColumn {
             item {

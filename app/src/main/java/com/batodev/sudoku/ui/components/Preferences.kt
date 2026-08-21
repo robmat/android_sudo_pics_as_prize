@@ -28,7 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.batodev.sudoku.R
 import com.batodev.sudoku.ui.theme.SudokuTheme
-import com.batodev.sudoku.ui.util.LightDarkPreview
+import com.batodev.sudoku.ui.util.PreviewLightDark
 
 /** The label content shown by a [PreferenceRow]: its icon, title, and optional subtitle. */
 data class PreferenceRowInfo(
@@ -146,7 +146,7 @@ fun PreferenceRowSwitch(
     )
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun PreferenceRowPreview() {
     SudokuTheme {
@@ -172,7 +172,7 @@ private fun PreferenceRowPreview() {
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun PreferenceRowSwitchPreview() {
     SudokuTheme {

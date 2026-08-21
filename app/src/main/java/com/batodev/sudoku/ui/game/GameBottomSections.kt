@@ -10,132 +10,151 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batodev.sudoku.R
-import com.batodev.sudoku.core.PreferencesConstants
 import com.batodev.sudoku.ui.game.components.DefaultGameKeyboard
 import com.batodev.sudoku.ui.game.components.KeyboardState
 import com.batodev.sudoku.ui.game.components.ToolBarItem
 import com.batodev.sudoku.ui.game.components.ToolbarItem
-import com.batodev.sudoku.ui.game.components.keyboardClickHandlers
 import com.batodev.sudoku.ui.util.ReverseArrangement
 
+/** The state [GameToolbarRow] and its sections need; read once from [GameViewModel] by [GameScreen]. */
+internal data class GameToolbarState(
+    val showUndoRedoMenu: Boolean,
+    val hintsDisabled: Boolean,
+    val showNotesMenu: Boolean,
+    val renderNotes: Boolean,
+    val notesToggled: Boolean,
+    val eraseButtonToggled: Boolean,
+    val gamePlaying: Boolean,
+)
+
+/** The callbacks [GameToolbarRow] and its sections need; constructed once by [GameScreen]. */
+internal data class GameToolbarActions(
+    val onUndoClick: () -> Unit,
+    val onDismissUndoRedoMenu: () -> Unit,
+    val onShowUndoRedoMenu: () -> Unit,
+    val onRedoClick: () -> Unit,
+    val onHintClick: () -> Unit,
+    val onNoteClick: () -> Unit,
+    val onShowNotesMenu: () -> Unit,
+    val onDismissNotesMenu: () -> Unit,
+    val onComputeNotesClick: () -> Unit,
+    val onClearNotesClick: () -> Unit,
+    val onToggleRenderNotes: () -> Unit,
+    val onEraseClick: () -> Unit,
+    val onToggleEraseButton: () -> Unit,
+)
+
+/** The params [GamePlayingContent] needs; assembled once by [GameScreen]. */
+internal data class GamePlayingContentParams(
+    val funKeyboardOverNum: Boolean,
+    val keyboardSize: Int,
+    val keyboardState: KeyboardState,
+    val toolbarState: GameToolbarState,
+    val toolbarActions: GameToolbarActions,
+    val localView: View,
+)
+
 @Composable
-internal fun GamePlayingContent(
-    viewModel: GameViewModel,
-    renderNotesState: MutableState<Boolean>,
-    localView: View,
-) {
-    val funKeyboardOverNum by viewModel.funKeyboardOverNum.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_FUN_KEYBOARD_OVER_NUM,
-    )
+internal fun GamePlayingContent(params: GamePlayingContentParams) {
     Column(
-        verticalArrangement = if (funKeyboardOverNum) ReverseArrangement else Arrangement.Top,
+        verticalArrangement = if (params.funKeyboardOverNum) ReverseArrangement else Arrangement.Top,
     ) {
-        val remainingUse by viewModel.remainingUse.collectAsStateWithLifecycle(
-            initialValue = PreferencesConstants.DEFAULT_REMAINING_USES,
-        )
         DefaultGameKeyboard(
-            size = viewModel.size,
-            state =
-                KeyboardState(
-                    remainingUses = if (remainingUse) viewModel.remainingUsesList else null,
-                    selected = viewModel.digitFirstNumber,
-                    handlers = keyboardClickHandlers(viewModel::processInputKeyboard),
-                ),
+            size = params.keyboardSize,
+            state = params.keyboardState,
         )
-        GameToolbarRow(viewModel, renderNotesState, localView)
+        GameToolbarRow(params.toolbarState, params.toolbarActions, params.localView)
     }
 }
 
 @Composable
 internal fun GameToolbarRow(
-    viewModel: GameViewModel,
-    renderNotesState: MutableState<Boolean>,
+    state: GameToolbarState,
+    actions: GameToolbarActions,
     localView: View,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.padding(vertical = 8.dp),
     ) {
-        UndoRedoSection(viewModel)
-        HintSection(viewModel)
-        NotesSection(viewModel, renderNotesState, localView)
-        EraseSection(viewModel, localView)
+        UndoRedoSection(state, actions)
+        HintSection(state, actions)
+        NotesSection(state, actions, localView)
+        EraseSection(state, actions, localView)
     }
 }
 
 @Composable
-private fun RowScope.UndoRedoSection(viewModel: GameViewModel) {
+private fun RowScope.UndoRedoSection(
+    state: GameToolbarState,
+    actions: GameToolbarActions,
+) {
     Box(
         modifier = Modifier.weight(1f),
     ) {
         UndoRedoMenu(
-            expanded = viewModel.showUndoRedoMenu,
-            onDismiss = { viewModel.showUndoRedoMenu = false },
-            onRedoClick = { viewModel.toolbarClick(ToolBarItem.Redo) },
+            expanded = state.showUndoRedoMenu,
+            onDismiss = actions.onDismissUndoRedoMenu,
+            onRedoClick = actions.onRedoClick,
         )
         ToolbarItem(
             modifier = Modifier.testTag("game_undo"),
             painter = painterResource(R.drawable.ic_round_undo_24),
-            onClick = { viewModel.toolbarClick(ToolBarItem.Undo) },
-            onLongClick = { viewModel.showUndoRedoMenu = true },
+            onClick = actions.onUndoClick,
+            onLongClick = actions.onShowUndoRedoMenu,
         )
     }
 }
 
 @Composable
-private fun RowScope.HintSection(viewModel: GameViewModel) {
-    val hintsDisabled by viewModel.disableHints.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_HINTS_DISABLED,
-    )
-    if (!hintsDisabled) {
+private fun RowScope.HintSection(
+    state: GameToolbarState,
+    actions: GameToolbarActions,
+) {
+    if (!state.hintsDisabled) {
         ToolbarItem(
             modifier = Modifier.weight(1f),
             painter = painterResource(R.drawable.ic_lightbulb_stars_24),
-            onClick = { viewModel.toolbarClick(ToolBarItem.Hint) },
+            onClick = actions.onHintClick,
         )
     }
 }
 
 @Composable
 private fun RowScope.NotesSection(
-    viewModel: GameViewModel,
-    renderNotesState: MutableState<Boolean>,
+    state: GameToolbarState,
+    actions: GameToolbarActions,
     localView: View,
 ) {
-    var renderNotes by renderNotesState
     Box(
         modifier = Modifier.weight(1f),
     ) {
         NotesMenu(
-            expanded = viewModel.showNotesMenu,
-            renderNotes = renderNotes,
+            expanded = state.showNotesMenu,
+            renderNotes = state.renderNotes,
             actions =
                 NotesMenuActions(
-                    onDismiss = { viewModel.showNotesMenu = false },
-                    onComputeNotesClick = { viewModel.computeNotes() },
-                    onClearNotesClick = { viewModel.clearNotes() },
-                    onRenderNotesClick = { renderNotes = !renderNotes },
+                    onDismiss = actions.onDismissNotesMenu,
+                    onComputeNotesClick = actions.onComputeNotesClick,
+                    onClearNotesClick = actions.onClearNotesClick,
+                    onRenderNotesClick = actions.onToggleRenderNotes,
                 ),
         )
         ToolbarItem(
             painter = painterResource(R.drawable.ic_round_edit_24),
-            toggled = viewModel.notesToggled,
-            onClick = { viewModel.toolbarClick(ToolBarItem.Note) },
+            toggled = state.notesToggled,
+            onClick = actions.onNoteClick,
             onLongClick = {
-                if (viewModel.gamePlaying) {
+                if (state.gamePlaying) {
                     localView.performHapticFeedback(
                         HapticFeedbackConstants.VIRTUAL_KEY,
                     )
-                    viewModel.showNotesMenu = true
+                    actions.onShowNotesMenu()
                 }
             },
         )
@@ -144,48 +163,28 @@ private fun RowScope.NotesSection(
 
 @Composable
 private fun RowScope.EraseSection(
-    viewModel: GameViewModel,
+    state: GameToolbarState,
+    actions: GameToolbarActions,
     localView: View,
 ) {
     ToolbarItem(
         modifier = Modifier.weight(1f),
         painter = painterResource(R.drawable.ic_eraser_24),
-        toggled = viewModel.eraseButtonToggled,
-        onClick = {
-            viewModel.toolbarClick(ToolBarItem.Remove)
-        },
+        toggled = state.eraseButtonToggled,
+        onClick = actions.onEraseClick,
         onLongClick = {
-            if (viewModel.gamePlaying) {
+            if (state.gamePlaying) {
                 localView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                viewModel.toggleEraseButton()
+                actions.onToggleEraseButton()
             }
         },
     )
 }
 
 @Composable
-internal fun GameCompletedStats(
-    viewModel: GameViewModel,
-    mistakesLimit: Boolean,
-) {
-    val allRecords by viewModel.allRecords.collectAsStateWithLifecycle(
-        initialValue = emptyList(),
-    )
-
+internal fun GameCompletedStats(info: AfterGameStatsInfo) {
     AfterGameStats(
         modifier = Modifier.fillMaxWidth(),
-        info =
-            AfterGameStatsInfo(
-                difficulty = viewModel.gameDifficulty,
-                type = viewModel.gameType,
-                hintsUsed = viewModel.hintsUsed,
-                mistakesMade = viewModel.mistakesMade,
-                mistakesLimit = mistakesLimit,
-                mistakesLimitCount = viewModel.mistakesCount,
-                giveUp = viewModel.giveUp,
-                notesTaken = viewModel.notesTaken,
-                records = allRecords,
-                timeText = viewModel.timeText,
-            ),
+        info = info,
     )
 }

@@ -12,10 +12,14 @@ import com.batodev.sudoku.ui.learn.components.TutorialBase
 import com.batodev.sudoku.ui.onboarding.FirstGameScreen
 
 @Composable
-fun ToolbarTutorialScreen(helpNavController: NavController) {
+fun ToolbarTutorialScreen(
+    helpNavController: NavController,
+    modifier: Modifier = Modifier,
+) {
     TutorialBase(
         title = stringResource(R.string.learn_app_toolbar),
         helpNavController = helpNavController,
+        modifier = modifier,
     ) {
         FirstGameScreen()
         Text(

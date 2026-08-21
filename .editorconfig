@@ -1,0 +1,4 @@
+root = true
+
+[*.{kt,kts}]
+compose_allowed_composition_locals = LocalBoardColors

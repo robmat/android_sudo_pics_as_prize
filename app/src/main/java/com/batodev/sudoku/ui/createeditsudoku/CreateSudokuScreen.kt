@@ -39,11 +39,14 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batodev.sudoku.LocalBoardColors
 import com.batodev.sudoku.R
+import com.batodev.sudoku.core.Cell
 import com.batodev.sudoku.core.PreferencesConstants
+import com.batodev.sudoku.core.qqwing.GameDifficulty
 import com.batodev.sudoku.core.qqwing.GameType
 import com.batodev.sudoku.ui.components.BackIconButton
 import com.batodev.sudoku.ui.components.DifficultyDropdownMenu
@@ -67,7 +70,7 @@ private const val UNDO_REDO_ITEM_WEIGHT = 0.5f
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CreateSudokuTopBar(
-    viewModel: CreateSudokuViewModel,
+    isNewSudoku: Boolean,
     navigateBack: () -> Unit,
     onImportStringClick: () -> Unit,
 ) {
@@ -75,7 +78,7 @@ private fun CreateSudokuTopBar(
         title = {
             Text(
                 text =
-                    if (viewModel.gameUid == -1L) {
+                    if (isNewSudoku) {
                         stringResource(R.string.create_sudoku_title)
                     } else {
                         stringResource(R.string.edit_sudoku)
@@ -102,13 +105,16 @@ private fun CreateSudokuTopBar(
 }
 
 @Composable
-private fun DifficultyMenuButton(viewModel: CreateSudokuViewModel) {
+private fun DifficultyMenuButton(
+    gameDifficultyRes: Int,
+    onChangeDifficulty: (GameDifficulty) -> Unit,
+) {
     var difficultyMenu by remember { mutableStateOf(false) }
     val dropDownIconRotation by animateFloatAsState(
         if (difficultyMenu) DROPDOWN_EXPANDED_ROTATION_DEGREES else 0f,
     )
     TextButton(onClick = { difficultyMenu = !difficultyMenu }) {
-        Text(stringResource(viewModel.gameDifficulty.resName))
+        Text(stringResource(gameDifficultyRes))
         Icon(
             modifier = Modifier.rotate(dropDownIconRotation),
             imageVector = Icons.Rounded.ArrowDropDown,
@@ -118,20 +124,21 @@ private fun DifficultyMenuButton(viewModel: CreateSudokuViewModel) {
     DifficultyDropdownMenu(
         expanded = difficultyMenu,
         onDismissRequest = { difficultyMenu = false },
-        onClick = {
-            viewModel.changeGameDifficulty(it)
-        },
+        onClick = onChangeDifficulty,
     )
 }
 
 @Composable
-private fun GameTypeMenuButton(viewModel: CreateSudokuViewModel) {
+private fun GameTypeMenuButton(
+    gameTypeRes: Int,
+    onChangeGameType: (GameType) -> Unit,
+) {
     var gameTypeMenuExpanded by remember { mutableStateOf(false) }
     val dropDownIconRotation by animateFloatAsState(
         if (gameTypeMenuExpanded) DROPDOWN_EXPANDED_ROTATION_DEGREES else 0f,
     )
     TextButton(onClick = { gameTypeMenuExpanded = !gameTypeMenuExpanded }) {
-        Text(stringResource(viewModel.gameType.resName))
+        Text(stringResource(gameTypeRes))
         Icon(
             modifier = Modifier.rotate(dropDownIconRotation),
             imageVector = Icons.Rounded.ArrowDropDown,
@@ -141,16 +148,27 @@ private fun GameTypeMenuButton(viewModel: CreateSudokuViewModel) {
     GameTypeMenu(
         expanded = gameTypeMenuExpanded,
         onDismissRequest = { gameTypeMenuExpanded = false },
-        onClick = {
-            viewModel.changeGameType(it)
-        },
+        onClick = onChangeGameType,
     )
 }
 
+internal data class CreateSudokuHeaderState(
+    val isNewSudoku: Boolean,
+    val gameDifficultyRes: Int,
+    val gameTypeRes: Int,
+    val canSave: Boolean,
+)
+
+internal data class CreateSudokuHeaderActions(
+    val onChangeDifficulty: (GameDifficulty) -> Unit,
+    val onChangeGameType: (GameType) -> Unit,
+    val onSaveClick: () -> Unit,
+)
+
 @Composable
 private fun CreateSudokuHeaderRow(
-    viewModel: CreateSudokuViewModel,
-    navigateBack: () -> Unit,
+    state: CreateSudokuHeaderState,
+    actions: CreateSudokuHeaderActions,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -158,30 +176,33 @@ private fun CreateSudokuHeaderRow(
     ) {
         Row {
             Box {
-                DifficultyMenuButton(viewModel)
+                DifficultyMenuButton(state.gameDifficultyRes, actions.onChangeDifficulty)
             }
             // allow changing a game type only when creating a new sudoku
-            if (viewModel.gameUid == -1L) {
+            if (state.isNewSudoku) {
                 Box {
-                    GameTypeMenuButton(viewModel)
+                    GameTypeMenuButton(state.gameTypeRes, actions.onChangeGameType)
                 }
             }
         }
         FilledTonalButton(
-            enabled = !viewModel.gameBoard.flatten().all { it.value == 0 },
-            onClick = {
-                if (viewModel.saveGame()) {
-                    navigateBack()
-                }
-            },
+            enabled = state.canSave,
+            onClick = actions.onSaveClick,
         ) {
             Text(stringResource(R.string.action_save))
         }
     }
 }
 
+internal data class CreateSudokuBoardPrefs(
+    val highlightIdentical: Boolean,
+    val positionLines: Boolean,
+    val crossHighlight: Boolean,
+    val fontSizeValue: TextUnit,
+)
+
 @Composable
-private fun CreateSudokuBoardSection(viewModel: CreateSudokuViewModel) {
+private fun rememberCreateSudokuBoardPrefs(viewModel: CreateSudokuViewModel): CreateSudokuBoardPrefs {
     val highlightIdentical by viewModel.highlightIdentical.collectAsState(
         initial = PreferencesConstants.DEFAULT_HIGHLIGHT_IDENTICAL,
     )
@@ -200,44 +221,71 @@ private fun CreateSudokuBoardSection(viewModel: CreateSudokuViewModel) {
     val crossHighlight by viewModel.crossHighlight.collectAsState(
         initial = PreferencesConstants.DEFAULT_BOARD_CROSS_HIGHLIGHT,
     )
+    return CreateSudokuBoardPrefs(highlightIdentical, positionLines, crossHighlight, fontSizeValue)
+}
+
+internal data class CreateSudokuBoardState(
+    val gameBoard: List<List<Cell>>,
+    val gameTypeSize: Int,
+    val currCell: Cell,
+)
+
+@Composable
+private fun CreateSudokuBoardSection(
+    boardState: CreateSudokuBoardState,
+    prefs: CreateSudokuBoardPrefs,
+    onCellClick: (Cell) -> Unit,
+) {
     Board(
         modifier = Modifier.padding(vertical = 12.dp),
-        data = BoardData(board = viewModel.gameBoard, size = viewModel.gameType.size),
+        data = BoardData(board = boardState.gameBoard, size = boardState.gameTypeSize),
         interaction =
             BoardInteraction(
-                selectedCell = viewModel.currCell,
-                onClick = { cell -> viewModel.processInput(cell = cell) },
+                selectedCell = boardState.currCell,
+                onClick = onCellClick,
             ),
         style =
             BoardStyle(
                 boardColors = LocalBoardColors.current,
-                textSizes = BoardTextSizes(mainTextSize = fontSizeValue),
+                textSizes = BoardTextSizes(mainTextSize = prefs.fontSizeValue),
                 displayOptions =
                     BoardDisplayOptions(
-                        identicalNumbersHighlight = highlightIdentical,
-                        positionLines = positionLines,
-                        crossHighlight = crossHighlight,
+                        identicalNumbersHighlight = prefs.highlightIdentical,
+                        positionLines = prefs.positionLines,
+                        crossHighlight = prefs.crossHighlight,
                     ),
             ),
     )
 }
 
-@Composable
-private fun CreateSudokuKeyboardSection(viewModel: CreateSudokuViewModel) {
-    val funKeyboardOverNum by viewModel.funKeyboardOverNum.collectAsStateWithLifecycle(
-        initialValue = PreferencesConstants.DEFAULT_FUN_KEYBOARD_OVER_NUM,
-    )
+internal data class CreateSudokuKeyboardState(
+    val gameTypeSize: Int,
+    val digitFirstNumber: Int,
+    val funKeyboardOverNum: Boolean,
+)
 
+internal data class CreateSudokuKeyboardActions(
+    val onProcessInputKeyboard: (number: Int, longTap: Boolean) -> Unit,
+    val onUndoClick: () -> Unit,
+    val onRedoClick: () -> Unit,
+    val onEraseClick: () -> Unit,
+)
+
+@Composable
+private fun CreateSudokuKeyboardSection(
+    state: CreateSudokuKeyboardState,
+    actions: CreateSudokuKeyboardActions,
+) {
     Column(
-        verticalArrangement = if (funKeyboardOverNum) ReverseArrangement else Arrangement.Top,
+        verticalArrangement = if (state.funKeyboardOverNum) ReverseArrangement else Arrangement.Top,
     ) {
         DefaultGameKeyboard(
-            size = viewModel.gameType.size,
+            size = state.gameTypeSize,
             state =
                 KeyboardState(
                     remainingUses = null,
-                    selected = viewModel.digitFirstNumber,
-                    handlers = keyboardClickHandlers(viewModel::processInputKeyboard),
+                    selected = state.digitFirstNumber,
+                    handlers = keyboardClickHandlers(actions.onProcessInputKeyboard),
                 ),
         )
         Row(
@@ -247,77 +295,75 @@ private fun CreateSudokuKeyboardSection(viewModel: CreateSudokuViewModel) {
             ToolbarItem(
                 modifier = Modifier.weight(UNDO_REDO_ITEM_WEIGHT),
                 painter = painterResource(R.drawable.ic_round_undo_24),
-                onClick = { viewModel.toolbarClick(ToolBarItem.Undo) },
+                onClick = actions.onUndoClick,
             )
 
             ToolbarItem(
                 modifier = Modifier.weight(UNDO_REDO_ITEM_WEIGHT),
                 painter = rememberVectorPainter(Icons.Rounded.Redo),
-                onClick = { viewModel.toolbarClick(ToolBarItem.Redo) },
+                onClick = actions.onRedoClick,
             )
 
             ToolbarItem(
                 modifier = Modifier.weight(1f),
                 painter = painterResource(R.drawable.ic_eraser_24),
-                onClick = {
-                    viewModel.toolbarClick(ToolBarItem.Remove)
-                },
+                onClick = actions.onEraseClick,
             )
         }
     }
 }
 
+internal data class CreateSudokuDialogsState(
+    val importStringDialog: Boolean,
+    val importStringValue: String,
+    val importTextFieldError: Boolean,
+    val multipleSolutionsDialog: Boolean,
+    val noSolutionsDialog: Boolean,
+)
+
+internal data class CreateSudokuDialogsActions(
+    val onImportStringValueChange: (String) -> Unit,
+    val onConfirmImportString: () -> Unit,
+    val onDismissImportStringDialog: () -> Unit,
+    val onDismissMultipleSolutionsDialog: () -> Unit,
+    val onDismissNoSolutionsDialog: () -> Unit,
+)
+
 @Composable
 private fun CreateSudokuDialogs(
-    viewModel: CreateSudokuViewModel,
-    importStringDialog: Boolean,
-    onDismissImportStringDialog: () -> Unit,
+    state: CreateSudokuDialogsState,
+    actions: CreateSudokuDialogsActions,
 ) {
-    if (importStringDialog) {
+    if (state.importStringDialog) {
         ImportStringSudokuDialog(
-            textValue = viewModel.importStringValue,
-            onTextChange = {
-                viewModel.importStringValue = it
-                viewModel.importTextFieldError = false
-            },
-            isError = viewModel.importTextFieldError,
-            onConfirm = {
-                viewModel.setFromString(viewModel.importStringValue.trim()).also {
-                    viewModel.importTextFieldError = !it
-                    if (it) {
-                        onDismissImportStringDialog()
-                        viewModel.importStringValue = ""
-                    }
-                }
-            },
-            onDismiss = onDismissImportStringDialog,
+            textValue = state.importStringValue,
+            onTextChange = actions.onImportStringValueChange,
+            isError = state.importTextFieldError,
+            onConfirm = actions.onConfirmImportString,
+            onDismiss = actions.onDismissImportStringDialog,
         )
-    } else if (viewModel.multipleSolutionsDialog) {
+    } else if (state.multipleSolutionsDialog) {
         AlertDialog(
             title = { Text(stringResource(R.string.create_incorrect_puzzle)) },
             text = {
                 Text(stringResource(R.string.multiple_solution_text))
             },
-            onDismissRequest = { viewModel.multipleSolutionsDialog = false },
+            onDismissRequest = actions.onDismissMultipleSolutionsDialog,
             confirmButton = {
-                TextButton(onClick = {
-                    viewModel.multipleSolutionsDialog = false
-                }) {
+                TextButton(onClick = actions.onDismissMultipleSolutionsDialog) {
                     Text(stringResource(R.string.dialog_ok))
                 }
             },
         )
-    } else if (viewModel.noSolutionsDialog) {
+    } else if (state.noSolutionsDialog) {
         AlertDialog(
             title = { Text(stringResource(R.string.create_incorrect_puzzle)) },
             text = {
                 Text(stringResource(R.string.no_solution_text))
             },
-            onDismissRequest = { viewModel.noSolutionsDialog = false },
+            onDismissRequest = actions.onDismissNoSolutionsDialog,
             confirmButton = {
-                TextButton(onClick = {
-                    viewModel.noSolutionsDialog = false
-                }) {
+                TextButton(onClick = actions.onDismissNoSolutionsDialog) {
                     Text(stringResource(R.string.dialog_ok))
                 }
             },
@@ -330,11 +376,19 @@ private fun CreateSudokuDialogs(
 fun CreateSudokuScreen(
     navigateBack: () -> Unit,
     viewModel: CreateSudokuViewModel,
+    modifier: Modifier = Modifier,
 ) {
     var importStringDialog by remember { mutableStateOf(false) }
+    val isNewSudoku = viewModel.gameUid == -1L
+    val boardPrefs = rememberCreateSudokuBoardPrefs(viewModel)
+    val funKeyboardOverNum by viewModel.funKeyboardOverNum.collectAsStateWithLifecycle(
+        initialValue = PreferencesConstants.DEFAULT_FUN_KEYBOARD_OVER_NUM,
+    )
+
     Scaffold(
+        modifier = modifier,
         topBar = {
-            CreateSudokuTopBar(viewModel, navigateBack) { importStringDialog = true }
+            CreateSudokuTopBar(isNewSudoku, navigateBack) { importStringDialog = true }
         },
     ) { paddingValues ->
         Column(
@@ -344,10 +398,79 @@ fun CreateSudokuScreen(
                     .padding(paddingValues)
                     .padding(horizontal = 12.dp),
         ) {
-            CreateSudokuHeaderRow(viewModel, navigateBack)
-            CreateSudokuBoardSection(viewModel)
-            CreateSudokuKeyboardSection(viewModel)
-            CreateSudokuDialogs(viewModel, importStringDialog) { importStringDialog = false }
+            CreateSudokuHeaderRow(
+                state =
+                    CreateSudokuHeaderState(
+                        isNewSudoku = isNewSudoku,
+                        gameDifficultyRes = viewModel.gameDifficulty.resName,
+                        gameTypeRes = viewModel.gameType.resName,
+                        canSave = !viewModel.gameBoard.flatten().all { it.value == 0 },
+                    ),
+                actions =
+                    CreateSudokuHeaderActions(
+                        onChangeDifficulty = viewModel::changeGameDifficulty,
+                        onChangeGameType = viewModel::changeGameType,
+                        onSaveClick = {
+                            if (viewModel.saveGame()) {
+                                navigateBack()
+                            }
+                        },
+                    ),
+            )
+            CreateSudokuBoardSection(
+                boardState =
+                    CreateSudokuBoardState(
+                        gameBoard = viewModel.gameBoard,
+                        gameTypeSize = viewModel.gameType.size,
+                        currCell = viewModel.currCell,
+                    ),
+                prefs = boardPrefs,
+                onCellClick = { cell -> viewModel.processInput(cell = cell) },
+            )
+            CreateSudokuKeyboardSection(
+                state =
+                    CreateSudokuKeyboardState(
+                        gameTypeSize = viewModel.gameType.size,
+                        digitFirstNumber = viewModel.digitFirstNumber,
+                        funKeyboardOverNum = funKeyboardOverNum,
+                    ),
+                actions =
+                    CreateSudokuKeyboardActions(
+                        onProcessInputKeyboard = viewModel::processInputKeyboard,
+                        onUndoClick = { viewModel.toolbarClick(ToolBarItem.Undo) },
+                        onRedoClick = { viewModel.toolbarClick(ToolBarItem.Redo) },
+                        onEraseClick = { viewModel.toolbarClick(ToolBarItem.Remove) },
+                    ),
+            )
+            CreateSudokuDialogs(
+                state =
+                    CreateSudokuDialogsState(
+                        importStringDialog = importStringDialog,
+                        importStringValue = viewModel.importStringValue,
+                        importTextFieldError = viewModel.importTextFieldError,
+                        multipleSolutionsDialog = viewModel.multipleSolutionsDialog,
+                        noSolutionsDialog = viewModel.noSolutionsDialog,
+                    ),
+                actions =
+                    CreateSudokuDialogsActions(
+                        onImportStringValueChange = {
+                            viewModel.importStringValue = it
+                            viewModel.importTextFieldError = false
+                        },
+                        onConfirmImportString = {
+                            viewModel.setFromString(viewModel.importStringValue.trim()).also {
+                                viewModel.importTextFieldError = !it
+                                if (it) {
+                                    importStringDialog = false
+                                    viewModel.importStringValue = ""
+                                }
+                            }
+                        },
+                        onDismissImportStringDialog = { importStringDialog = false },
+                        onDismissMultipleSolutionsDialog = { viewModel.multipleSolutionsDialog = false },
+                        onDismissNoSolutionsDialog = { viewModel.noSolutionsDialog = false },
+                    ),
+            )
         }
     }
 }

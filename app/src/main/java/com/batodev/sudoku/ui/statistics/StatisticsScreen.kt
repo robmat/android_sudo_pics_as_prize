@@ -24,7 +24,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -48,6 +47,7 @@ import com.batodev.sudoku.data.database.model.Record
 import com.batodev.sudoku.data.database.model.SavedGame
 import com.batodev.sudoku.ui.components.EmptyScreen
 import com.batodev.sudoku.ui.components.HelpCard
+import kotlinx.coroutines.flow.Flow
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,17 +56,18 @@ fun StatisticsScreen(
     navigateHistory: () -> Unit,
     navigateSavedGame: (Long) -> Unit,
     viewModel: StatisticsViewModel,
+    modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val dateFormat by viewModel.dateFormat.collectAsStateWithLifecycle(initialValue = "")
     Scaffold(
         modifier =
-            Modifier
+            modifier
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = { StatisticsTopBar(scrollBehavior, navigateHistory) },
     ) { scaffoldPadding ->
-        val recordListState = viewModel.recordList.collectAsState(initial = emptyList())
-        val savedGameList = viewModel.savedGamesList.collectAsState(initial = emptyList())
+        val recordList by viewModel.recordList.collectAsState(initial = emptyList())
+        val savedGameList by viewModel.savedGamesList.collectAsState(initial = emptyList())
 
         Column(
             modifier =
@@ -79,19 +80,43 @@ fun StatisticsScreen(
             ChipRowDifficulty(
                 items = statisticsDifficultyFilters(),
                 selected = viewModel.selectedDifficulty,
-                onSelected = { viewModel.setDifficulty(it) },
+                onSelect = { viewModel.setDifficulty(it) },
             )
             ChipRowType(
                 types = statisticsTypeFilters(),
                 selected = viewModel.selectedType,
-                onSelected = { viewModel.setType(it) },
+                onSelect = { viewModel.setType(it) },
             )
 
-            if (recordListState.value.isNotEmpty()) {
+            if (recordList.isNotEmpty()) {
                 RecordsStatisticsContent(
-                    recordListState = recordListState,
+                    recordList = recordList,
                     savedGameList = savedGameList,
-                    viewModel = viewModel,
+                    filterState =
+                        StatisticsFilterState(
+                            selectedDifficulty = viewModel.selectedDifficulty,
+                            selectedType = viewModel.selectedType,
+                        ),
+                    tipCards =
+                        StatisticsTipCards(
+                            recordTipCard = viewModel.recordTipCard,
+                            onSetRecordTipCard = viewModel::setRecordTipCard,
+                            streakTipCard = viewModel.streakTipCard,
+                            onSetStreakTipCard = viewModel::setStreakTipCard,
+                        ),
+                    streakActions =
+                        StatisticsStreakActions(
+                            getWinRate = viewModel::getWinRate,
+                            getCurrentStreak = viewModel::getCurrentStreak,
+                            getMaxStreak = viewModel::getMaxStreak,
+                        ),
+                    bestGamesState = BestGamesState(showDeleteDialog = viewModel.showDeleteDialog),
+                    bestGamesActions =
+                        BestGamesActions(
+                            onShowDeleteDialog = { viewModel.showDeleteDialog = true },
+                            onDismissDeleteDialog = { viewModel.showDeleteDialog = false },
+                            onDeleteRecord = viewModel::deleteRecord,
+                        ),
                     dateFormat = dateFormat,
                     navigateSavedGame = navigateSavedGame,
                 )
@@ -104,39 +129,71 @@ fun StatisticsScreen(
 
 private const val BEST_GAMES_SHOWN_COUNT = 5
 
+internal data class StatisticsFilterState(
+    val selectedDifficulty: GameDifficulty,
+    val selectedType: GameType,
+)
+
+internal data class StatisticsTipCards(
+    val recordTipCard: Flow<Boolean>,
+    val onSetRecordTipCard: (Boolean) -> Unit,
+    val streakTipCard: Flow<Boolean>,
+    val onSetStreakTipCard: (Boolean) -> Unit,
+)
+
+internal data class StatisticsStreakActions(
+    val getWinRate: (List<SavedGame>) -> Float,
+    val getCurrentStreak: (List<SavedGame>) -> Int,
+    val getMaxStreak: (List<SavedGame>) -> Int,
+)
+
+internal data class BestGamesState(
+    val showDeleteDialog: Boolean,
+)
+
+internal data class BestGamesActions(
+    val onShowDeleteDialog: () -> Unit,
+    val onDismissDeleteDialog: () -> Unit,
+    val onDeleteRecord: (Record) -> Unit,
+)
+
 @Composable
 private fun RecordsStatisticsContent(
-    recordListState: State<List<Record>>,
-    savedGameList: State<List<SavedGame>>,
-    viewModel: StatisticsViewModel,
+    recordList: List<Record>,
+    savedGameList: List<SavedGame>,
+    filterState: StatisticsFilterState,
+    tipCards: StatisticsTipCards,
+    streakActions: StatisticsStreakActions,
+    bestGamesState: BestGamesState,
+    bestGamesActions: BestGamesActions,
     dateFormat: String,
     navigateSavedGame: (Long) -> Unit,
-) {
+) = Column {
     var averageTime by remember {
         mutableStateOf(
             DateUtils.formatElapsedTime(
-                recordListState.value.sumOf { it.time.seconds } / recordListState.value.count(),
+                recordList.sumOf { it.time.seconds } / recordList.count(),
             ),
         )
     }
     var bestTime by remember {
         mutableStateOf(
             DateUtils.formatElapsedTime(
-                recordListState.value
+                recordList
                     .first()
                     .time.seconds,
             ),
         )
     }
-    LaunchedEffect(recordListState.value) {
+    LaunchedEffect(recordList) {
         averageTime =
             DateUtils.formatElapsedTime(
-                recordListState.value
-                    .sumOf { it.time.seconds } / recordListState.value.count(),
+                recordList
+                    .sumOf { it.time.seconds } / recordList.count(),
             )
         bestTime =
             DateUtils.formatElapsedTime(
-                recordListState.value
+                recordList
                     .first()
                     .time.seconds,
             )
@@ -150,51 +207,52 @@ private fun RecordsStatisticsContent(
                 listOf(stringResource(R.string.average_time), averageTime),
             ),
     )
-    if (viewModel.selectedDifficulty == GameDifficulty.Unspecified) {
-        OverallStatisticsContent(savedGameList, viewModel)
+    if (filterState.selectedDifficulty == GameDifficulty.Unspecified) {
+        OverallStatisticsContent(savedGameList, streakActions, tipCards)
     }
-    BestGamesList(recordListState, viewModel, dateFormat, navigateSavedGame)
-    val recordCard = viewModel.recordTipCard.collectAsState(initial = false)
-    AnimatedVisibility(visible = recordCard.value) {
+    BestGamesList(recordList, filterState, bestGamesState, bestGamesActions, dateFormat, navigateSavedGame)
+    val recordCard by tipCards.recordTipCard.collectAsState(initial = false)
+    AnimatedVisibility(visible = recordCard) {
         HelpCard(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
             title = stringResource(R.string.tip_card_records_list_title),
             details = stringResource(R.string.tip_card_records_list_summ),
             painter = painterResource(R.drawable.ic_outline_help_outline_24),
-            onCloseClicked = { viewModel.setRecordTipCard(false) },
+            onClose = { tipCards.onSetRecordTipCard(false) },
         )
     }
 }
 
 @Composable
 private fun OverallStatisticsContent(
-    savedGameList: State<List<SavedGame>>,
-    viewModel: StatisticsViewModel,
-) {
-    GamesOverallStatistics(savedGameList, viewModel)
-    WinStreakStatistics(savedGameList, viewModel)
+    savedGameList: List<SavedGame>,
+    streakActions: StatisticsStreakActions,
+    tipCards: StatisticsTipCards,
+) = Column {
+    GamesOverallStatistics(savedGameList, streakActions)
+    WinStreakStatistics(savedGameList, streakActions, tipCards)
 }
 
 @Composable
 private fun GamesOverallStatistics(
-    savedGameList: State<List<SavedGame>>,
-    viewModel: StatisticsViewModel,
+    savedGameList: List<SavedGame>,
+    streakActions: StatisticsStreakActions,
 ) {
     val gamesStarted by remember {
-        mutableStateOf(savedGameList.value.count().toString())
+        mutableStateOf(savedGameList.count().toString())
     }
     val gamesCompleted by remember {
         mutableStateOf(
-            savedGameList.value
+            savedGameList
                 .count { it.completed && !it.giveUp && !it.canContinue }
                 .toString(),
         )
     }
     val winRate =
-        if (savedGameList.value.isNotEmpty()) {
+        if (savedGameList.isNotEmpty()) {
             stringResource(
                 R.string.win_rate_percentage,
-                viewModel.getWinRate(savedGameList.value).roundToInt(),
+                streakActions.getWinRate(savedGameList).roundToInt(),
             )
         } else {
             stringResource(R.string.no_value_default)
@@ -211,17 +269,18 @@ private fun GamesOverallStatistics(
 
 @Composable
 private fun WinStreakStatistics(
-    savedGameList: State<List<SavedGame>>,
-    viewModel: StatisticsViewModel,
-) {
+    savedGameList: List<SavedGame>,
+    streakActions: StatisticsStreakActions,
+    tipCards: StatisticsTipCards,
+) = Column {
     val currentStreak by remember {
         mutableStateOf(
-            viewModel.getCurrentStreak(savedGameList.value).toString(),
+            streakActions.getCurrentStreak(savedGameList).toString(),
         )
     }
     val maxStreak by remember {
         mutableStateOf(
-            viewModel.getMaxStreak(savedGameList.value).toString(),
+            streakActions.getMaxStreak(savedGameList).toString(),
         )
     }
 
@@ -234,34 +293,36 @@ private fun WinStreakStatistics(
                 listOf(stringResource(R.string.best_streak), maxStreak),
             ),
     )
-    val streakCard = viewModel.streakTipCard.collectAsState(initial = false)
-    AnimatedVisibility(visible = streakCard.value) {
+    val streakCard by tipCards.streakTipCard.collectAsState(initial = false)
+    AnimatedVisibility(visible = streakCard) {
         HelpCard(
             modifier = Modifier.padding(horizontal = 12.dp),
             title = stringResource(R.string.win_streak),
             details = stringResource(R.string.tip_card_win_streak_summ),
             painter = painterResource(R.drawable.ic_outline_verified_24),
-            onCloseClicked = { viewModel.setStreakTipCard(false) },
+            onClose = { tipCards.onSetStreakTipCard(false) },
         )
     }
 }
 
 @Composable
 private fun BestGamesList(
-    recordListState: State<List<Record>>,
-    viewModel: StatisticsViewModel,
+    recordList: List<Record>,
+    filterState: StatisticsFilterState,
+    bestGamesState: BestGamesState,
+    bestGamesActions: BestGamesActions,
     dateFormat: String,
     navigateSavedGame: (Long) -> Unit,
-) {
+) = Column {
     StatsSectionName(
         modifier = Modifier.padding(start = 12.dp, top = 12.dp),
         title =
             stringResource(R.string.number_best_games, BEST_GAMES_SHOWN_COUNT) +
-                if (viewModel.selectedType != GameType.Unspecified &&
-                    viewModel.selectedDifficulty != GameDifficulty.Unspecified
+                if (filterState.selectedType != GameType.Unspecified &&
+                    filterState.selectedDifficulty != GameDifficulty.Unspecified
                 ) {
-                    " ${stringResource(viewModel.selectedType.resName).lowercase()} " +
-                        stringResource(viewModel.selectedDifficulty.resName).lowercase()
+                    " ${stringResource(filterState.selectedType.resName).lowercase()} " +
+                        stringResource(filterState.selectedDifficulty.resName).lowercase()
                 } else {
                     ""
                 },
@@ -277,7 +338,7 @@ private fun BestGamesList(
     ) {
         Column {
             var selectedIndex by remember { mutableIntStateOf(0) }
-            recordListState.value.take(BEST_GAMES_SHOWN_COUNT).forEachIndexed { index, record ->
+            recordList.take(BEST_GAMES_SHOWN_COUNT).forEachIndexed { index, record ->
                 RecordItem(
                     info =
                         RecordItemInfo(
@@ -292,16 +353,16 @@ private fun BestGamesList(
                     },
                     onLongClick = {
                         selectedIndex = index
-                        viewModel.showDeleteDialog = true
+                        bestGamesActions.onShowDeleteDialog()
                     },
                 )
             }
-            if (viewModel.showDeleteDialog) {
+            if (bestGamesState.showDeleteDialog) {
                 ShowDeleteDialog(
-                    onDismissRequest = { viewModel.showDeleteDialog = false },
+                    onDismissRequest = bestGamesActions.onDismissDeleteDialog,
                     onConfirm = {
-                        viewModel.deleteRecord(
-                            recordListState.value[selectedIndex],
+                        bestGamesActions.onDeleteRecord(
+                            recordList[selectedIndex],
                         )
                     },
                     index = selectedIndex,
@@ -313,8 +374,8 @@ private fun BestGamesList(
 
 @Composable
 fun OverallStatistics(
-    modifier: Modifier = Modifier,
     statsRow: List<List<String>>,
+    modifier: Modifier = Modifier,
 ) {
     StatisticsSection(
         modifier = modifier,
@@ -326,10 +387,10 @@ fun OverallStatistics(
 
 @Composable
 fun StatisticsSection(
-    modifier: Modifier = Modifier,
     title: String,
     painter: Painter,
     statRows: List<List<String>>,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier =
@@ -369,9 +430,9 @@ fun StatisticsSection(
 
 @Composable
 fun StatsSectionName(
-    modifier: Modifier = Modifier,
     title: String,
     painter: Painter,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier =

@@ -29,7 +29,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,7 +45,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.batodev.sudoku.R
-import com.batodev.sudoku.data.database.model.Folder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -168,18 +166,30 @@ fun NameActionDialog(
     )
 }
 
-/** The dialog-visibility flags managed by [FoldersManagementDialogs]. */
+/** The dialog-visibility flags and selected folder managed by [FoldersManagementDialogs]. */
 data class FoldersDialogsState(
-    val createFolderDialog: MutableState<Boolean>,
-    val renameFolderDialog: MutableState<Boolean>,
-    val deleteFolderDialog: MutableState<Boolean>,
-    val helpDialog: MutableState<Boolean>,
+    val createFolderDialog: Boolean,
+    val renameFolderDialog: Boolean,
+    val deleteFolderDialog: Boolean,
+    val helpDialog: Boolean,
+    val selectedFolderName: String?,
+)
+
+/** The callbacks [FoldersManagementDialogs] needs; constructed once by [FoldersScreen]. */
+data class FoldersDialogsActions(
+    val onCreateFolder: (String) -> Unit,
+    val onDismissCreateFolderDialog: () -> Unit,
+    val onRenameFolder: (String) -> Unit,
+    val onDismissRenameFolderDialog: () -> Unit,
+    val onDeleteFolder: () -> Unit,
+    val onDismissDeleteFolderDialog: () -> Unit,
+    val onDismissHelpDialog: () -> Unit,
 )
 
 @Composable
 private fun FoldersCreateDialog(
-    viewModel: FoldersViewModel,
-    createFolderDialog: MutableState<Boolean>,
+    onCreateFolder: (String) -> Unit,
+    onDismiss: () -> Unit,
 ) {
     FolderNameEntryDialog(
         header =
@@ -193,20 +203,19 @@ private fun FoldersCreateDialog(
         callbacks =
             FolderNameEntryCallbacks(
                 onValidName = {
-                    viewModel.createFolder(it)
-                    createFolderDialog.value = false
+                    onCreateFolder(it)
+                    onDismiss()
                 },
-                onDismiss = {
-                    createFolderDialog.value = false
-                },
+                onDismiss = onDismiss,
             ),
     )
 }
 
 @Composable
 private fun FoldersRenameDialog(
-    viewModel: FoldersViewModel,
-    renameFolderDialog: MutableState<Boolean>,
+    selectedFolderName: String?,
+    onRenameFolder: (String) -> Unit,
+    onDismiss: () -> Unit,
 ) {
     FolderNameEntryDialog(
         header =
@@ -218,60 +227,53 @@ private fun FoldersRenameDialog(
             ),
         initialValue =
             TextFieldValue(
-                text = viewModel.selectedFolder?.name ?: "",
-                selection = TextRange((viewModel.selectedFolder?.name ?: "").length),
+                text = selectedFolderName ?: "",
+                selection = TextRange((selectedFolderName ?: "").length),
             ),
         callbacks =
             FolderNameEntryCallbacks(
                 onValidName = {
-                    viewModel.renameFolder(it)
-                    renameFolderDialog.value = false
+                    onRenameFolder(it)
+                    onDismiss()
                 },
-                onInvalidName = {
-                    renameFolderDialog.value = false
-                },
-                onDismiss = {
-                    renameFolderDialog.value = false
-                },
+                onInvalidName = onDismiss,
+                onDismiss = onDismiss,
             ),
     )
 }
 
 @Composable
 private fun FoldersDeleteDialog(
-    viewModel: FoldersViewModel,
-    deleteFolderDialog: MutableState<Boolean>,
+    selectedFolderName: String?,
+    onDeleteFolder: () -> Unit,
+    onDismiss: () -> Unit,
 ) {
     AlertDialog(
         title = { Text(stringResource(R.string.delete_folder)) },
         text = {
-            viewModel.selectedFolder?.let {
-                Text(stringResource(R.string.dialog_delete_folder_text, it.name))
+            selectedFolderName?.let {
+                Text(stringResource(R.string.dialog_delete_folder_text, it))
             }
         },
         confirmButton = {
             TextButton(onClick = {
-                viewModel.deleteFolder()
-                deleteFolderDialog.value = false
+                onDeleteFolder()
+                onDismiss()
             }) {
                 Text(stringResource(R.string.action_delete))
             }
         },
         dismissButton = {
-            TextButton(onClick = {
-                deleteFolderDialog.value = false
-            }) {
+            TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.action_cancel))
             }
         },
-        onDismissRequest = {
-            deleteFolderDialog.value = false
-        },
+        onDismissRequest = onDismiss,
     )
 }
 
 @Composable
-private fun FoldersHelpDialog(helpDialog: MutableState<Boolean>) {
+private fun FoldersHelpDialog(onDismiss: () -> Unit) {
     AlertDialog(
         icon = {
             Icon(Icons.Rounded.Help, contentDescription = null)
@@ -284,51 +286,47 @@ private fun FoldersHelpDialog(helpDialog: MutableState<Boolean>) {
             }
         },
         confirmButton = {
-            TextButton(onClick = {
-                helpDialog.value = false
-            }) {
+            TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.dialog_ok))
             }
         },
-        onDismissRequest = {
-            helpDialog.value = false
-        },
+        onDismissRequest = onDismiss,
     )
 }
 
 @Composable
 fun FoldersManagementDialogs(
-    viewModel: FoldersViewModel,
-    dialogsState: FoldersDialogsState,
+    state: FoldersDialogsState,
+    actions: FoldersDialogsActions,
 ) {
     when {
-        dialogsState.createFolderDialog.value -> {
-            FoldersCreateDialog(viewModel, dialogsState.createFolderDialog)
+        state.createFolderDialog -> {
+            FoldersCreateDialog(actions.onCreateFolder, actions.onDismissCreateFolderDialog)
         }
 
-        dialogsState.renameFolderDialog.value -> {
-            FoldersRenameDialog(viewModel, dialogsState.renameFolderDialog)
+        state.renameFolderDialog -> {
+            FoldersRenameDialog(state.selectedFolderName, actions.onRenameFolder, actions.onDismissRenameFolderDialog)
         }
 
-        dialogsState.deleteFolderDialog.value -> {
-            FoldersDeleteDialog(viewModel, dialogsState.deleteFolderDialog)
+        state.deleteFolderDialog -> {
+            FoldersDeleteDialog(state.selectedFolderName, actions.onDeleteFolder, actions.onDismissDeleteFolderDialog)
         }
 
-        dialogsState.helpDialog.value -> {
-            FoldersHelpDialog(dialogsState.helpDialog)
+        state.helpDialog -> {
+            FoldersHelpDialog(actions.onDismissHelpDialog)
         }
     }
 }
 
-/** The dialog-visibility flags [FolderActionBottomSheet] can toggle from its action list. */
-data class FolderActionSheetState(
-    val folderActionBottomSheet: MutableState<Boolean>,
-    val renameFolderDialog: MutableState<Boolean>,
-    val deleteFolderDialog: MutableState<Boolean>,
+/** The callbacks [FolderActionBottomSheet] can trigger from its action list. */
+data class FolderActionSheetActions(
+    val onDismiss: () -> Unit,
+    val onRenameClick: () -> Unit,
+    val onDeleteClick: () -> Unit,
 )
 
 @Composable
-private fun ColumnScope.FolderActionSheetHeader(folder: Folder) {
+private fun ColumnScope.FolderActionSheetHeader(folderName: String) {
     Row(
         modifier = Modifier.align(Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
@@ -336,7 +334,7 @@ private fun ColumnScope.FolderActionSheetHeader(folder: Folder) {
         Icon(Icons.Outlined.Folder, contentDescription = null)
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = stringResource(R.string.folder_name, folder.name),
+            text = stringResource(R.string.folder_name, folderName),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
@@ -346,12 +344,12 @@ private fun ColumnScope.FolderActionSheetHeader(folder: Folder) {
 
 @Composable
 private fun FolderActionSheetItems(
-    viewModel: FoldersViewModel,
+    selectedFolderName: String?,
     coroutineScope: CoroutineScope,
-    sheetState: FolderActionSheetState,
     createDocumentLauncher: ManagedActivityResultLauncher<String, Uri?>,
+    actions: FolderActionSheetActions,
 ) {
-    val actions =
+    val items =
         listOf(
             Pair(Icons.Rounded.Edit, stringResource(R.string.edit_name)),
             Pair(Icons.Rounded.Share, stringResource(R.string.export)),
@@ -361,7 +359,7 @@ private fun FolderActionSheetItems(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
     ) {
-        actions.forEachIndexed { index, action ->
+        items.forEachIndexed { index, item ->
             Row(
                 modifier =
                     Modifier
@@ -370,13 +368,13 @@ private fun FolderActionSheetItems(
                         .clickable {
                             when (index) {
                                 0 -> {
-                                    sheetState.renameFolderDialog.value = true
+                                    actions.onRenameClick()
                                 }
 
                                 1 -> {
                                     var fileName = ""
-                                    viewModel.selectedFolder?.let {
-                                        fileName += it.name + "-"
+                                    selectedFolderName?.let {
+                                        fileName += "$it-"
                                     }
                                     fileName += LocalDateTime
                                         .now()
@@ -387,21 +385,21 @@ private fun FolderActionSheetItems(
                                 }
 
                                 2 -> {
-                                    sheetState.deleteFolderDialog.value = true
+                                    actions.onDeleteClick()
                                 }
                             }
                             coroutineScope.launch {
-                                sheetState.folderActionBottomSheet.value = false
+                                actions.onDismiss()
                             }
                         },
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
                     modifier = Modifier.padding(12.dp),
-                    imageVector = action.first,
+                    imageVector = item.first,
                     contentDescription = null,
                 )
-                Text(action.second)
+                Text(item.second)
             }
         }
     }
@@ -410,13 +408,13 @@ private fun FolderActionSheetItems(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FolderActionBottomSheet(
-    viewModel: FoldersViewModel,
+    selectedFolderName: String?,
     coroutineScope: CoroutineScope,
-    sheetState: FolderActionSheetState,
     createDocumentLauncher: ManagedActivityResultLauncher<String, Uri?>,
+    actions: FolderActionSheetActions,
 ) {
-    ModalBottomSheet(onDismissRequest = { sheetState.folderActionBottomSheet.value = false }) {
-        viewModel.selectedFolder?.let { FolderActionSheetHeader(it) }
-        FolderActionSheetItems(viewModel, coroutineScope, sheetState, createDocumentLauncher)
+    ModalBottomSheet(onDismissRequest = actions.onDismiss) {
+        selectedFolderName?.let { FolderActionSheetHeader(it) }
+        FolderActionSheetItems(selectedFolderName, coroutineScope, createDocumentLauncher, actions)
     }
 }

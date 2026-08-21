@@ -43,10 +43,11 @@ import javax.inject.Inject
 fun WelcomeScreen(
     navigateToGame: () -> Unit,
     viewModel: WelcomeViewModel,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier =
-            Modifier
+            modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .systemBarsPadding(),
@@ -82,9 +83,10 @@ fun FirstPage(
     selectedCell: Cell,
     board: List<List<Cell>>,
     onFinishedClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ) {

@@ -21,7 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.batodev.sudoku.R
 import com.batodev.sudoku.ui.theme.SudokuTheme
-import com.batodev.sudoku.ui.util.LightDarkPreview
+import com.batodev.sudoku.ui.util.PreviewLightDark
 
 enum class ToolBarItem {
     Undo,
@@ -34,8 +34,8 @@ enum class ToolBarItem {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ToolbarItem(
-    modifier: Modifier = Modifier,
     painter: Painter,
+    modifier: Modifier = Modifier,
     toggled: Boolean = false,
     onClick: () -> Unit = { },
     onLongClick: () -> Unit = { },
@@ -79,7 +79,7 @@ fun ToolbarItem(
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun KeyboardItemPreview() {
     SudokuTheme {
