@@ -283,7 +283,7 @@ private fun Modifier.drawScrollbar(
 
     val color = BarColor
 
-    return Modifier
+    return this
         .nestedScroll(nestedScrollConnection)
         .drawWithContent {
             drawContent()

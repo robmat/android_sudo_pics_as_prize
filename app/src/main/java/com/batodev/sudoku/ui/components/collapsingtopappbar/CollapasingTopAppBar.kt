@@ -97,39 +97,30 @@ private fun rememberContainerColor(
     )
 }
 
-// Both Text()s below are separate layoutId'd children measured independently by the enclosing
-// custom Layout (expanded vs. collapsed title, crossfaded by alpha) - they cannot be merged into
-// a single emitter without breaking that measurement. compose-rules' multiple-emitters-check
-// flags this; it does not apply cleanly to raw Layout-based custom layouts like this one.
+// The expanded and collapsed titles are separate layoutId'd children measured independently by the
+// enclosing custom Layout (crossfaded by alpha) - they cannot be merged into a single emitter
+// without breaking that measurement. Each title is therefore its own single-emitter composable and
+// both are emitted directly from the Layout content lambda, where multiple emissions are allowed.
 @Composable
-private fun CollapsingTitleTexts(
+private fun ExpandedTitleText(
     collapsingTitle: CollapsingTitle,
     collapsingTitleScale: Float,
 ) {
     Text(
-        modifier =
-            Modifier
-                .layoutId(EXPANDED_TITLE_ID)
-                .wrapContentHeight(align = Alignment.Top)
-                .graphicsLayer(
-                    scaleX = collapsingTitleScale,
-                    scaleY = collapsingTitleScale,
-                    transformOrigin = TransformOrigin(0f, 0f),
-                ),
+        modifier = Modifier.collapsingTitle(EXPANDED_TITLE_ID, collapsingTitleScale),
         text = collapsingTitle.titleText,
         style = collapsingTitle.expandedTextStyle,
         color = collapsingTitle.color,
     )
+}
+
+@Composable
+private fun CollapsedTitleText(
+    collapsingTitle: CollapsingTitle,
+    collapsingTitleScale: Float,
+) {
     Text(
-        modifier =
-            Modifier
-                .layoutId(COLLAPSED_TITLE_ID)
-                .wrapContentHeight(align = Alignment.Top)
-                .graphicsLayer(
-                    scaleX = collapsingTitleScale,
-                    scaleY = collapsingTitleScale,
-                    transformOrigin = TransformOrigin(0f, 0f),
-                ),
+        modifier = Modifier.collapsingTitle(COLLAPSED_TITLE_ID, collapsingTitleScale),
         text = collapsingTitle.titleText,
         style = collapsingTitle.expandedTextStyle,
         color = collapsingTitle.color,
@@ -138,63 +129,21 @@ private fun CollapsingTitleTexts(
     )
 }
 
-// Each child below carries its own layoutId and is measured/placed independently by the
-// enclosing custom Layout - they are the slots of a multi-slot app bar, not incidental sibling
-// emissions, so they cannot be wrapped into a single emitter. Same structural exception as
-// CollapsingTitleTexts above.
-@Composable
-private fun TopAppBarChildren(
-    content: CollapsingTopAppBarContent,
-    collapsingTitleScale: Float,
-) {
-    if (content.collapsingTitle != null) {
-        CollapsingTitleTexts(content.collapsingTitle, collapsingTitleScale)
-    }
-
-    if (content.navigationIcon != null) {
-        Box(
-            modifier =
-                Modifier
-                    .wrapContentSize()
-                    .layoutId(NAVIGATION_ICON_ID),
-        ) {
-            content.navigationIcon.invoke()
-        }
-    }
-
-    if (content.actions != null) {
-        Row(
-            modifier =
-                Modifier
-                    .wrapContentSize()
-                    .layoutId(ACTIONS_ID),
-        ) {
-            content.actions.invoke(this)
-        }
-    }
-
-    if (content.centralContent != null) {
-        Box(
-            modifier =
-                Modifier
-                    .wrapContentSize()
-                    .layoutId(CENTRAL_CONTENT_ID),
-        ) {
-            content.centralContent.invoke()
-        }
-    }
-
-    if (content.additionalContent != null) {
-        Box(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .layoutId(ADDITIONAL_CONTENT_ID),
-        ) {
-            content.additionalContent.invoke()
-        }
-    }
-}
+// Expanded and collapsed titles share the same layout/scale modifier chain and
+// differ only in their layoutId; extracted to a single Modifier factory so the
+// two call sites above no longer duplicate it (CPD flagged the copy-paste).
+private fun Modifier.collapsingTitle(
+    layoutId: String,
+    scale: Float,
+): Modifier =
+    this
+        .layoutId(layoutId)
+        .wrapContentHeight(align = Alignment.Top)
+        .graphicsLayer(
+            scaleX = scale,
+            scaleY = scale,
+            transformOrigin = TransformOrigin(0f, 0f),
+        )
 
 /** The child [Placeable]s measured out of a [CollapsingTopAppBar]'s [Layout] content. */
 private class TopAppBarPlaceables(
@@ -532,7 +481,60 @@ fun CollapsingTopAppBar(
         color = containerColor.value,
     ) {
         Layout(
-            content = { TopAppBarChildren(content, collapsingTitleScale) },
+            // Each child carries its own layoutId and is measured/placed independently by the
+            // custom measurePolicy below - they are the slots of a multi-slot app bar. Emitting
+            // them directly from this content lambda (rather than from a named @Composable) is the
+            // form the multiple-emitters rule allows.
+            content = {
+                if (content.collapsingTitle != null) {
+                    ExpandedTitleText(content.collapsingTitle, collapsingTitleScale)
+                    CollapsedTitleText(content.collapsingTitle, collapsingTitleScale)
+                }
+
+                if (content.navigationIcon != null) {
+                    Box(
+                        modifier =
+                            Modifier
+                                .wrapContentSize()
+                                .layoutId(NAVIGATION_ICON_ID),
+                    ) {
+                        content.navigationIcon.invoke()
+                    }
+                }
+
+                if (content.actions != null) {
+                    Row(
+                        modifier =
+                            Modifier
+                                .wrapContentSize()
+                                .layoutId(ACTIONS_ID),
+                    ) {
+                        content.actions.invoke(this)
+                    }
+                }
+
+                if (content.centralContent != null) {
+                    Box(
+                        modifier =
+                            Modifier
+                                .wrapContentSize()
+                                .layoutId(CENTRAL_CONTENT_ID),
+                    ) {
+                        content.centralContent.invoke()
+                    }
+                }
+
+                if (content.additionalContent != null) {
+                    Box(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .layoutId(ADDITIONAL_CONTENT_ID),
+                    ) {
+                        content.additionalContent.invoke()
+                    }
+                }
+            },
             modifier =
                 Modifier
                     .windowInsetsPadding(config.windowInsets ?: TopAppBarDefaults.windowInsets)
