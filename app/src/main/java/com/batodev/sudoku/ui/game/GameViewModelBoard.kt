@@ -8,7 +8,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 
-internal fun GameViewModel.getBoardNoRef(): List<List<Cell>> = gameBoard.map { items -> items.map { item -> item.copy() } }
+internal fun GameViewModel.getBoardNoRef(): List<List<Cell>> =
+    gameBoard.map { items -> items.map { item -> item.copy() } }
 
 internal fun GameViewModel.countRemainingUses(board: List<List<Cell>>): MutableList<Int> {
     val uses = mutableListOf<Int>()

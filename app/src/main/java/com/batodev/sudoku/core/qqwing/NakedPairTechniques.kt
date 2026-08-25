@@ -67,8 +67,14 @@ internal class NakedPairTechniques(
             val reductions =
                 listOf(
                     { row == cellToRowInternal(position2) && tryReduceRow(round, position, position2, row) },
-                    { column == cellToColumnInternal(position2) && tryReduceColumn(round, position, position2, column) },
-                    { section == cellToSectionStartCellInternal(position2) && tryReduceSection(round, position, position2) },
+                    {
+                        column == cellToColumnInternal(position2) &&
+                            tryReduceColumn(round, position, position2, column)
+                    },
+                    {
+                        section == cellToSectionStartCellInternal(position2) &&
+                            tryReduceSection(round, position, position2)
+                    },
                 )
             if (reductions.any { it() }) return true
         }
@@ -78,7 +84,8 @@ internal class NakedPairTechniques(
     private fun isNakedPairCandidate(
         position: Int,
         position2: Int,
-    ): Boolean = position != position2 && countPossibilities(position2) == 2 && arePossibilitiesSame(position, position2)
+    ): Boolean =
+        position != position2 && countPossibilities(position2) == 2 && arePossibilitiesSame(position, position2)
 
     private fun tryReduceRow(
         round: Int,

@@ -112,8 +112,6 @@ detekt {
 }
 
 dependencies {
-    detektPlugins(libs.detekt.formatting)
-
     // Behind the shared catalog's versions - still sourced from it, strictly
     // pinned to this repo's own values rather than bumped as a side effect.
     implementation(libs.androidx.core.ktx) { version { strictly("1.16.0") } }

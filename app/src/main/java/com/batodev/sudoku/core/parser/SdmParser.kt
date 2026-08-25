@@ -16,7 +16,8 @@ class SdmParser : FileImportParser {
         private const val STANDARD_BOARD_LENGTH = 81
     }
 
-    private fun isValidLine(line: String): Boolean = line.length == STANDARD_BOARD_LENGTH && line.all { char -> char.isDigit() }
+    private fun isValidLine(line: String): Boolean =
+        line.length == STANDARD_BOARD_LENGTH && line.all { char -> char.isDigit() }
 
     private fun processLine(
         line: String,

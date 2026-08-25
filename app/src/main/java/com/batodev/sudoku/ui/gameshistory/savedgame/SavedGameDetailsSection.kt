@@ -49,7 +49,10 @@ private fun savedGameStatusStringRes(
     }
 }
 
-/** The values [SavedGameDetails] and its sub-sections need; read once from [SavedGameViewModel] by [SavedGameScreen]. */
+/**
+ * The values [SavedGameDetails] and its sub-sections need; read once from [SavedGameViewModel] by
+ * [SavedGameScreen].
+ */
 internal data class SavedGameDetailsState(
     val savedGame: SavedGame?,
     val boardEntity: SudokuBoard?,

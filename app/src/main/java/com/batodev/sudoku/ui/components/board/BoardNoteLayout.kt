@@ -5,9 +5,17 @@ import com.batodev.sudoku.core.qqwing.GameType
 private const val NOTES_PER_GROUP_9X9 = 3
 private const val NOTES_PER_GROUP_12X12 = 4
 
-private fun notesPerGroupForSize(size: Int): Int = if (size == BOARD_SIZE_12X12) NOTES_PER_GROUP_12X12 else NOTES_PER_GROUP_9X9
+private fun notesPerGroupForSize(size: Int): Int =
+    if (size ==
+        BOARD_SIZE_12X12
+    ) {
+        NOTES_PER_GROUP_12X12
+    } else {
+        NOTES_PER_GROUP_9X9
+    }
 
-private fun isSupportedNoteLayoutSize(size: Int): Boolean = size == BOARD_SIZE_6X6 || size == BOARD_SIZE_9X9 || size == BOARD_SIZE_12X12
+private fun isSupportedNoteLayoutSize(size: Int): Boolean =
+    size == BOARD_SIZE_6X6 || size == BOARD_SIZE_9X9 || size == BOARD_SIZE_12X12
 
 /**
  * Which "column" (0-indexed) within a cell's mini note grid the given note [number] should be

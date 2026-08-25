@@ -1,6 +1,20 @@
 naming:
   FunctionNaming:
     ignoreAnnotated: ['Composable']
+complexity:
+  LongMethod:
+    active: true
+    ignoreAnnotated: ['Composable']
+  LongParameterList:
+    active: true
+    ignoreAnnotated: ['Composable']
+  CyclomaticComplexMethod:
+    active: true
+    ignoreAnnotated: ['Composable']
+  TooManyFunctions:
+    active: true
+    ignoreOverridden: true
+    ignoreAnnotatedFunctions: ['Composable']
 style:
   UnusedPrivateMember:
     ignoreAnnotated: ['Preview', 'PreviewLightDark']

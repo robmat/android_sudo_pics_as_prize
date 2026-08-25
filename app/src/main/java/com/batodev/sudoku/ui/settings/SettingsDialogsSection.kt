@@ -277,7 +277,11 @@ internal fun SettingsDialogs(
         }
 
         visibility.darkModeDialog -> {
-            SettingsDarkModeDialog(state.appearance.darkTheme, actions.onSelectDarkTheme, actions.onDismissDarkModeDialog)
+            SettingsDarkModeDialog(
+                state.appearance.darkTheme,
+                actions.onSelectDarkTheme,
+                actions.onDismissDarkModeDialog,
+            )
         }
 
         visibility.fontSizeDialog -> {

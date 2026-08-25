@@ -171,12 +171,18 @@ private class TopAppBarMeasureContext(
     val collapsedFraction: Float,
 )
 
-private fun MeasureScope.measureTopAppBarPlaceables(
+/** The navigation icon and actions [Placeable]s, plus the horizontal space each reserves. */
+private class NavigationActionsMeasurement(
+    val navigationIcon: Placeable?,
+    val actions: Placeable?,
+    val offsets: TopAppBarOffsets,
+)
+
+private fun MeasureScope.measureNavigationAndActions(
     measurables: List<Measurable>,
     constraints: Constraints,
     horizontalPaddingPx: Float,
-    fullyCollapsedTitleScale: Float,
-): TopAppBarPlaceables {
+): NavigationActionsMeasurement {
     val navigationIconPlaceable =
         measurables
             .firstOrNull { it.layoutId == NAVIGATION_ICON_ID }
@@ -186,6 +192,35 @@ private fun MeasureScope.measureTopAppBarPlaceables(
         measurables
             .firstOrNull { it.layoutId == ACTIONS_ID }
             ?.measure(constraints.copy(minWidth = 0))
+
+    val navigationIconOffset =
+        when (navigationIconPlaceable) {
+            null -> horizontalPaddingPx
+            else -> navigationIconPlaceable.width + horizontalPaddingPx * 2
+        }
+
+    val actionsOffset =
+        when (actionsPlaceable) {
+            null -> horizontalPaddingPx
+            else -> actionsPlaceable.width + horizontalPaddingPx * 2
+        }
+
+    return NavigationActionsMeasurement(
+        navigationIconPlaceable,
+        actionsPlaceable,
+        TopAppBarOffsets(navigationIconOffset, actionsOffset),
+    )
+}
+
+private fun MeasureScope.measureTopAppBarPlaceables(
+    measurables: List<Measurable>,
+    constraints: Constraints,
+    horizontalPaddingPx: Float,
+    fullyCollapsedTitleScale: Float,
+): TopAppBarPlaceables {
+    val navAndActions = measureNavigationAndActions(measurables, constraints, horizontalPaddingPx)
+    val navigationIconOffset = navAndActions.offsets.navigationIconOffset
+    val actionsOffset = navAndActions.offsets.actionsOffset
 
     val expandedTitlePlaceable =
         measurables
@@ -202,18 +237,6 @@ private fun MeasureScope.measureTopAppBarPlaceables(
         measurables
             .firstOrNull { it.layoutId == ADDITIONAL_CONTENT_ID }
             ?.measure(constraints)
-
-    val navigationIconOffset =
-        when (navigationIconPlaceable) {
-            null -> horizontalPaddingPx
-            else -> navigationIconPlaceable.width + horizontalPaddingPx * 2
-        }
-
-    val actionsOffset =
-        when (actionsPlaceable) {
-            null -> horizontalPaddingPx
-            else -> actionsPlaceable.width + horizontalPaddingPx * 2
-        }
 
     val collapsedTitleMaxWidthPx =
         (constraints.maxWidth - navigationIconOffset - actionsOffset) / fullyCollapsedTitleScale
@@ -240,8 +263,8 @@ private fun MeasureScope.measureTopAppBarPlaceables(
             )
 
     return TopAppBarPlaceables(
-        navigationIcon = navigationIconPlaceable,
-        actions = actionsPlaceable,
+        navigationIcon = navAndActions.navigationIcon,
+        actions = navAndActions.actions,
         expandedTitle = expandedTitlePlaceable,
         collapsedTitle = collapsedTitlePlaceable,
         centralContent = centralContentPlaceable,

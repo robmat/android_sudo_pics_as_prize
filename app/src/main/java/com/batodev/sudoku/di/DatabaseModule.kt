@@ -56,7 +56,8 @@ class DatabaseModule {
     // saved games
     @Singleton
     @Provides
-    fun provideSavedGameRepository(savedGameDao: SavedGameDao): SavedGameRepository = SavedGameRepositoryImpl(savedGameDao)
+    fun provideSavedGameRepository(savedGameDao: SavedGameDao): SavedGameRepository =
+        SavedGameRepositoryImpl(savedGameDao)
 
     @Singleton
     @Provides

@@ -153,7 +153,13 @@ class CreateSudokuViewModel
                 if ((inputMethod.value == 1 || overrideInputMethodDF) && digitFirstNumber > 0) {
                     gameBoard =
                         setValueCell(
-                            if (gameBoard[currCell.row][currCell.col].value == digitFirstNumber) 0 else digitFirstNumber,
+                            if (gameBoard[currCell.row][currCell.col].value ==
+                                digitFirstNumber
+                            ) {
+                                0
+                            } else {
+                                digitFirstNumber
+                            },
                         )
                     undoRedoManager.addState(GameState(copyBoard(gameBoard), emptyList()))
                 }
@@ -329,7 +335,8 @@ class CreateSudokuViewModel
         }
     }
 
-private fun copyBoard(board: List<List<Cell>>): List<List<Cell>> = board.map { items -> items.map { item -> item.copy() } }
+private fun copyBoard(board: List<List<Cell>>): List<List<Cell>> =
+    board.map { items -> items.map { item -> item.copy() } }
 
 private fun solvePuzzle(
     gameBoard: List<List<Cell>>,

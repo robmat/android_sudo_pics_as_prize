@@ -92,7 +92,10 @@ fun SettingsBoardTheme(
             CollapsingTopAppBar(
                 content =
                     CollapsingTopAppBarContent(
-                        collapsingTitle = CollapsingTitle.medium(titleText = stringResource(R.string.board_theme_title)),
+                        collapsingTitle =
+                            CollapsingTitle.medium(
+                                titleText = stringResource(R.string.board_theme_title),
+                            ),
                         navigationIcon = {
                             IconButton(onClick = navigateBack) {
                                 Icon(

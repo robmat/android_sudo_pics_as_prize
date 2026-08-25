@@ -75,7 +75,9 @@ class HistoryViewModel
             return result
         }
 
-        private fun applyFilterDifficulties(games: List<Pair<SavedGame, SudokuBoard>>): List<Pair<SavedGame, SudokuBoard>> =
+        private fun applyFilterDifficulties(
+            games: List<Pair<SavedGame, SudokuBoard>>,
+        ): List<Pair<SavedGame, SudokuBoard>> =
             if (filterDifficulties.isNotEmpty()) {
                 games.filter {
                     filterDifficulties.contains(it.second.difficulty)
@@ -93,7 +95,9 @@ class HistoryViewModel
                 games
             }
 
-        private fun applyFilterByGameState(games: List<Pair<SavedGame, SudokuBoard>>): List<Pair<SavedGame, SudokuBoard>> =
+        private fun applyFilterByGameState(
+            games: List<Pair<SavedGame, SudokuBoard>>,
+        ): List<Pair<SavedGame, SudokuBoard>> =
             if (filterByGameState != GameStateFilter.All) {
                 games.filter {
                     when (filterByGameState) {
