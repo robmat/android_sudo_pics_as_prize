@@ -21,7 +21,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            tools:ignore="LockedOrientationActivity"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity"
             android:screenOrientation="sensorPortrait"
             android:theme="@style/Theme.Sudoku">
             <intent-filter>
@@ -34,7 +34,8 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
 
-                <data android:scheme="content" android:host="*" />
+                <data android:scheme="content" />
+                <data android:host="*" />
                 <data android:mimeType="text/plain" />
                 <data android:mimeType="application/octet-stream" />
                 <data android:pathPattern=".*\\.sdm" />
@@ -48,7 +49,7 @@
         </activity>
         <activity
             android:name=".ui.gallery.GalleryActivity"
-            tools:ignore="LockedOrientationActivity"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity"
             android:screenOrientation="sensorPortrait"/>
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"

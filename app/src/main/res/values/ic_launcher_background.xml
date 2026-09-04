@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="ic_launcher_background">#272731</color>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Referenced via @drawable/ic_launcher_background from the adaptive-icon XML
+         (a solid color is a valid drawable) - lint's usage graph doesn't follow that
+         cross-type reference, so this is a false-positive UnusedResources hit. -->
+    <color name="ic_launcher_background" tools:ignore="UnusedResources">#272731</color>
 </resources>

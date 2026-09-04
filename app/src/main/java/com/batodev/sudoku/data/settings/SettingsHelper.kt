@@ -2,6 +2,7 @@ package com.batodev.sudoku.data.settings
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
 class SettingsHelper(
     context: Context,
@@ -15,9 +16,9 @@ class SettingsHelper(
     }
 
     fun savePreferences() {
-        val editor = sharedPreferences.edit()
-        editor.putString("uncoveredPics", preferences.uncoveredPics.joinToString(","))
-        editor.apply()
+        sharedPreferences.edit {
+            putString("uncoveredPics", preferences.uncoveredPics.joinToString(","))
+        }
     }
 
     private fun loadPreferences(): Preferences {

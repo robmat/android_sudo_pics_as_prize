@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="nav_bar_statistics">Estatísticas</string>
     <string name="nav_bar_more">Mais</string>
     <string name="nav_bar_home">Início</string>
-    <string name="new_game">Novo jogo</string>
     <string name="dialog_new_game">Jogo em andamento</string>
     <string name="dialog_new_game_text">Você tem um jogo em andamento, realmente deseja começar um novo?</string>
     <string name="dialog_new_game_positive">Novo jogo</string>
     <string name="action_cancel">Cancelar</string>
-    <string name="action_confirm">Sim</string>
     <string name="action_play">Começar</string>
     <string name="action_continue">Continuar</string>
     <string name="action_delete">Apagar</string>
@@ -24,7 +21,6 @@
     <string name="type_default_12x12">12x12</string>
     <string name="type_unspecified">Não especificado</string>
     <string name="settings_title">Configurações</string>
-    <string name="more_title">Mais</string>
     <string name="about_title">Sobre</string>
     <string name="pref_appearance">Aparência</string>
     <string name="pref_dark_theme">Modo escuro</string>
@@ -96,14 +92,9 @@
     <string name="toolbar_erase_description">Remova um número ou todas as notas selecionadas</string>
     <string name="first_game_dialog_title">Rápido tour</string>
     <string name="first_game_dialog_got_it">Entendi</string>
-    <string name="action_exit">Sair</string>
-    <string name="action_stay">Permanecer</string>
     <string name="mistakes_number_out_of">Erros %1$d/%2$d</string>
     <string name="reset_game_text">Deseja redefinir o jogo atual?</string>
     <string name="give_up_text">Você quer desistir? Depois de desistir, você pode ver a solução, mas o jogo terminará</string>
-    <string name="game_completed_text">Você completou o jogo. Você pode ficar ou sair para a tela principal para iniciar um novo jogo</string>
-    <string name="game_over">Fim de jogo</string>
-    <string name="game_over_mistakes">Você perdeu, errou três vezes &#128557;</string>
     <string name="dialog_generating">Gerando…</string>
     <string name="dialog_solving">Resolvendo…</string>
     <string name="statistics">Estatísticas</string>
@@ -130,11 +121,8 @@
     <string name="history_no_games">Você ainda não jogou</string>
     <string name="history_item_time">Tempo: %1$s</string>
     <string name="history_item_id">ID: %1$d</string>
-    <string name="history_item_can_continue">Você pode continuar este jogo</string>
-    <string name="saved_game_screen_title">Jogo #%1$d</string>
     <string name="saved_game_current">Atual</string>
     <string name="saved_game_initial">Inicial</string>
-    <string name="saved_game_progress">Progresso %1$d/%2$d</string>
     <string name="empty_screen_something_went_wrong">Ops, algo deu errado…</string>
     <string name="saved_game_difficulty">Dificuldade: %1$s</string>
     <string name="saved_game_type">Tipo: %1$s</string>
@@ -168,10 +156,8 @@
     <string name="learn_hidden_pairs_2">A partir disso, você pode concluir que essas duas células conterão apenas esses dois números, e não os outros. Assim, você pode remover marcas desnecessárias dessas células. Como acontece com pares soltos, isso funciona com colunas e linhas da mesma maneira</string>
     <string name="page_previous">Anterior</string>
     <string name="page_next">Próximo</string>
-    <string name="no_value_default" translatable="false">--</string>
     <string name="libraries_licenses_title">Licenças de código aberto</string>
     <string name="can_continue_label">Pode continuar</string>
-    <string name="custom_sudoku_title">Customizar sudoku</string>
     <string name="create_sudoku_title">Criar um sudoku</string>
     <string name="create_set_from_string">Adicionar uma palavra</string>
     <string name="dialog_ok">OK</string>
@@ -182,15 +168,10 @@
     <string name="multiple_solution_text">Este quebra-cabeça tem várias soluções. O sudoku correto deve ter uma solução única</string>
     <string name="no_solution_text">Este quebra-cabeça não tem soluções</string>
     <string name="create_import_set">Colocar</string>
-    <string name="custom_sudoku_no_added">Você ainda não adicionou nenhum sudoku</string>
-    <string name="custom_sudoku_delete_dialog_title">Remover item selecionado</string>
-    <string name="custom_sudoku_delete_dialog_text">Tem certeza de que deseja excluir os sudokus selecionados? Essa ação não pode ser desfeita</string>
     <string name="game_not_started">Não foi iniciado</string>
-    <string name="export_string_text">Selecionar texto no campo ou clique no botão copiar</string>
     <string name="export_string_title">Exportar palavras</string>
     <string name="export_string_copy">Copiar</string>
     <string name="export_string_state_copied">Copiado</string>
-    <string name="export_string_state_error">Ocorreu um erro</string>
     <string name="filter_all">Todos</string>
     <string name="filter_completed">Finalizado</string>
     <string name="filter_in_progress">Em andamento</string>
@@ -201,7 +182,6 @@
     <string name="sort_by_game_id">ID</string>
     <string name="sort_label">Ordenar</string>
     <string name="filter_label">Filtrar</string>
-    <string name="help_translate">Ajude na tradução &#129321;</string>
     <plurals name="number_puzzles_to_import">
         <item quantity="one">%1$d quebra-cabeça para importar</item>
         <item quantity="many">%1$d quebra-cabeças para importar</item>

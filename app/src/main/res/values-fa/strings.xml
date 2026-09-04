@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="more_title">بیش‌تر</string>
     <string name="about_title">درباره</string>
     <string name="pref_dark_theme_follow">مطابقت با سیستم</string>
     <string name="pref_input_cell_first">ابتدا سلول</string>
     <string name="action_deleted">حذف شده</string>
     <string name="theme_lavender">اسطوخودوس</string>
-    <string name="nav_bar_statistics">آمار</string>
     <string name="nav_bar_home">خانه</string>
     <string name="dialog_new_game">بازی در جریان</string>
     <string name="pref_board_font_size_small">کوچک</string>
     <string name="difficulty_easy">آسان</string>
     <string name="nav_bar_more">بیش‌تر</string>
-    <string name="new_game">بازی جدید</string>
-    <string name="action_confirm">بله</string>
     <string name="dialog_new_game_text">شما یک بازی ناتمام دارید، آیا بدون تردید می‌خواهید یک بازی جدید شروع کنید؟</string>
     <string name="action_delete">حذف</string>
     <string name="difficulty_unspecified">نامشخص</string>
@@ -98,14 +94,9 @@
     <string name="toolbar_erase_description">یک مقدار یا همه یادداشت ها را از سلول انتخاب شده حذف می کند</string>
     <string name="first_game_dialog_title">تور سریع</string>
     <string name="first_game_dialog_got_it">فهمیدم</string>
-    <string name="action_exit">خارج شوید</string>
-    <string name="action_stay">اقامت کردن</string>
     <string name="mistakes_number_out_of">اشتباهات %1$d/%2$d</string>
     <string name="reset_game_text">آیا می خواهید پازل فعلی را بازنشانی کنید؟</string>
     <string name="give_up_text">آیا می خواهید تسلیم شوید؟ اگر تسلیم شوید، می توانید راه حل نهایی را ببینید</string>
-    <string name="game_completed_text">شما بازی را کامل کرده اید. می توانید بمانید یا به منوی اصلی بازگردید</string>
-    <string name="game_over">بازی تمام شد</string>
-    <string name="game_over_mistakes">شما 3 اشتباه کرده اید</string>
     <string name="dialog_generating">در حال تولید…</string>
     <string name="dialog_solving">حل کردن…</string>
     <string name="statistics">آمار</string>
@@ -132,11 +123,8 @@
     <string name="history_no_games">هنوز بازی نکردی</string>
     <string name="history_item_time">زمان: %1$s</string>
     <string name="history_item_id">شناسه بازی: %1$d</string>
-    <string name="history_item_can_continue">می توانید این بازی را ادامه دهید</string>
-    <string name="saved_game_screen_title">بازی #%1$d</string>
     <string name="saved_game_current">جاری</string>
     <string name="saved_game_initial">اولیه</string>
-    <string name="saved_game_progress">پیشرفت %1$d/%2$d</string>
     <string name="saved_game_progress_percentage">پیشرفت %1$d%%</string>
     <string name="empty_screen_something_went_wrong">اوه، مشکلی پیش آمد…</string>
     <string name="saved_game_difficulty">سختی: %1$s</string>
@@ -171,10 +159,8 @@
     <string name="learn_hidden_pairs_2">می توانید نتیجه بگیرید که این دو خانه فقط شامل این دو عدد هستند و بقیه را ندارند. بنابراین می توانید نشانگرهای غیر ضروری را از این سلول ها حذف کنید. مانند جفت‌های برهنه، این کار با ستون‌ها و ردیف‌ها نیز به همین صورت عمل می‌کند</string>
     <string name="page_previous">قبلی</string>
     <string name="page_next">بعد</string>
-    <string name="no_value_default">--</string>
     <string name="libraries_licenses_title">مجوزهای منبع باز</string>
     <string name="can_continue_label">می تواند ادامه دهد</string>
-    <string name="custom_sudoku_title">سودوکو سفارشی</string>
     <string name="create_sudoku_title">سودوکو بسازید</string>
     <string name="create_set_from_string">مجموعه از یک رشته</string>
     <string name="dialog_ok">خوب</string>
@@ -185,15 +171,10 @@
     <string name="multiple_solution_text">این معما بیش از یک راه حل دارد. پازل سودوکو صحیح باید راه حل منحصر به فردی داشته باشد</string>
     <string name="no_solution_text">این معما راه حلی ندارد</string>
     <string name="create_import_set">تنظیم</string>
-    <string name="custom_sudoku_no_added">شما هنوز هیچ سودوکوس اضافه نکرده اید</string>
-    <string name="custom_sudoku_delete_dialog_title">انتخاب شده را پاک کن</string>
-    <string name="custom_sudoku_delete_dialog_text">آیا مطمئن هستید که می خواهید سودوکوس انتخاب شده را حذف کنید؟ این عمل قابل لغو نیست</string>
     <string name="game_not_started">شروع نشده است</string>
-    <string name="export_string_text">متن را از قسمت متن انتخاب کنید یا به سادگی روی دکمه کپی کلیک کنید</string>
     <string name="export_string_title">صادرات به عنوان رشته</string>
     <string name="export_string_copy">کپی &#126980;</string>
     <string name="export_string_state_copied">کپی شد</string>
-    <string name="export_string_state_error">خطا</string>
     <string name="filter_all">همه</string>
     <string name="filter_completed">تکمیل شد</string>
     <string name="filter_in_progress">در حال پیش رفت</string>
@@ -204,7 +185,6 @@
     <string name="sort_by_game_id">شناسه</string>
     <string name="sort_label">مرتب سازی</string>
     <string name="filter_label">فیلتر کنید</string>
-    <string name="help_translate">کمک به ترجمه</string>
     <string name="title_folders">پوشه ها</string>
     <string name="create_folder">یک پوشه ایجاد کنید</string>
     <string name="delete_folder">یک پوشه را حذف کنید</string>

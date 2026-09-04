@@ -2,11 +2,9 @@
 <resources>
     <string name="nav_bar_home">Kezdőlap</string>
     <string name="nav_bar_more">Több</string>
-    <string name="new_game">Új játék</string>
     <string name="dialog_new_game">Játék folyamatban</string>
     <string name="dialog_new_game_positive">Elkezdés</string>
     <string name="action_cancel">Vissza</string>
-    <string name="action_confirm">Igen</string>
     <string name="action_play">Játék</string>
     <string name="difficulty_unspecified">Meghatározatlan</string>
     <string name="difficulty_easy">Könnyű</string>
@@ -16,7 +14,6 @@
     <string name="type_default_6x6">6x6</string>
     <string name="type_default_9x9">9x9</string>
     <string name="type_unspecified">Meghatározatlan</string>
-    <string name="more_title">Több</string>
     <string name="about_title">Az appról</string>
     <string name="pref_appearance">Megjelenés</string>
     <string name="pref_dark_theme">Sötét téma</string>
@@ -36,7 +33,6 @@
     <string name="pref_pure_black">Teljesen sötét téma</string>
     <string name="pref_gameplay">Játékmenet</string>
     <string name="pref_disable_hints">Tippek kikapcsolása</string>
-    <string name="nav_bar_statistics">Statisztika</string>
     <string name="dialog_new_game_text">Nem fejezted be a játékot, tényleg szeretnél egy újat elkezdeni\?</string>
     <string name="action_delete">Törlés</string>
     <string name="action_continue">Folytatás</string>
@@ -83,7 +79,6 @@
     <string name="mistakes_number_out_of">Hibák %1$d/%2$d</string>
     <string name="reset_game_text">Szeretnéd ezt a feladványt visszaállítani\?</string>
     <string name="give_up_text">Fel szeretnéd adni\? Ha feladod, akkor láthadod a megoldást</string>
-    <string name="game_over">Vége a játéknak</string>
     <string name="best_streak">Legjobb</string>
     <string name="number_best_games">%1$d legjobb játékok</string>
     <string name="tip_card_records_list_title">Rekordok listája</string>
@@ -95,10 +90,6 @@
     <string name="action_show_solution">Megoldás mutatása</string>
     <string name="toolbar_undo_description">Visszavonás</string>
     <string name="toolbar_notes_description">Aktiválja a jegyzet módot (ceruza)</string>
-    <string name="action_exit">Kilépés</string>
-    <string name="action_stay">Maradás</string>
-    <string name="game_completed_text">Befejezted ezt a játékot. Itt maradhatsz vagy visszamehetsz a főmenübe</string>
-    <string name="game_over_mistakes">Háromszor hibáztál</string>
     <string name="dialog_generating">Generálás…</string>
     <string name="dialog_solving">Megoldás…</string>
     <string name="statistics">Statisztika</string>
@@ -132,11 +123,8 @@
     <string name="history_no_games">Még nem játszottál</string>
     <string name="history_item_time">Idő: %1$s</string>
     <string name="history_item_id">Játékazonosító: %1$d</string>
-    <string name="history_item_can_continue">Ezt a játékot folytathatod</string>
-    <string name="saved_game_screen_title">#%1$d. játék</string>
     <string name="saved_game_current">Jelenlegi</string>
     <string name="saved_game_initial">A kezdeti</string>
-    <string name="saved_game_progress">Előrehaladás %1$d/%2$d</string>
     <string name="saved_game_progress_percentage">Haladás %1$d%%</string>
     <string name="empty_screen_something_went_wrong">Hoppá! Valami rosszul sült el…</string>
     <string name="saved_game_difficulty">Nehézségi fok: %1$s</string>
@@ -171,10 +159,8 @@
     <string name="learn_hidden_pairs_2">Megállapíthatja, hogy ez a két cella csak ezt a két számot tartalmazza, a többit nem. Így ezekből a cellákból eltávolíthatja a felesleges markereket. A csupasz párokhoz hasonlóan ez az oszlopokkal és sorokkal is működik</string>
     <string name="page_previous">Előző</string>
     <string name="page_next">Következő</string>
-    <string name="no_value_default">--</string>
     <string name="libraries_licenses_title">Nyílt forráskódú licencek</string>
     <string name="can_continue_label">Folytatni lehet</string>
-    <string name="custom_sudoku_title">Egyedi sudoku</string>
     <string name="create_sudoku_title">Hozzon létre egy sudokut</string>
     <string name="create_set_from_string">Állítsa be egy karakterláncból</string>
     <string name="dialog_ok">rendben</string>
@@ -185,15 +171,10 @@
     <string name="multiple_solution_text">Ennek a rejtvénynek több megoldása is van. A helyes sudoku rejtvénynek egyedi megoldással kell rendelkeznie</string>
     <string name="no_solution_text">Ennek a rejtvénynek nincs megoldása</string>
     <string name="create_import_set">Készlet</string>
-    <string name="custom_sudoku_no_added">Még nem adtál hozzá sudokust</string>
-    <string name="custom_sudoku_delete_dialog_title">Kijelöltek eltávolítása</string>
-    <string name="custom_sudoku_delete_dialog_text">Biztosan törli a kiválasztott sudokusokat? Ez a művelet nem visszavonható</string>
     <string name="game_not_started">Nem kezdődött</string>
-    <string name="export_string_text">Válassza ki a szöveget a szövegmezőből, vagy egyszerűen kattintson a másolás gombra</string>
     <string name="export_string_title">Exportálás karakterláncként</string>
     <string name="export_string_copy">Másolat</string>
     <string name="export_string_state_copied">Másolva</string>
-    <string name="export_string_state_error">Hiba</string>
     <string name="filter_all">Minden</string>
     <string name="filter_completed">Befejezve</string>
     <string name="filter_in_progress">Folyamatban</string>
@@ -204,7 +185,6 @@
     <string name="sort_by_game_id">ID</string>
     <string name="sort_label">Fajta</string>
     <string name="filter_label">Szűrő</string>
-    <string name="help_translate">Segíts fordítani</string>
     <string name="title_folders">Mappák</string>
     <string name="create_folder">Hozzon létre egy mappát</string>
     <string name="delete_folder">Mappa törlése</string>

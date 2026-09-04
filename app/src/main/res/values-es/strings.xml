@@ -2,11 +2,9 @@
 <resources>
     <string name="nav_bar_home">Inicio</string>
     <string name="nav_bar_more">Más</string>
-    <string name="new_game">Nuevo juego</string>
     <string name="dialog_new_game">Juego en progreso</string>
     <string name="dialog_new_game_positive">Nuevo juego</string>
     <string name="action_cancel">Cancelar</string>
-    <string name="action_confirm">Sí</string>
     <string name="action_play">Jugar</string>
     <string name="action_continue">Continuar</string>
     <string name="action_delete">Eliminar</string>
@@ -22,7 +20,6 @@
     <string name="type_default_12x12">12x12</string>
     <string name="type_unspecified">No especificado</string>
     <string name="settings_title">Ajustes</string>
-    <string name="more_title">Extras</string>
     <string name="about_title">Acerca de</string>
     <string name="pref_dark_theme">Tema oscuro</string>
     <string name="pref_dark_theme_off">Desactivado</string>
@@ -54,7 +51,6 @@
     <string name="pref_mistakes_check_off">Desactivado</string>
     <string name="pref_mistakes_check_final">Con solución final</string>
     <string name="pref_highlight_identical">Destacar valores idénticos</string>
-    <string name="nav_bar_statistics">Estadísticas</string>
     <string name="dialog_new_game_text">Tienes un juego inacabado, ¿de verdad quieres empezar uno nuevo\?</string>
     <string name="pref_dark_theme_follow">Definido por el sistema</string>
     <string name="pref_appearance">Apariencia</string>
@@ -76,8 +72,6 @@
     <string name="onboard_recommendation_prefs">Te recomendamos que eches un vistazo a la pestaña de configuración para que puedas adaptar la aplicación a tus necesidades</string>
     <string name="action_start">Iniciar</string>
     <string name="toolbar_undo_description">Deshacer. Solo deshace</string>
-    <string name="action_exit">Salir</string>
-    <string name="action_stay">Quedarse</string>
     <string name="dialog_generating">Generando…</string>
     <string name="dialog_solving">Resolviendo…</string>
     <string name="statistics">Estadísticas</string>
@@ -110,14 +104,11 @@
     <string name="action_give_up">Rendirse</string>
     <string name="pref_reset_tipcards">Reinicia todas las cartas de tips</string>
     <string name="pref_tipcards_reset">Tips reiniciados!</string>
-    <string name="game_over_mistakes">Ha cometido 3 errores</string>
     <string name="toolbar_notes_description">Activa el modo de nota (marcas de lápiz)</string>
     <string name="first_game_dialog_got_it">Listo</string>
     <string name="toolbar_hint_description">Inserta el valor correcto en la celda seleccionada. Puede desactivarse en la configuración</string>
     <string name="give_up_text">¿Quieres rendirte\? Si te rindes, podrás ver la solución final</string>
     <string name="reset_game_text">¿Quieres reiniciar el puzzle actual\?</string>
-    <string name="game_over">Juego terminado</string>
-    <string name="game_completed_text">Has completado el juego. Puedes quedarte o volver al menú principal</string>
     <string name="games_started">Juegos iniciados</string>
     <string name="current_streak">Racha actual</string>
     <string name="games_completed">Juegos completados</string>
@@ -136,9 +127,6 @@
     <string name="saved_game_completed">El juego ha sido completado</string>
     <string name="history_item_time">Tiempo: %1$s</string>
     <string name="saved_game_time">Tiempo: %1$s</string>
-    <string name="history_item_can_continue">Puedes continuar esta partida</string>
-    <string name="saved_game_screen_title">Juego #%1$d</string>
-    <string name="saved_game_progress">Progreso %1$d/%2$d</string>
     <string name="saved_game_progress_percentage">Progreso %1$d%%</string>
     <string name="saved_game_type">Modo: %1$s</string>
     <string name="history_item_id">ID de juego: %1$d</string>
@@ -152,8 +140,6 @@
     <string name="game_not_started">Sin iniciar</string>
     <string name="can_continue_label">Puedes continuarlo</string>
     <string name="create_sudoku_title">Crear un sudoku</string>
-    <string name="custom_sudoku_title">Sudoku personalizado</string>
-    <string name="custom_sudoku_delete_dialog_title">Borrar seleccionados</string>
     <string name="filter_label">Filtrar</string>
     <string name="edit_name">Editar nombre</string>
     <string name="export">Exportar</string>
@@ -168,7 +154,6 @@
     <string name="filter_not_started">Sin iniciar</string>
     <string name="sort_ascending">Ascendiente</string>
     <string name="sort_descending">Descendiente</string>
-    <string name="help_translate">Ayuda a traducir</string>
     <string name="folder_name">Carpeta:%1$s</string>
     <string name="create_folder">Crear una carpeta</string>
     <string name="sort_by_timer">Tiempo</string>
@@ -200,7 +185,6 @@
     <string name="pref_highlight_identical_summ">La selección de un valor en el tablero resalta las celdas con el mismo valor</string>
     <string name="pref_boardtheme_accent">Aplicar colores acentuados</string>
     <string name="pref_boardtheme_accent_subtitle">Haz tú tablero de sudoku más colorido</string>
-    <string name="export_string_state_error">Error</string>
     <string name="first_game_dialog_title">Tour rápido</string>
     <string name="toolbar_erase_description">Elimina un valor o todas las notas de la celda seleccionada</string>
     <string name="mistakes_number_out_of">Errores %1$d/%2$d</string>
@@ -208,7 +192,6 @@
     <string name="tip_card_win_streak_summ">Una racha de victorias se reiniciará si pierdes (llegas al límite de errores), te rindes o empiezas una nueva partida sin terminar la anterior, así que ten cuidado</string>
     <string name="learn_app_toolbar_desc">Un panel bajo el teclado</string>
     <string name="learn_app_toolbar_notes_menu">Puede mantener pulsado el botón Notas para abrir el menú Notas, donde puede borrar o computar notas y alternar su visibilidad</string>
-    <string name="export_string_text">Seleccione el texto del campo de texto o simplemente haga clic en el botón copiar</string>
     <string name="sudoku_rules_mistakes">Hay un error aquí, ¿puedes encontrarlo\?, quizá incluso dos</string>
     <string name="action_move_selected">Mover seleccionados</string>
     <string name="move_games_to_folder_subtitle">Seleccione la carpeta a la que desea mover los juegos seleccionados</string>
@@ -233,8 +216,6 @@
     <string name="multiple_solution_text">Este rompecabezas tiene más de una solución. El rompecabezas sudoku correcto debe tener una solución única</string>
     <string name="no_solution_text">Este rompecabezas no tiene soluciones</string>
     <string name="create_import_set">Fijar</string>
-    <string name="custom_sudoku_no_added">Aún no has añadido ningún sudoku</string>
-    <string name="custom_sudoku_delete_dialog_text">¿Está seguro de que desea eliminar los sudokus seleccionados\? Esta acción no se puede deshacer</string>
     <string name="export_string_title">Exportar como cadena</string>
     <string name="sort_by_game_id">Identificador</string>
     <string name="sort_label">Clasificar</string>
@@ -277,7 +258,6 @@
     <string name="redo">Rehacer</string>
     <string name="app_name">Sudoku y vestidos ajustados</string>
     <string name="nav_bar_gallery">galería de fotos</string>
-    <string name="no_value_default">--</string>
     <string name="uncovered_images">Imágenes descubiertas</string>
     <string name="game_completed">Juego completado, nueva imagen agregada a la galería.</string>
     <string name="more_games_like_this">Más juegos como este</string>

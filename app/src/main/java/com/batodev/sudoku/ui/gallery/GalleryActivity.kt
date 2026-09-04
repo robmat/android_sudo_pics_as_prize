@@ -1,7 +1,6 @@
 package com.batodev.sudoku.ui.gallery
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
@@ -43,6 +42,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
@@ -196,7 +196,7 @@ private fun shareImage(
     currentPicture: String,
 ) {
     val inputStream: InputStream =
-        context.assets.open("$PRIZE_IMAGES/${Uri.parse(currentPicture).lastPathSegment}")
+        context.assets.open("$PRIZE_IMAGES/${currentPicture.toUri().lastPathSegment}")
 
     val file = File(context.filesDir, TMP_IMG_PATH)
     File(context.filesDir, TMP_SHARED).mkdirs()
@@ -211,7 +211,7 @@ private fun shareImage(
     outputStream.close()
     val shareIntent = Intent(Intent.ACTION_SEND)
     val uri =
-        Uri.parse("content://com.batodev.sudoku.data.provider.ImagesProvider/$TMP_IMG_PATH")
+        "content://com.batodev.sudoku.data.provider.ImagesProvider/$TMP_IMG_PATH".toUri()
     shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
     shareIntent.clipData = android.content.ClipData.newRawUri("", uri)
     shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

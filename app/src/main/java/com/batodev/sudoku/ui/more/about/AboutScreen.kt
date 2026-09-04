@@ -39,7 +39,7 @@ private fun AboutAppHeader() {
     ) {
         Icon(
             modifier = Modifier.size(56.dp),
-            painter = painterResource(R.drawable.ic_launcher_foreground),
+            painter = painterResource(R.drawable.ic_app_logo),
             contentDescription = null,
         )
         Text(

@@ -1,6 +1,7 @@
 package com.batodev.sudoku.data.datastore
 
 import android.content.Context
+import androidx.core.content.edit
 import com.batodev.sudoku.di.ACRA_SHARED_PREFS_NAME
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.acra.ACRA
@@ -20,9 +21,8 @@ class AcraSharedPrefs
         fun getAcraEnabled(): Boolean = prefs.getBoolean(acraEnabledKey, true)
 
         fun setAcraEnabled(enabled: Boolean) {
-            with(prefs.edit()) {
+            prefs.edit {
                 putBoolean(acraEnabledKey, enabled)
-                apply()
             }
         }
     }

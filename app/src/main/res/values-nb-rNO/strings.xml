@@ -4,7 +4,6 @@
     <string name="libraries_licenses_title">Frie lisenser</string>
     <string name="export_string_title">Eksporter som streng</string>
     <string name="export_string_copy">Kopier</string>
-    <string name="export_string_state_error">Feil</string>
     <string name="filter_all">Alle</string>
     <string name="filter_in_progress">Underveis</string>
     <string name="filter_completed">Fullført</string>
@@ -15,7 +14,6 @@
     <string name="type_unspecified">Ikke angitt</string>
     <string name="pref_mistakes_check_violations">Regelbrudd</string>
     <string name="action_cancel">Avbryt</string>
-    <string name="action_confirm">Ja</string>
     <string name="dialog_new_game_positive">Start nytt</string>
     <string name="settings_title">Innstillinger</string>
     <string name="pref_dark_theme_follow">Følg systemet</string>
@@ -23,9 +21,7 @@
     <string name="pref_app_theme">Programdrakt</string>
     <string name="theme_yellow">Gul</string>
     <string name="dialog_new_game">Spill underveis</string>
-    <string name="more_title">Mer</string>
     <string name="pref_appearance">Utseende</string>
-    <string name="new_game">Nytt spill</string>
     <string name="action_continue">Fortsett</string>
     <string name="action_delete">Slett</string>
     <string name="difficulty_unspecified">Ikke angitt</string>
@@ -44,14 +40,11 @@
     <string name="action_show_solution">Vis løsing</string>
     <string name="intro_what_is_sudoku">En klassisk soduku ser slik ut</string>
     <string name="action_start">Start</string>
-    <string name="action_stay">Bli igjen</string>
     <string name="dialog_solving">Løser …</string>
     <string name="statistics">Statistikk</string>
     <string name="games_completed">Spill fullført</string>
     <string name="win_rate">Seiersandel</string>
     <string name="best_time">Beste tid</string>
-    <string name="history_item_can_continue">Du kan fortsette dette spillet</string>
-    <string name="saved_game_progress">Framdrift %1$d/%2$d</string>
     <string name="saved_game_in_progress">Underveis</string>
     <string name="learn_screen_title">Lær</string>
     <string name="learn_tab_sudoku">Sudoku</string>
@@ -59,7 +52,6 @@
     <string name="naked_pairs_title">Nakne par</string>
     <string name="learn_basic_title">Grunnleggende</string>
     <string name="can_continue_label">Kan fortsette</string>
-    <string name="custom_sudoku_title">Egendefinert sodoku</string>
     <string name="create_sudoku_title">Opprett sodoku</string>
     <string name="create_set_from_string">Sett fra streng</string>
     <string name="dialog_ok">OK</string>
@@ -67,7 +59,6 @@
     <string name="filter_not_started">Ikke startet</string>
     <string name="nav_bar_more">Mer</string>
     <string name="difficulty_custom">Tilpasset</string>
-    <string name="nav_bar_statistics">Statistikk</string>
     <string name="action_play">Spill</string>
     <string name="difficulty_easy">Lett</string>
     <string name="difficulty_challenge">Utfordring</string>
@@ -86,7 +77,6 @@
     <string name="label_default">Forvalg</string>
     <string name="action_give_up">Gi opp</string>
     <string name="first_game_dialog_got_it">Skjønner</string>
-    <string name="action_exit">Avslutt</string>
     <string name="pref_remaining_uses">Gjenværende bruk</string>
     <string name="pref_other">Annet</string>
     <string name="pref_app_language">Programspråk</string>
@@ -97,7 +87,6 @@
     <string name="delete_question">Slett\?</string>
     <string name="about_github_project">Prosjektet på GitHub</string>
     <string name="action_show_mine_sudoku">Vis min</string>
-    <string name="game_over">Spill over</string>
     <string name="games">Spill</string>
     <string name="statistics_difficulty_filter_all">Alle</string>
     <string name="average_time">Gjen. tid</string>
@@ -105,7 +94,6 @@
     <string name="dialog_generating">Genererer …</string>
     <string name="games_started">Spill startet</string>
     <string name="history_item_time">Tid: %1$s</string>
-    <string name="saved_game_screen_title">Spill #%1$d</string>
     <string name="saved_game_current">Nåværende</string>
     <string name="saved_game_time">Tid: %1$s</string>
     <string name="history_item_id">Spill-ID: %1$d</string>
@@ -134,7 +122,6 @@
     <string name="pref_highlight_identical_summ">Valg av verdi på brettet framhever celler med samme verdi</string>
     <string name="pref_position_lines">Posisjonslinjer</string>
     <string name="mistakes_number_out_of">%1$d/%2$d feiltrinn</string>
-    <string name="game_completed_text">Du har fullført spillet. Bli her eller gå tilbake til hovedmenyen.</string>
     <string name="win_streak">Seiersrekke</string>
     <string name="best_streak">Beste seiersrekke</string>
     <string name="statistics_no_records">Du har ikke satt noen rekorder enda</string>
@@ -226,22 +213,16 @@
     <string name="multiple_solution_text">Oppgaven har mer enn én løsning. En ordentlig sudoku-oppgave må ha en unik løsning.</string>
     <string name="no_solution_text">Oppgaven har ingen løsninger</string>
     <string name="create_import_set">Sett</string>
-    <string name="custom_sudoku_no_added">Du har ikke lagt til noen sudokuer enda</string>
-    <string name="custom_sudoku_delete_dialog_title">Slett valgte</string>
     <string name="create_from_string_text">Skriv inn en oppgave i strengform. Tomme celler indikeres med «.» eller «0».</string>
     <string name="sort_label">Sortering</string>
-    <string name="export_string_text">Velg tekst fra tekstfeltet eller klikk på «Kopi»-knappen</string>
-    <string name="custom_sudoku_delete_dialog_text">Slett valgte sudokuer for godt\?</string>
     <string name="learn_basic_2">Sjekk så 8, i rad fire, tredje kolonne (F4C3). Det blokkerer hele kolonnen i vår boks. 8 kan ikke stå der.</string>
     <string name="learn_basic_5">Samme logikk brukes for rader og kolonner. 4 i første rad, kolonne 3 (R7C3) blokkerer tredje kolonne i vår rad. 4 i R3C5 blokkerer to kolonner samtidig (fire go seks), fordi 4 må være unikt for samme boks. R6C7 blokkerer kolonne syv.</string>
-    <string name="help_translate">Bistå oversettelsen</string>
     <string name="dialog_crash_report_text">Oida. Sudoku krasjet. Send en rapport til utviklerne\?</string>
     <string name="learn_app_toolbar_desc">Et panel under tastaturet</string>
     <string name="pref_disable_hints_summ">Liker du ikke hint\? De kan skrus av.</string>
     <string name="pref_reset_timer">Tilbakestill tidsuret når spillet startes på ny</string>
     <string name="reset_game_text">Tilbakestill nåværende oppgave\?</string>
     <string name="give_up_text">Gi opp\? Da vil du få den fullstendige løsningen.</string>
-    <string name="game_over_mistakes">Du har gjort tre feiltrinn</string>
     <string name="toolbar_notes_description">Aktiverer notatmodus (blyantmerker)</string>
     <string name="toolbar_hint_description">Setter inn riktig verdi i valgt celle. Kan skrus av i innstillingene.</string>
     <string name="toolbar_erase_description">Fjerner en verdi eller alle notater fra valgt celle</string>
@@ -273,7 +254,6 @@
     <string name="theme_blue">Blå</string>
     <string name="app_name">Sudoku og trange kjoler</string>
     <string name="nav_bar_gallery">Bildegalleri</string>
-    <string name="no_value_default">--</string>
     <string name="redo">Gjøre om</string>
     <string name="uncovered_images">Udekkede bilder</string>
     <string name="game_completed">Spillet er fullført, nytt bilde lagt til i galleriet</string>

@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="nav_bar_statistics">Statistiken</string>
-    <string name="new_game">Neues Spiel</string>
     <string name="dialog_new_game">Laufendes Spiel</string>
     <string name="dialog_new_game_text">Du hast bereits ein laufendes Spiel. Willst du wirklich ein neues starten\?</string>
     <string name="nav_bar_more">Mehr</string>
     <string name="nav_bar_home">Startseite</string>
     <string name="dialog_new_game_positive">Neustarten</string>
     <string name="action_cancel">Aktion abbrechen</string>
-    <string name="action_confirm">Ja</string>
     <string name="action_play">Start</string>
     <string name="action_continue">Weiterspielen</string>
     <string name="action_delete">Löschen</string>
@@ -23,7 +20,6 @@
     <string name="type_default_12x12">12x12</string>
     <string name="type_unspecified">Unspezifiziert</string>
     <string name="settings_title">Einstellungen</string>
-    <string name="more_title">Mehr</string>
     <string name="about_title">Über</string>
     <string name="pref_appearance">Aussehen</string>
     <string name="pref_dark_theme">Dunkles Design</string>
@@ -85,10 +81,6 @@
     <string name="toolbar_hint_description">Fügt die korrekt Zahl in die ausgewählte Zelle. Kann in den Einstellungen deaktiviert werden</string>
     <string name="toolbar_erase_description">Entfernt eine Zahl oder alle Notizen aus der ausgewählten Zelle</string>
     <string name="first_game_dialog_got_it">Verstanden</string>
-    <string name="action_exit">Verlassen</string>
-    <string name="game_completed_text">Du hast das Spiel abgeschlossen. Du kannst bleiben oder zurück zum Hauptbildschirm</string>
-    <string name="game_over">Spiel beendet</string>
-    <string name="game_over_mistakes">Du hast 3 Fehler gemacht</string>
     <string name="dialog_generating">Generiere…</string>
     <string name="dialog_solving">Löse…</string>
     <string name="statistics">Statistiken</string>
@@ -102,7 +94,6 @@
     <string name="history_title">Verlauf</string>
     <string name="history_no_games">Du hast noch nicht gespielt</string>
     <string name="saved_game_initial">Ursprung</string>
-    <string name="saved_game_progress">Fortschritt %1$d/%2$d</string>
     <string name="empty_screen_something_went_wrong">Ups, etwas ist schief gelaufen…</string>
     <string name="saved_game_type">Typ: %1$s</string>
     <string name="saved_game_give_up">Du hast aufgegeben</string>
@@ -122,7 +113,6 @@
     <string name="page_next">Weiter</string>
     <string name="libraries_licenses_title">Open Source Lizenzen</string>
     <string name="can_continue_label">Kann fortgeführt werden</string>
-    <string name="custom_sudoku_title">Benutzerdefiniertes Sudoku</string>
     <string name="create_sudoku_title">Erstelle ein Sudoku</string>
     <string name="create_set_from_string">Aus Zeichenkette laden</string>
     <string name="dialog_ok">Ok</string>
@@ -131,13 +121,10 @@
     <string name="multiple_solution_text">Dieses Puzzle hat mehr als eine mögliche Lösung. Ein korrektes Sudoku Puzzle muss eine eindeutige Lösung besitzen</string>
     <string name="no_solution_text">Dieses Puzzle hat keine Lösungen</string>
     <string name="create_import_set">Festlegen</string>
-    <string name="custom_sudoku_no_added">Du hast noch keine Sudoku hinzugefügt</string>
     <string name="game_not_started">Nicht begonnen</string>
-    <string name="export_string_text">Markiere Text aus dem Textfeld oder klicke einfach auf den Kopieren Button</string>
     <string name="export_string_title">Als Zeichenkette exportieren</string>
     <string name="export_string_copy">Kopieren</string>
     <string name="export_string_state_copied">Kopiert</string>
-    <string name="export_string_state_error">Fehler</string>
     <string name="filter_all">Alle</string>
     <string name="filter_completed">Abgeschlossen</string>
     <string name="filter_in_progress">In Arbeit</string>
@@ -148,7 +135,6 @@
     <string name="sort_by_game_id">Nr</string>
     <string name="sort_label">Sortieren</string>
     <string name="filter_label">Filtern</string>
-    <string name="help_translate">Hilf beim übersetzen</string>
     <string name="title_folders">Ordner</string>
     <string name="create_folder">Erstelle einen Ordner</string>
     <string name="delete_folder">Lösche einen Ordner</string>
@@ -199,7 +185,6 @@
     <string name="win_streak">Siegesserie</string>
     <string name="action_show_mine_sudoku">Zeige meine Zahlen</string>
     <string name="first_game_dialog_title">Schnell-Tour</string>
-    <string name="action_stay">Bleiben</string>
     <string name="games">Spiele</string>
     <string name="mistakes_number_out_of">Fehler %1$d/%2$d</string>
     <string name="reset_game_text">Willst du das aktuelle Puzzle zurücksetzen\?</string>
@@ -212,11 +197,9 @@
     <string name="tip_card_win_streak_summ">Eine Siegesserie wird zurückgesetzt wenn du verlierst (Fehlerlimit erreicht), aufgibst oder ein neues Spiel startest ohne das vorherige abzuschließen. Also sei vorsichtig</string>
     <string name="best_time">Beste Zeit</string>
     <string name="tip_card_records_list_summ">Diese Liste enthält bis zu 5 deiner besten Rekorde. Du kannst Rekorde die du nicht magst löschen, indem du lange auf den Eintrag drückst</string>
-    <string name="history_item_can_continue">Du kannst dieses Spiel fortfahren</string>
     <string name="saved_game_progress_percentage">Fortschritt %1$d%%</string>
     <string name="history_item_time">Zeit: %1$s</string>
     <string name="history_item_id">Spiel Nr: %1$d</string>
-    <string name="saved_game_screen_title">Spiel #%1$d</string>
     <string name="saved_game_current">Aktuell</string>
     <string name="saved_game_difficulty">Schwierigkeit: %1$s</string>
     <string name="saved_game_time">Zeit: %1$s</string>
@@ -228,8 +211,6 @@
     <string name="saved_game_in_progress">In Arbeit</string>
     <string name="learn_app_toolbar">Werkzeugkasten</string>
     <string name="sudoku_rules_mistakes_explanation">Der erste Fehler sind 2 Zweien in der sechsten Box. Erinnerst du dich an die Regel, dass es keine doppelten Zahlen in einer Box geben kann\? Der zweite Fehler ist die Zahl 6 in Zeile 2, Spalte 8 (R2C8), da dort bereits eine 6 in dieser Spalte ist (R5C8)</string>
-    <string name="custom_sudoku_delete_dialog_title">Ausgewählte löschen</string>
-    <string name="custom_sudoku_delete_dialog_text">Bist du dir sicher, dass du das ausgewählte Sudoku löschen willst\? Dies kann nicht rückgängig gemacht werden</string>
     <string name="learn_basic_6">Als Ergebnis bleibt uns nur noch eine Zelle, in der die Zahl 4 stehen kann. Dies ist die Zelle R1C3</string>
     <string name="create_from_string_text">Gib eine Puzzle in Zeichenkettenform ein. Leere Zellen werden mit . oder 0 markiert</string>
     <plurals name="number_puzzles_to_import">
@@ -273,7 +254,6 @@
     <string name="pref_date_format_custom_summ">Datumsmuster gemäß Java DateTimeFormatter eingeben</string>
     <string name="app_name">Sudoku und enge Kleider</string>
     <string name="nav_bar_gallery">Bildergalerie</string>
-    <string name="no_value_default">--</string>
     <string name="redo">Wiederholen</string>
     <string name="uncovered_images">Aufgedeckte Bilder</string>
     <string name="game_completed">Spiel abgeschlossen, neues Bild zur Galerie hinzugefügt</string>

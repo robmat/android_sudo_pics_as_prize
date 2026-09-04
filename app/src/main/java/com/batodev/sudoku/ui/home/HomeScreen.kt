@@ -1,7 +1,6 @@
 package com.batodev.sudoku.ui.home
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
@@ -47,6 +46,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batodev.sudoku.LocalBoardColors
 import com.batodev.sudoku.R
@@ -61,7 +61,7 @@ private fun HomeAdBanner() {
             context.startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("https://play.google.com/store/apps/dev?id=8228670503574649511"),
+                    "https://play.google.com/store/apps/dev?id=8228670503574649511".toUri(),
                 ),
             )
         },
