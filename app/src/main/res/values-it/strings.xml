@@ -228,7 +228,6 @@
         <item quantity="other">%1$d puzzle da importare</item>
     </plurals>
     <plurals name="puzzles_in_folder">
-        <item quantity="zero">Vuoto</item>
         <item quantity="one">%1$d puzzle</item>
         <item quantity="many">%1$d puzzle</item>
         <item quantity="other">%1$d puzzle</item>

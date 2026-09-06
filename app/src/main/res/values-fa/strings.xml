@@ -247,7 +247,6 @@
         <item quantity="other">%1$d پازل برای وارد کردن</item>
     </plurals>
     <plurals name="puzzles_in_folder">
-        <item quantity="zero">خالی</item>
         <item quantity="one">%1$d پازل</item>
         <item quantity="other">%1$d پازل</item>
     </plurals>

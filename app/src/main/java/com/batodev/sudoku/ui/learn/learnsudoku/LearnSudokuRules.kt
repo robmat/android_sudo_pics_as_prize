@@ -116,7 +116,7 @@ fun LearnSudokuRules(
 
             val sudokuParser = SudokuParser()
             val previewBoard by remember {
-                mutableStateOf(
+                mutableStateOf<List<List<Cell>>>(
                     sudokuParser.parseBoard(
                         board = "...6.....824753169...2........5..471...1..386...4..925...3........9........8.....",
                         gameType = GameType.Default9x9,

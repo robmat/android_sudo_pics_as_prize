@@ -249,7 +249,6 @@
         <item quantity="other">%1$d hádaniek na import</item>
     </plurals>
     <plurals name="puzzles_in_folder">
-        <item quantity="zero">Prázdne</item>
         <item quantity="one">%1$d hádanka</item>
         <item quantity="few">%1$d hádanky</item>
         <item quantity="many">%1$d hádanky</item>

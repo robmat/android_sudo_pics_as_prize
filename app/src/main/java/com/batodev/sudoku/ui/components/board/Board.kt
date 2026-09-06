@@ -203,7 +203,7 @@ fun Board(
         val paints = rememberBoardPaints(mainTextSize, noteTextSize, boardColors)
 
         val boardInteractionModifier =
-            rememberBoardInteractionModifier(
+            Modifier.rememberBoardInteractionModifier(
                 board = data.board,
                 cellSizeProvider = { cellSize },
                 maxWidth = maxWidth,

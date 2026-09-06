@@ -35,7 +35,7 @@ private data class ZoomPanState(
  * last (re)installed.
  */
 @Composable
-internal fun rememberBoardInteractionModifier(
+internal fun Modifier.rememberBoardInteractionModifier(
     board: List<List<Cell>>,
     cellSizeProvider: () -> Float,
     maxWidth: Float,
@@ -50,12 +50,11 @@ internal fun rememberBoardInteractionModifier(
         )
 
     val tapModifier = rememberTapModifier(board, cellSizeProvider, enabled, interaction, zoomPan)
-    val zoomModifier = rememberZoomModifier(maxWidth, enabled, zoomPan)
 
-    return if (displayOptions.zoomable) tapModifier.then(zoomModifier) else tapModifier
+    return if (displayOptions.zoomable) tapModifier.rememberZoomModifier(maxWidth, enabled, zoomPan) else tapModifier
 }
 
-private fun rememberTapModifier(
+private fun Modifier.rememberTapModifier(
     board: List<List<Cell>>,
     cellSizeProvider: () -> Float,
     enabled: Boolean,
@@ -64,7 +63,7 @@ private fun rememberTapModifier(
 ): Modifier {
     val onClick = interaction.onClick
     val onLongClick = interaction.onLongClick
-    return Modifier
+    return this
         .fillMaxSize()
         .pointerInput(key1 = enabled, key2 = board) {
             detectTapGestures(
@@ -96,12 +95,12 @@ private fun rememberTapModifier(
         }
 }
 
-private fun rememberZoomModifier(
+private fun Modifier.rememberZoomModifier(
     maxWidth: Float,
     enabled: Boolean,
     zoomPan: ZoomPanState,
 ): Modifier =
-    Modifier
+    this
         .pointerInput(enabled) {
             detectTransformGestures(
                 onGesture = { gestureCentroid, gesturePan, gestureZoom, _ ->

@@ -247,7 +247,6 @@
         <item quantity="other">இறக்குமதி செய்ய %1$d புதிர்கள்</item>
     </plurals>
     <plurals name="puzzles_in_folder">
-        <item quantity="zero">காலியாக உள்ளது</item>
         <item quantity="one">%1$d புதிர்</item>
         <item quantity="other">%1$d புதிர்கள்</item>
     </plurals>

@@ -247,7 +247,6 @@
         <item quantity="other">आयात करने के लिए %1$d पहेलियाँ</item>
     </plurals>
     <plurals name="puzzles_in_folder">
-        <item quantity="zero">खाली</item>
         <item quantity="one">%1$d पहेली</item>
         <item quantity="other">%1$d पहेलियाँ</item>
     </plurals>

@@ -249,7 +249,6 @@
         <item quantity="other">%1$d trencaclosques per importar</item>
     </plurals>
     <plurals name="puzzles_in_folder">
-        <item quantity="zero">Buit</item>
         <item quantity="one">%1$d trencaclosques</item>
         <item quantity="many">%1$d trencaclosques</item>
         <item quantity="other">%1$d trencaclosques</item>

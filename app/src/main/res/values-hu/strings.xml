@@ -247,7 +247,6 @@
         <item quantity="other">%1$d rejtvény importálása</item>
     </plurals>
     <plurals name="puzzles_in_folder">
-        <item quantity="zero">Üres</item>
         <item quantity="one">%1$d rejtvény</item>
         <item quantity="other">%1$d rejtvény</item>
     </plurals>
