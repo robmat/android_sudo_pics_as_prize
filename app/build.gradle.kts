@@ -5,14 +5,13 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.devtools.ksp")
-    // aboutlibraries isn't in the shared catalog (single-repo use). 10.6.1's
-    // AboutLibrariesCollectorTask calls Task.project at execution time, which
-    // the configuration cache rejects outright - fixed in v13's plugin split
-    // (core manual-task plugin + this .android plugin for the automatic
-    // Android build hook this app relies on to generate the runtime resource
-    // LibrariesContainer reads).
-    id("com.mikepenz.aboutlibraries.plugin") version "13.2.1"
-    id("com.mikepenz.aboutlibraries.plugin.android") version "13.2.1"
+    // 10.6.1's AboutLibrariesCollectorTask calls Task.project at execution
+    // time, which the configuration cache rejects outright - fixed in v13's
+    // plugin split (core manual-task plugin + this .android plugin for the
+    // automatic Android build hook this app relies on to generate the
+    // runtime resource LibrariesContainer reads).
+    alias(libs.plugins.aboutlibraries.core)
+    alias(libs.plugins.aboutlibraries.android)
     id("com.google.dagger.hilt.android")
     alias(libs.plugins.kotlin.compose)
     id("com.batodev.releasetools")
