@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Sudoku and tight dresses</string>
     <string name="nav_bar_gallery">Pictures gallery</string>
     <string name="nav_bar_home">Home</string>
@@ -107,11 +107,16 @@
     <string name="win_streak">Win streak</string>
     <string name="current_streak">Current streak</string>
     <string name="best_streak">Best streak</string>
-    <string name="number_best_games">%1$d best games</string>
+    <!-- BEST_GAMES_SHOWN_COUNT is a hardcoded constant (5) - the count here
+         never varies at runtime, so the "one" plural branch would be dead
+         code with no real grammar bug to fix. -->
+    <string name="number_best_games" tools:ignore="PluralsCandidate">%1$d best games</string>
     <string name="games">Games</string>
     <string name="time">Time</string>
     <string name="delete_question">Delete?</string>
-    <string name="delete_record_dialog">Do you want to delete the #%1$d record? It can\'t be undone</string>
+    <!-- %1$d is the record's rank/position (#1, #2, ...), an identifier -
+         not a countable quantity - so plural grammar doesn't apply here. -->
+    <string name="delete_record_dialog" tools:ignore="PluralsCandidate">Do you want to delete the #%1$d record? It can\'t be undone</string>
     <string name="statistics_difficulty_filter_all">All</string>
     <string name="average_time">Average time</string>
     <string name="best_time">Best time</string>
