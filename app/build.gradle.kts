@@ -165,6 +165,10 @@ dependencies {
 
     implementation(libs.bumptech.glide.compose)
     implementation(libs.play.services.ads) { version { strictly("24.2.0") } }
+    // play-services-ads transitively pins the ancient androidx.work:work-runtime:2.7.0 -
+    // override it so WorkManager's own WorkDatabase creation doesn't crash on real
+    // devices (see sgtpuzzles' fix for the full incident writeup).
+    implementation(libs.androidx.work.runtime)
     implementation(libs.mennovogel.zoom.compose) { version { strictly("1.1") } }
 
     testImplementation(libs.junit)
