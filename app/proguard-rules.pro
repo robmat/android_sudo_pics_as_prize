@@ -25,3 +25,15 @@
 -dontwarn javax.annotation.processing.AbstractProcessor
 -dontwarn javax.annotation.processing.SupportedOptions
 -dontwarn android.content.res.**
+
+# Room's own consumer rule (-keep class * extends androidx.room.RoomDatabase, shipped in
+# room-runtime's proguard.txt) keeps the class but not its no-arg constructor. WorkManager's
+# internal WorkDatabase is only ever instantiated reflectively (androidx.room.util.DBUtil.
+# createWorkManager -> Class.getDeclaredConstructor().newInstance()), since it's a precompiled
+# library class with no app-module-generated call site R8 can see - so without this, R8 strips
+# the constructor as apparently unused and WorkManager crashes on startup with
+# "NoSuchMethodException: androidx.work.impl.WorkDatabase_Impl.<init> []" (confirmed on
+# sgtpuzzles/samegame, same play-services-ads + androidx.work.runtime override).
+-keepclassmembers class * extends androidx.room.RoomDatabase {
+    public <init>();
+}
