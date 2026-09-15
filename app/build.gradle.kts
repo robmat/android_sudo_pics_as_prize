@@ -70,12 +70,23 @@ android {
         }
     }
 
+    // Instrumented tests run against releaseTest - the same R8 output as release - so
+    // they exercise minified code rather than the unminified debug APK.
+    testBuildType = "releaseTest"
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("release")
+        }
+
+        // Same R8 pipeline and signing as release, plus keeps that only the instrumentation
+        // harness needs - so the release APK users get stays fully shrunk and obfuscated.
+        create("releaseTest") {
+            initWith(getByName("release"))
+            matchingFallbacks += listOf("release")
+            proguardFile("proguard-rules-test.pro")
         }
     }
     compileOptions {
@@ -171,6 +182,11 @@ dependencies {
     implementation(libs.androidx.work.runtime)
     implementation(libs.mennovogel.zoom.compose) { version { strictly("1.1") } }
 
+    // Something in the release graph drags in concurrent-futures-ktx 1.1.0, which predates
+    // SuspendToFutureAdapter. androidx.test:core needs 1.2.0, but consistent resolution pins
+    // androidTest to whatever release resolved - so R8 fails the androidTest minify with
+    // "Missing class androidx.concurrent.futures.SuspendToFutureAdapter". Declaring it lifts both.
+    releaseTestImplementation(libs.androidx.concurrent.futures.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
