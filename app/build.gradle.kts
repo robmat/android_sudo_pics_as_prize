@@ -175,7 +175,7 @@ dependencies {
     implementation(libs.mikepenz.aboutlibraries.compose.m3) { version { strictly("13.2.1") } }
 
     implementation(libs.bumptech.glide.compose)
-    implementation(libs.play.services.ads) { version { strictly("24.2.0") } }
+    implementation(libs.play.services.ads)
     // play-services-ads transitively pins the ancient androidx.work:work-runtime:2.7.0 -
     // override it so WorkManager's own WorkDatabase creation doesn't crash on real
     // devices (see sgtpuzzles' fix for the full incident writeup).
@@ -186,7 +186,7 @@ dependencies {
     // SuspendToFutureAdapter. androidx.test:core needs 1.2.0, but consistent resolution pins
     // androidTest to whatever release resolved - so R8 fails the androidTest minify with
     // "Missing class androidx.concurrent.futures.SuspendToFutureAdapter". Declaring it lifts both.
-    releaseTestImplementation(libs.androidx.concurrent.futures.ktx)
+    "releaseTestImplementation"(libs.androidx.concurrent.futures.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
@@ -199,4 +199,11 @@ dependencies {
     debugImplementation(libs.androidx.test.core)
     debugImplementation(libs.androidx.test.monitor)
     debugImplementation(libs.androidx.concurrent.futures)
+    // The same floor applies to releaseTest, which is what androidTest now resolves against
+    // since testBuildType moved off debug - without these the releaseTest androidTest
+    // classpath fails to resolve androidx.test:core/monitor at all.
+    "releaseTestImplementation"(libs.androidx.compose.ui.test.manifest) { version { strictly("1.10.0") } }
+    "releaseTestImplementation"(libs.androidx.test.core)
+    "releaseTestImplementation"(libs.androidx.test.monitor)
+    "releaseTestImplementation"(libs.androidx.concurrent.futures)
 }
