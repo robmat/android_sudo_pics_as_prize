@@ -2,9 +2,7 @@
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
-    // KSP isn't in the shared catalog (only a handful of repos use it, each
-    // pinned to a KSP release matching its own Kotlin version).
-    id("com.google.devtools.ksp") version "2.3.11" apply false
+    alias(libs.plugins.ksp) apply false
     // Hilt isn't in the shared catalog (single-repo use).
     id("com.google.dagger.hilt.android") version "2.60.1" apply false
     alias(libs.plugins.android.library) apply false
